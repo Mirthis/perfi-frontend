@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 import { Grid, Stack, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { AccountsGetResponse, AccountGetResponseItem } from '../types/types';
 import { formatCurrency, capitalizeFirst } from '../utils/numberFormatter';
 
@@ -13,7 +14,9 @@ const AccountsListItem = ({ account }: { account: AccountGetResponseItem }) => (
       />
     </Grid>
     <Grid item xs={6} md={6} textAlign="left">
-      <Typography variant="subtitle1">{account.name}</Typography>
+      <Link to={`/accounts/${account.id}/transactions/`}>
+        <Typography variant="subtitle1">{account.name}</Typography>
+      </Link>
     </Grid>
     <Grid
       item

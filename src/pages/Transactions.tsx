@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { CircularProgress, Box, Typography } from '@mui/material';
+import { CircularProgress, Box, Typography, Stack, Grid } from '@mui/material';
 import { useGetTransactionsByAccountQuery } from '../services/api';
 
 const Transactions = () => {
@@ -7,26 +7,31 @@ const Transactions = () => {
 
   console.log(accountId);
 
-  const {
-    data: transactionsList,
-    error,
-    isLoading,
-  } = useGetTransactionsByAccountQuery(Number(accountId));
+  const { data, error, isLoading } = useGetTransactionsByAccountQuery(
+    Number(accountId),
+  );
 
-  if (error) {
-    console.log(error);
-  }
-  if (isLoading) {
-    console.log('Loading');
-  }
+  const transactionsList = data?.rows;
 
-  console.log(transactionsList);
+  if (error) return null;
+  if (isLoading)
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box>
+    );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CircularProgress />
-      <Typography>Loading...</Typography>
-    </Box>
+    <Stack spacing={2}>
+      <Grid container spacing={2}>
+        {transactionsList &&
+          transactionsList.map((t) => (
+            <Grid item xs={12}>
+              <Typography variant="body1">{t.name}</Typography>
+            </Grid>
+          ))}
+      </Grid>
+    </Stack>
   );
 };
 

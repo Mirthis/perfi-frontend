@@ -1,4 +1,5 @@
 import { AccountBase, TransactionPaymentChannelEnum } from 'plaid';
+import { NumberSchema } from 'yup';
 
 export type LoginData = {
   email: string;
@@ -70,6 +71,9 @@ export interface TransactionData {
   unofficialCurrencyCode: string | null;
 }
 
-export type TransactionsGetResponse = TransactionData[];
+export interface TransactionsGetResponse {
+  count: NumberSchema;
+  rows: TransactionData[];
+}
 
 export type AccountsListData = AccountListItemData[];

@@ -73,6 +73,7 @@ const LoginForm = () => {
             id="email"
             label="Email Address"
             autoComplete="email"
+            defaultValue="aaa@sss.ddd"
             autoFocus
             {...register('email')}
             error={errors.email !== undefined}
@@ -86,6 +87,7 @@ const LoginForm = () => {
             fullWidth
             label="Password"
             type="password"
+            defaultValue="A!23456z"
             id="password"
             {...register('password')}
             autoComplete="current-password"

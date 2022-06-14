@@ -17,7 +17,8 @@ import { useAppSelector } from '../reducers/hooks';
 
 const settings = [
   { label: 'Profile', link: '/profile' },
-  { label: 'Account', link: '/account' },
+  { label: 'Account', link: '/accounts' },
+  { label: 'Transactions', link: '/transactions' },
   { label: 'Logout', link: '/logout' },
 ];
 
