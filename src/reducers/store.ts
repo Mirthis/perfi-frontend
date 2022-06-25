@@ -3,11 +3,13 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import authReducer from './authReducer';
 import plaidReducer from './plaidReducer';
 import { perfiApi } from '../services/api';
+import txFilterReducer from './txFilterReducer';
 
 const store = configureStore({
   reducer: {
     loggedUser: authReducer,
     plaid: plaidReducer,
+    txFilter: txFilterReducer,
     [perfiApi.reducerPath]: perfiApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

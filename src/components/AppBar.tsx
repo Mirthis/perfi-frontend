@@ -18,7 +18,6 @@ import { useAppSelector } from '../reducers/hooks';
 const settings = [
   { label: 'Profile', link: '/profile' },
   { label: 'Account', link: '/accounts' },
-  { label: 'Transactions', link: '/transactions' },
   { label: 'Logout', link: '/logout' },
 ];
 
@@ -31,6 +30,7 @@ const AppBar = () => {
   const allPages = [
     { label: 'Home', link: '/', show: true },
     { label: 'Accounts', link: '/accounts', show: loggedUser !== null },
+    { label: 'Transactions', link: '/transactions', show: loggedUser !== null },
   ];
 
   const pages = allPages.filter((page) => page.show);

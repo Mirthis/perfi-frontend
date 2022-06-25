@@ -1,5 +1,4 @@
 import { AccountBase, TransactionPaymentChannelEnum } from 'plaid';
-import { NumberSchema } from 'yup';
 
 export type LoginData = {
   email: string;
@@ -72,8 +71,44 @@ export interface TransactionData {
 }
 
 export interface TransactionsGetResponse {
-  count: NumberSchema;
+  count: number;
   rows: TransactionData[];
 }
 
+export interface CategorySummaryItem {
+  id: number;
+  name: string;
+  iconName: string;
+  iconColor: string;
+  txAmount: string;
+  txCount: string;
+}
+
+export type TransactionsCategorySummaryRes = Array<CategorySummaryItem>;
+
 export type AccountsListData = AccountListItemData[];
+
+export interface GetCategoriesSummaryOptions {
+  accountIds?: number[];
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface GetTransactionsOptions {
+  accountIds?: number[];
+  startDate?: string;
+  endDate?: string;
+}
+
+export enum TxFilterMode {
+  CATEGORY_SUMMARY = 'CATEGORY_SUMMARY',
+  TRANSACTION_LIST = 'TRANSACTION_LIST',
+}
+
+export interface TxFilter {
+  month: string;
+  startDate: string;
+  endDate: string;
+  mode: TxFilterMode;
+  category?: number;
+}

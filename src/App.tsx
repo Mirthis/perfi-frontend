@@ -33,6 +33,9 @@ const App = () => {
             />
           </Routes>
           <Routes>
+            <Route path="transactions" element={<Transactions />} />
+          </Routes>
+          <Routes>
             <Route path="/login" element={<Login />} />
           </Routes>
           <Routes>
