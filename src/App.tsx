@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Container, styled, Box } from '@mui/material';
 import { useAppDispatch } from './reducers/hooks';
-import AppBar from './components/AppBar';
+import { AppBar, Alert } from './components';
 import { Home, Login, Accounts, Logout, SignUp, Transactions } from './pages';
 import { initializeLoggedUser } from './reducers/authReducer';
 
@@ -19,6 +19,7 @@ const App = () => {
       <AppBar />
       <Offset />
       <Container component="main" maxWidth="xl">
+        <Alert />
         <Box my={2}>
           <Routes>
             <Route path="/" element={<Home />} />

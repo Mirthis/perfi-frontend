@@ -1,20 +1,24 @@
 import { Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logoutUser } from '../reducers/authReducer';
+import { clearUser } from '../reducers/authReducer';
 import { useAppDispatch } from '../reducers/hooks';
+import { useLogoutMutation } from '../services/api';
 
 const Logout = () => {
-  const dispatch = useAppDispatch();
+  const [logout] = useLogoutMutation();
+
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const logout = async () => {
-      await dispatch(logoutUser());
-      navigate('/', { replace: true });
+    const callLogout = async () => {
+      logout();
+      dispatch(clearUser());
+      navigate('/');
     };
-    logout();
-  }, [dispatch]);
+    callLogout();
+  }, []);
 
   return <Typography>Logging you off...</Typography>;
 };

@@ -21,7 +21,7 @@ const initMonth = selectDateFormatter.format(new Date());
 const initialState: TxFilter = {
   month: initMonth,
   ...getStartEndDate(initMonth),
-  mode: TxFilterMode.TRANSACTION_LIST,
+  mode: TxFilterMode.Summary,
 };
 
 const txFilterSlice = createSlice({
@@ -37,11 +37,29 @@ const txFilterSlice = createSlice({
       return { ...state, mode: action.payload };
     },
     setCategoryFilter(state, action: PayloadAction<number>) {
-      return { ...state, category: action.payload };
+      const newCategory = action.payload;
+      const newMode = newCategory !== -1 ? TxFilterMode.List : state.mode;
+      const newState: TxFilter = {
+        ...state,
+        mode: newMode,
+        category: newCategory,
+      };
+      if (newCategory === -1) {
+        delete newState.category;
+      }
+      return newState;
     },
     clearCategoryFilter(state) {
       const newState = { ...state };
       delete newState.category;
+      return newState;
+    },
+    setAccountFilter(state, action: PayloadAction<number>) {
+      return { ...state, account: action.payload };
+    },
+    clearAccountFilter(state) {
+      const newState = { ...state };
+      delete newState.account;
       return newState;
     },
   },
@@ -52,5 +70,7 @@ export const {
   setModeFilter,
   setCategoryFilter,
   clearCategoryFilter,
+  setAccountFilter,
+  clearAccountFilter,
 } = txFilterSlice.actions;
 export default txFilterSlice.reducer;

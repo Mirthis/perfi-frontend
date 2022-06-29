@@ -127,12 +127,12 @@ const AppBar = () => {
               <Stack direction="row">
                 <Link to="/login">
                   <Button sx={{ my: 2, color: 'white', display: 'block' }}>
-                    Login
+                    Sign in
                   </Button>
                 </Link>
                 <Link to="/signup">
                   <Button sx={{ my: 2, color: 'white', display: 'block' }}>
-                    Signup
+                    Sign up
                   </Button>
                 </Link>
               </Stack>

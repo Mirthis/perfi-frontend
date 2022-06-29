@@ -1,10 +1,17 @@
 import { AccountBase, TransactionPaymentChannelEnum } from 'plaid';
 
-export type LoginData = {
+export type LoginRequest = {
   email: string;
   password: string;
   rememberMe: boolean;
 };
+
+export interface User {
+  id: string;
+  email: string;
+}
+
+export type AuthState = User | null;
 
 export type SignUpData = {
   email: string;
@@ -52,15 +59,11 @@ export interface AccountGetResponseItem extends AccountData {
 
 export interface TransactionData {
   id: number;
-  plaidTransactionId: string;
-  accountId: number;
   name: string;
   amount: number;
-  transactionDate: Date;
+  txDate: string;
+  txDateTime: string;
   pending: boolean;
-  pladiCategoryId: string | null;
-  category: string | null;
-  subCategory: string | null;
   paymentChannel: TransactionPaymentChannelEnum;
   address: string | null;
   city: string | null;
@@ -68,6 +71,22 @@ export interface TransactionData {
   merchantName: string | null;
   isoCurrencyCode: string | null;
   unofficialCurrencyCode: string | null;
+  account: {
+    id: number;
+    name: number;
+  };
+  category: {
+    id: number;
+    name: string;
+    iconName: string;
+    iconColor: string;
+  };
+  plaidCategory: {
+    id: number;
+    name_lvl1: string;
+    name_lvl2: string;
+    name_lvl3: string;
+  };
 }
 
 export interface TransactionsGetResponse {
@@ -92,17 +111,21 @@ export interface GetCategoriesSummaryOptions {
   accountIds?: number[];
   startDate?: string;
   endDate?: string;
+  categoryIds?: number[];
 }
 
 export interface GetTransactionsOptions {
+  offset?: number;
+  limit?: number;
   accountIds?: number[];
   startDate?: string;
   endDate?: string;
+  categoryIds?: number[];
 }
 
 export enum TxFilterMode {
-  CATEGORY_SUMMARY = 'CATEGORY_SUMMARY',
-  TRANSACTION_LIST = 'TRANSACTION_LIST',
+  Summary = 'Summary',
+  List = 'List',
 }
 
 export interface TxFilter {
@@ -111,4 +134,33 @@ export interface TxFilter {
   endDate: string;
   mode: TxFilterMode;
   category?: number;
+  account?: number;
+}
+
+export interface UserCategoryData {
+  id: number;
+  name: string;
+  iconName: string;
+  iconColor: string;
+}
+
+export type GetUserCategoriesRes = Array<UserCategoryData>;
+
+export enum AlertSeverity {
+  ERROR = 'error',
+  WARNING = 'warning',
+  INFO = 'info',
+  SUCCESS = 'success',
+}
+
+export interface AlertState {
+  alertSeverity: AlertSeverity;
+  alertMessage: string | null;
+  alertTitle: string | null;
+  alertOpen: boolean;
+  setError: (message: string, title?: string, timeout?: number) => void;
+  setSuccess: (message: string, title?: string, timeout?: number) => void;
+  setWarning: (message: string, title?: string, timeout?: number) => void;
+  setInfo: (message: string, title?: string, timeout?: number) => void;
+  clearAlert: () => void;
 }

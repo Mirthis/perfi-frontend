@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -8,14 +7,19 @@ import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { LoadingButton } from '@mui/lab';
 import Typography from '@mui/material/Typography';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Container } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { LoginData } from '../types/types';
+import { useNavigate } from 'react-router-dom';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import { LoginRequest } from '../types/types';
+import { useLoginMutation } from '../services/api';
 import { useAppDispatch } from '../reducers/hooks';
-import { loginUser } from '../reducers/authReducer';
+import { setUser } from '../reducers/authReducer';
+import { useAlert } from './AlertProvider';
 
 const LoginForm = () => {
   const validationSchema = Yup.object().shape({
@@ -23,21 +27,41 @@ const LoginForm = () => {
     password: Yup.string().required('Password is required'),
   });
 
+  const [login, { isLoading }] = useLoginMutation();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { setError } = useAlert();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginData>({
+  } = useForm<LoginRequest>({
     mode: 'onTouched',
     resolver: yupResolver(validationSchema),
   });
 
+  function isFetchBaseQueryError(error: unknown): error is FetchBaseQueryError {
+    return (error as FetchBaseQueryError).status !== undefined;
+  }
+
   // TODO: handle error and success notifications
-  const onSubmit: SubmitHandler<LoginData> = async (data) => {
-    const res = await dispatch(loginUser(data));
-    console.log(res);
+  const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
+    try {
+      const res = await login(data).unwrap();
+      dispatch(setUser(res));
+      // TODO: update to navitate to last page before login
+      navigate('/');
+    } catch (err: unknown) {
+      if (isFetchBaseQueryError(err) && err.status === 401) {
+        setError('Invalid username or password', 'Login');
+      } else {
+        setError(
+          'Something went wrong. Please retry later or contact us.',
+          'Login',
+        );
+      }
+    }
   };
 
   // const loggedUser = useAppSelector((state) => state);
@@ -106,14 +130,15 @@ const LoginForm = () => {
             }
             label="Remember me"
           />
-          <Button
+          <LoadingButton
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            loading={isLoading}
           >
             Sign In
-          </Button>
+          </LoadingButton>
           <Grid container>
             <Grid item xs>
               <Link href="/api/reset-password" variant="body2">

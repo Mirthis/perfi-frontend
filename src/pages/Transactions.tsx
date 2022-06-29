@@ -1,16 +1,18 @@
 import CategoriesSummaryList from '../components/CategorySummaryList';
+import CategorySummaryStats from '../components/CategorySummaryStats';
 import TransactionsFilter from '../components/TransactionsFilter';
 import TransactionsList from '../components/TransactionsList';
 import { useAppSelector } from '../reducers/hooks';
 import { TxFilterMode } from '../types/types';
 
 const Transactions = () => {
-  const mode = useAppSelector((state) => state.txFilter.mode);
+  const { mode, category } = useAppSelector((state) => state.txFilter);
   return (
     <>
       <TransactionsFilter />
-      {mode === TxFilterMode.CATEGORY_SUMMARY && <CategoriesSummaryList />}
-      {mode === TxFilterMode.TRANSACTION_LIST && <TransactionsList />}
+      {mode === TxFilterMode.Summary && <CategoriesSummaryList />}
+      {mode === TxFilterMode.List && category && <CategorySummaryStats />}
+      {mode === TxFilterMode.List && <TransactionsList />}
     </>
   );
 };

@@ -1,13 +1,25 @@
 import { Box, CircularProgress, Grid } from '@mui/material';
 import { useAppSelector } from '../reducers/hooks';
 import { useGetTransactionsCategorySummaryQuery } from '../services/api';
-import CategorySummary from './CategorySummary';
+import { GetCategoriesSummaryOptions } from '../types/types';
+import CategorySummary from './CategorySummaryCard';
 
 const CategoriesSummaryList = () => {
-  const { startDate, endDate } = useAppSelector((state) => state.txFilter);
+  const { startDate, endDate, account } = useAppSelector(
+    (state) => state.txFilter,
+  );
+
+  const queryFilter: GetCategoriesSummaryOptions = {
+    startDate,
+    endDate,
+  };
+
+  if (account) {
+    queryFilter.accountIds = [account];
+  }
 
   const { data: summaryData, isLoading: summaryIsLoading } =
-    useGetTransactionsCategorySummaryQuery({ startDate, endDate });
+    useGetTransactionsCategorySummaryQuery(queryFilter);
 
   if (!summaryIsLoading && summaryData) {
     console.log(summaryData);

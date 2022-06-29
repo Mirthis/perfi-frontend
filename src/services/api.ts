@@ -3,8 +3,11 @@ import {
   AccountsGetResponse,
   GetCategoriesSummaryOptions,
   GetTransactionsOptions,
+  GetUserCategoriesRes,
+  LoginRequest,
   TransactionsCategorySummaryRes,
   TransactionsGetResponse,
+  User,
 } from '../types/types';
 
 const baseUrl = '/api/';
@@ -19,6 +22,9 @@ export const perfiApi = createApi({
   endpoints: (builder) => ({
     getUserAccounts: builder.query<AccountsGetResponse, void>({
       query: () => 'accounts',
+    }),
+    getUserCategories: builder.query<GetUserCategoriesRes, void>({
+      query: () => 'categories',
     }),
     getTransactions: builder.query<
       TransactionsGetResponse,
@@ -40,6 +46,19 @@ export const perfiApi = createApi({
         params: options,
       }),
     }),
+    login: builder.mutation<User, LoginRequest>({
+      query: (credentials) => ({
+        url: 'auth/login',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: 'auth/logout',
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -47,4 +66,7 @@ export const {
   useGetUserAccountsQuery,
   useGetTransactionsQuery,
   useGetTransactionsCategorySummaryQuery,
+  useGetUserCategoriesQuery,
+  useLoginMutation,
+  useLogoutMutation,
 } = perfiApi;
