@@ -5,6 +5,7 @@ import {
   GetTransactionsOptions,
   GetUserCategoriesRes,
   LoginRequest,
+  SignUpReq,
   TransactionsCategorySummaryRes,
   TransactionsGetResponse,
   User,
@@ -59,6 +60,13 @@ export const perfiApi = createApi({
         method: 'POST',
       }),
     }),
+    signup: builder.mutation<User, SignUpReq>({
+      query: (credentials) => ({
+        url: 'auth/signup',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
   }),
 });
 
@@ -69,4 +77,5 @@ export const {
   useGetUserCategoriesQuery,
   useLoginMutation,
   useLogoutMutation,
+  useSignupMutation,
 } = perfiApi;

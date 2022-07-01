@@ -1,10 +1,65 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import { useEffect } from 'react';
 import { Container, styled, Box } from '@mui/material';
 import { useAppDispatch } from './reducers/hooks';
 import { AppBar, Alert } from './components';
-import { Home, Login, Accounts, Logout, SignUp, Transactions } from './pages';
+// import { Home, Login, Accounts, Logout, SignUp, Transactions } from './pages';
+import { Home, Login, Accounts, Logout, Transactions, SignUp } from './pages';
 import { initializeLoggedUser } from './reducers/authReducer';
+import PrivateRoute from './components/PrivateRoute';
+
+const getPrivateRoutes = () => {
+  interface PrivateRouteData {
+    path: string;
+    element: React.ReactElement;
+    key?: string;
+    onlyLoggedOut?: boolean;
+  }
+
+  const privateRoutes: Array<PrivateRouteData> = [
+    {
+      path: '/accounts',
+      element: <Accounts />,
+    },
+    {
+      path: '/transactions',
+      element: <Transactions />,
+    },
+    {
+      path: '/logout',
+      element: <Logout />,
+    },
+    {
+      path: '/login',
+      element: <Login />,
+      onlyLoggedOut: true,
+    },
+    {
+      path: '/signup',
+      element: <SignUp />,
+      onlyLoggedOut: true,
+    },
+  ];
+
+  const routesEl = privateRoutes.map((pr) => (
+    <Route
+      key={pr.key || pr.path}
+      path={pr.path}
+      element={
+        <PrivateRoute onlyLoggedOut={pr.onlyLoggedOut}>
+          {pr.element}
+        </PrivateRoute>
+      }
+    />
+  ));
+
+  return routesEl;
+};
 
 const App = () => {
   const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
@@ -22,28 +77,10 @@ const App = () => {
         <Alert />
         <Box my={2}>
           <Routes>
-            <Route path="/" element={<Home />} />
-          </Routes>
-          <Routes>
-            <Route path="/accounts" element={<Accounts />} />
-          </Routes>
-          <Routes>
-            <Route
-              path="accounts/:accountId/transactions"
-              element={<Transactions />}
-            />
-          </Routes>
-          <Routes>
-            <Route path="transactions" element={<Transactions />} />
-          </Routes>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-          </Routes>
-          <Routes>
-            <Route path="/logout" element={<Logout />} />
-          </Routes>
-          <Routes>
-            <Route path="/signup" element={<SignUp />} />
+            {/* {publicRouteList()} */}
+            <Route key="home" path="/" element={<Home />} />
+            {getPrivateRoutes()};
+            <Route key="*" path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Box>
       </Container>

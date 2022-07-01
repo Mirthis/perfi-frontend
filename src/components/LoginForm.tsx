@@ -9,17 +9,21 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { LoadingButton } from '@mui/lab';
 import Typography from '@mui/material/Typography';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Container } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-import { LoginRequest } from '../types/types';
+import { useEffect } from 'react';
+import { LoginRequest, NavigateFromState } from '../types/types';
 import { useLoginMutation } from '../services/api';
 import { useAppDispatch } from '../reducers/hooks';
 import { setUser } from '../reducers/authReducer';
 import { useAlert } from './AlertProvider';
+
+const isNavigateFromState = (state: unknown): state is NavigateFromState =>
+  (state as NavigateFromState)?.from !== undefined;
 
 const LoginForm = () => {
   const validationSchema = Yup.object().shape({
@@ -27,7 +31,10 @@ const LoginForm = () => {
     password: Yup.string().required('Password is required'),
   });
 
-  const [login, { isLoading }] = useLoginMutation();
+  const { state } = useLocation();
+
+  const [login, { isLoading, isError, isSuccess, error, data }] =
+    useLoginMutation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { setError } = useAlert();
@@ -41,19 +48,23 @@ const LoginForm = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  function isFetchBaseQueryError(error: unknown): error is FetchBaseQueryError {
-    return (error as FetchBaseQueryError).status !== undefined;
+  function isFetchBaseQueryError(
+    errorObj: unknown,
+  ): errorObj is FetchBaseQueryError {
+    return (errorObj as FetchBaseQueryError).status !== undefined;
   }
 
-  // TODO: handle error and success notifications
-  const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
-    try {
-      const res = await login(data).unwrap();
-      dispatch(setUser(res));
-      // TODO: update to navitate to last page before login
-      navigate('/');
-    } catch (err: unknown) {
-      if (isFetchBaseQueryError(err) && err.status === 401) {
+  useEffect(() => {
+    if (isSuccess && data) {
+      dispatch(setUser(data));
+      if (isNavigateFromState(state)) {
+        navigate(state.from.pathname);
+      } else {
+        navigate('/');
+      }
+    }
+    if (isError && error) {
+      if (isFetchBaseQueryError(error) && error.status === 401) {
         setError('Invalid username or password', 'Login');
       } else {
         setError(
@@ -62,7 +73,7 @@ const LoginForm = () => {
         );
       }
     }
-  };
+  }, [isSuccess, isError]);
 
   // const loggedUser = useAppSelector((state) => state);
   // console.log(loggedUser);
@@ -86,7 +97,7 @@ const LoginForm = () => {
         <Box
           component="form"
           width="100%"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(login)}
           noValidate
           sx={{ mt: 1 }}
         >
@@ -102,7 +113,7 @@ const LoginForm = () => {
             {...register('email')}
             error={errors.email !== undefined}
           />
-          <Typography variant="inherit" color="textSecondary">
+          <Typography variant="inherit" color="error">
             {errors.email?.message}
           </Typography>
           <TextField
@@ -117,7 +128,7 @@ const LoginForm = () => {
             autoComplete="current-password"
             error={errors.password !== undefined}
           />
-          <Typography variant="inherit" color="textSecondary">
+          <Typography variant="inherit" color="error">
             {errors.password?.message}
           </Typography>
           <FormControlLabel

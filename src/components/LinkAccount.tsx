@@ -3,7 +3,7 @@ import { usePlaidLink } from 'react-plaid-link';
 // import Button from 'plaid-threads/Button';
 import { Button } from '@mui/material';
 // import { useAppDispatch, useAppSelector } from '../reducers/hooks';
-import { usePlaidState } from '../state';
+import { usePlaidState } from './PlaidProvider';
 import plaidService from '../services/plaid';
 
 const LinkAccount = ({ linkToken }: { linkToken: string }) => {

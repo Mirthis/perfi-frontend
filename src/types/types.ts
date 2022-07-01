@@ -1,4 +1,5 @@
 import { AccountBase, TransactionPaymentChannelEnum } from 'plaid';
+import { Location } from 'react-router-dom';
 
 export type LoginRequest = {
   email: string;
@@ -18,6 +19,11 @@ export type SignUpData = {
   password: string;
   confirmPassword: string;
   acceptTerms: boolean;
+};
+
+export type SignUpReq = {
+  email: string;
+  password: string;
 };
 
 export type AccountListItemData = AccountBase & {
@@ -163,4 +169,8 @@ export interface AlertState {
   setWarning: (message: string, title?: string, timeout?: number) => void;
   setInfo: (message: string, title?: string, timeout?: number) => void;
   clearAlert: () => void;
+}
+
+export interface NavigateFromState {
+  from: Location;
 }

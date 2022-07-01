@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -12,11 +11,36 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import { LoadingButton } from '@mui/lab';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { SignUpData } from '../types/types';
-import usersService from '../services/users';
+import { useSignupMutation } from '../services/api';
+import { useAlert } from './AlertProvider';
 
 const SignUpForm = () => {
+  interface ValidationErrrorData {
+    type: string;
+    name: string;
+    errors: Array<{
+      type: string;
+      message: string;
+      path: string;
+    }>;
+  }
+
+  function isFetchBaseQueryError(
+    errorObj: unknown,
+  ): errorObj is FetchBaseQueryError {
+    return (errorObj as FetchBaseQueryError).data !== undefined;
+  }
+
+  function isValidationErrrorData(data: unknown): data is ValidationErrrorData {
+    return (data as ValidationErrrorData)?.type === 'ValidationError';
+  }
+
   const validationSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
@@ -33,9 +57,16 @@ const SignUpForm = () => {
     acceptTerms: Yup.bool().oneOf([true], 'Accept Terms is required'),
   });
 
+  const [signup, { isLoading, isSuccess, isError, error }] =
+    useSignupMutation();
+
+  const navigate = useNavigate();
+  const { setError } = useAlert();
+
   const {
     register,
     handleSubmit,
+    setError: setFormError,
     formState: { errors },
   } = useForm<SignUpData>({
     mode: 'onTouched',
@@ -43,11 +74,31 @@ const SignUpForm = () => {
   });
 
   // TODO: handle error and success notifications, including duplicate email check
-  const onSubmit: SubmitHandler<SignUpData> = async (data) => {
-    console.log(data);
-    const res = await usersService.signup(data);
-    console.log(res);
-  };
+  // const onSubmit: SubmitHandler<SignUpData> = async (data) => {
+  //   signup(data);
+  // };
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate('/login');
+      return;
+    }
+    if (isError && error) {
+      if (
+        isFetchBaseQueryError(error) &&
+        isValidationErrrorData(error.data) &&
+        error.data.name === 'SequelizeUniqueConstraintError'
+      ) {
+        setFormError('email', {
+          type: 'custom',
+          message: 'An user with the specified email already exist',
+        });
+        // setError('.');
+      } else {
+        setError('Seomething went wrong!');
+      }
+    }
+  }, [isSuccess, isError, error]);
 
   return (
     <Container component="div" maxWidth="xs">
@@ -69,7 +120,7 @@ const SignUpForm = () => {
           component="form"
           noValidate
           width="100%"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(signup)}
           sx={{ mt: 3 }}
         >
           <TextField
@@ -82,7 +133,7 @@ const SignUpForm = () => {
             {...register('email')}
             error={errors.email !== undefined}
           />
-          <Typography variant="inherit" color="textSecondary">
+          <Typography variant="inherit" color="error">
             {errors.email?.message}
           </Typography>
           <TextField
@@ -92,11 +143,10 @@ const SignUpForm = () => {
             label="Password"
             type="password"
             id="password"
-            autoComplete="new-password"
             {...register('password')}
             error={errors.password !== undefined}
           />
-          <Typography variant="inherit" color="textSecondary">
+          <Typography variant="inherit" color="error">
             {errors.password?.message}
           </Typography>
           <TextField
@@ -106,11 +156,10 @@ const SignUpForm = () => {
             label="Confirm Password"
             type="password"
             id="confirmPassword"
-            autoComplete="new-password"
             {...register('confirmPassword')}
             error={errors.confirmPassword !== undefined}
           />
-          <Typography variant="inherit" color="textSecondary">
+          <Typography variant="inherit" color="error">
             {errors.confirmPassword?.message}
           </Typography>
           <FormControlLabel
@@ -129,17 +178,18 @@ const SignUpForm = () => {
               </Typography>
             }
           />
-          <Typography variant="inherit" color="textSecondary">
+          <Typography variant="inherit" color="error">
             {errors.acceptTerms?.message}
           </Typography>
-          <Button
+          <LoadingButton
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            loading={isLoading}
           >
             Sign Up
-          </Button>
+          </LoadingButton>
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link href="signup" variant="body2">

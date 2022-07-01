@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../reducers/hooks';
 import LinkAccount from './LinkAccount';
 import { getLinkToken, setLinkToken } from '../reducers/plaidReducer';
+import { PlaidProvider } from './PlaidProvider';
 
 const AddAccount = () => {
   const dispatch = useAppDispatch();
@@ -24,7 +25,11 @@ const AddAccount = () => {
   }, [dispatch, generateToken]);
 
   if (linkToken === null) return <div>Loading...</div>;
-  return <LinkAccount linkToken={linkToken} />;
+  return (
+    <PlaidProvider>
+      <LinkAccount linkToken={linkToken} />
+    </PlaidProvider>
+  );
 };
 
 export default AddAccount;
