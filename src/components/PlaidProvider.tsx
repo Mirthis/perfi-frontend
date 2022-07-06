@@ -64,14 +64,12 @@ const reducer = (state: PlaidState, action: PlaidAction): PlaidState => {
 };
 
 // const { Provider } = Context;
-export const PlaidProvider = ({
-  children,
-}: {
-  children: React.ReactElement;
-}) => {
+const PlaidProvider = ({ children }: { children: React.ReactElement }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = useMemo(() => ({ ...state, dispatch }), [state]);
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
 export const usePlaidState = () => useContext(Context);
+
+export default PlaidProvider;

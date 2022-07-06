@@ -2,6 +2,7 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { useAppSelector } from '../reducers/hooks';
 import { useGetTransactionsQuery } from '../services/api';
 import { GetTransactionsOptions } from '../types/types';
+import TransactionLine from './TransactionLine';
 
 const TransactionsList = () => {
   const { startDate, endDate, category, account } = useAppSelector(
@@ -42,21 +43,14 @@ const TransactionsList = () => {
         <Box>
           {transactions.rows.map((tx) => {
             const mk = (
-              <>
+              <Box key={tx.txDate}>
                 {tx.txDate !== lastUsedDate && (
-                  <Box sx={{ marginTop: 2, borderBottom: '1px' }}>
+                  <Box sx={{ marginTop: 2 }} borderBottom="2px solid grey">
                     <Typography variant="h5">{tx.txDate}</Typography>
                   </Box>
                 )}
-                <Box
-                  key={tx.id}
-                  sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}
-                >
-                  <div>{tx.merchantName}</div>
-                  <div>{tx.name}</div>
-                  <div>{tx.amount}</div>
-                </Box>
-              </>
+                <TransactionLine key={tx.id} transaction={tx} />
+              </Box>
             );
 
             lastUsedDate = tx.txDate;

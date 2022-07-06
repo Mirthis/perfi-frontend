@@ -7,11 +7,18 @@ import {
 import { useEffect } from 'react';
 import { Container, styled, Box } from '@mui/material';
 import { useAppDispatch } from './reducers/hooks';
-import { AppBar, Alert } from './components';
+import { AppBar, Alert, PrivateRoute } from './components';
 // import { Home, Login, Accounts, Logout, SignUp, Transactions } from './pages';
-import { Home, Login, Accounts, Logout, Transactions, SignUp } from './pages';
+import {
+  Home,
+  Login,
+  Accounts,
+  Logout,
+  Transactions,
+  SignUp,
+  Terms,
+} from './pages';
 import { initializeLoggedUser } from './reducers/authReducer';
-import PrivateRoute from './components/PrivateRoute';
 
 const getPrivateRoutes = () => {
   interface PrivateRouteData {
@@ -79,6 +86,7 @@ const App = () => {
           <Routes>
             {/* {publicRouteList()} */}
             <Route key="home" path="/" element={<Home />} />
+            <Route key="terms" path="/" element={<Terms />} />
             {getPrivateRoutes()};
             <Route key="*" path="*" element={<Navigate to="/" replace />} />
           </Routes>

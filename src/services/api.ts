@@ -1,8 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
   AccountsGetResponse,
-  GetCategoriesSummaryOptions,
+  GetSpendingByCategoryOptions,
   GetTransactionsOptions,
+  GetTransactionsSummaryOptions,
+  GetTransactionsSummaryRes,
   GetUserCategoriesRes,
   LoginRequest,
   SignUpReq,
@@ -37,12 +39,22 @@ export const perfiApi = createApi({
         params: options,
       }),
     }),
-    getTransactionsCategorySummary: builder.query<
+    getSpendingByCategory: builder.query<
       TransactionsCategorySummaryRes,
-      GetCategoriesSummaryOptions
+      GetSpendingByCategoryOptions
     >({
-      query: (options?: GetCategoriesSummaryOptions) => ({
-        url: `transactions/category_summary`,
+      query: (options?: GetSpendingByCategoryOptions) => ({
+        url: `transactions/spending_summary_category`,
+        method: 'GET',
+        params: options,
+      }),
+    }),
+    getTransactionsSummary: builder.query<
+      GetTransactionsSummaryRes,
+      GetTransactionsSummaryOptions
+    >({
+      query: (options?: GetTransactionsSummaryOptions) => ({
+        url: `transactions/transactions_summary`,
         method: 'GET',
         params: options,
       }),
@@ -73,8 +85,9 @@ export const perfiApi = createApi({
 export const {
   useGetUserAccountsQuery,
   useGetTransactionsQuery,
-  useGetTransactionsCategorySummaryQuery,
+  useGetSpendingByCategoryQuery,
   useGetUserCategoriesQuery,
+  useGetTransactionsSummaryQuery,
   useLoginMutation,
   useLogoutMutation,
   useSignupMutation,

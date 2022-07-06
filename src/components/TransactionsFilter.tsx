@@ -21,16 +21,20 @@ import {
   useGetUserCategoriesQuery,
 } from '../services/api';
 import { TxFilterMode } from '../types/types';
-import { selectDateFormatter } from '../utils/formatters';
+import { queryDateFormatter, selectDateFormatter } from '../utils/formatters';
 
 const getMonthsList = (earliestDate: Date, latestDate: Date) => {
-  const selectDateOptions: string[] = [];
+  latestDate.setDate(1);
+  const selectDateOptions: Array<{ key: string; value: string }> = [];
   for (
     let curDate = latestDate;
     curDate >= earliestDate;
     curDate.setMonth(curDate.getMonth() - 1)
   ) {
-    selectDateOptions.push(selectDateFormatter.format(curDate));
+    selectDateOptions.push({
+      key: queryDateFormatter.format(curDate),
+      value: selectDateFormatter.format(curDate),
+    });
   }
   return selectDateOptions;
 };
@@ -41,7 +45,7 @@ const TransactionsFilter = () => {
     (state) => state.txFilter,
   );
   const latestDate = new Date();
-  const earliestDate = new Date('01 January 2020');
+  const earliestDate = new Date('01 January 2021');
   const selectDateOptions = getMonthsList(earliestDate, latestDate);
 
   const handleMonthChange = (event: SelectChangeEvent) => {
@@ -54,9 +58,6 @@ const TransactionsFilter = () => {
   ) => {
     if (newMode !== null) {
       dispatch(setModeFilter(newMode));
-      // if (newMode === TxFilterMode.Summary) {
-      //   dispatch(setCategoryFilter(-1));
-      // }
     }
   };
 
@@ -89,8 +90,8 @@ const TransactionsFilter = () => {
           onChange={handleMonthChange}
         >
           {selectDateOptions.map((d) => (
-            <MenuItem key={d} value={d}>
-              {d}
+            <MenuItem key={d.key} value={d.key}>
+              {d.value}
             </MenuItem>
           ))}
         </Select>

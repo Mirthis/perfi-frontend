@@ -80,6 +80,14 @@ export interface TransactionData {
   account: {
     id: number;
     name: number;
+    item: {
+      id: number;
+      institution: {
+        logo: string;
+        name: string;
+        color: string;
+      };
+    };
   };
   category: {
     id: number;
@@ -103,6 +111,8 @@ export interface TransactionsGetResponse {
 export interface CategorySummaryItem {
   id: number;
   name: string;
+  year: number;
+  month: number;
   iconName: string;
   iconColor: string;
   txAmount: string;
@@ -113,11 +123,12 @@ export type TransactionsCategorySummaryRes = Array<CategorySummaryItem>;
 
 export type AccountsListData = AccountListItemData[];
 
-export interface GetCategoriesSummaryOptions {
+export interface GetSpendingByCategoryOptions {
   accountIds?: number[];
   startDate?: string;
   endDate?: string;
   categoryIds?: number[];
+  removeZeroCounts?: boolean;
 }
 
 export interface GetTransactionsOptions {
@@ -128,6 +139,18 @@ export interface GetTransactionsOptions {
   endDate?: string;
   categoryIds?: number[];
 }
+
+export interface GetTransactionsSummaryOptions {
+  startDate?: string;
+  endDate?: string;
+}
+
+export type GetTransactionsSummaryRes = Array<{
+  year: number;
+  month: number;
+  txAmount: string;
+  txCount: string;
+}>;
 
 export enum TxFilterMode {
   Summary = 'Summary',

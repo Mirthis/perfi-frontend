@@ -4,3 +4,4 @@ export { default as Accounts } from './Accounts';
 export { default as Logout } from './Logout';
 export { default as SignUp } from './SignUp';
 export { default as Transactions } from './Transactions';
+export { default as Terms } from './Terms';

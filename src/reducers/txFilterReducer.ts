@@ -1,25 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { queryDateFormatter, selectDateFormatter } from '../utils/formatters';
+import {
+  getFirstDayOfMonth,
+  getStartEndDate,
+  queryDateFormatter,
+} from '../utils/formatters';
 import { TxFilter, TxFilterMode } from '../types/types';
 
-const getFirstDayOfMonth = (date: Date): Date =>
-  new Date(date.getFullYear(), date.getMonth(), 1);
-
-const getLastDayOfMonth = (date: Date): Date =>
-  new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-const getStartEndDate = (month: string) => {
-  const startDate = queryDateFormatter.format(
-    getFirstDayOfMonth(new Date(month)),
-  );
-  const endDate = queryDateFormatter.format(getLastDayOfMonth(new Date(month)));
-  return { startDate, endDate };
-};
-
-const initMonth = selectDateFormatter.format(new Date());
+const initMonth = getFirstDayOfMonth(new Date());
 
 const initialState: TxFilter = {
-  month: initMonth,
+  month: queryDateFormatter.format(initMonth),
   ...getStartEndDate(initMonth),
   mode: TxFilterMode.Summary,
 };
@@ -30,7 +20,7 @@ const txFilterSlice = createSlice({
   reducers: {
     setMonthFilter(state, action: PayloadAction<string>) {
       const month = action.payload;
-      const { startDate, endDate } = getStartEndDate(month);
+      const { startDate, endDate } = getStartEndDate(new Date(month));
       return { ...state, month, startDate, endDate };
     },
     setModeFilter(state, action: PayloadAction<TxFilterMode>) {

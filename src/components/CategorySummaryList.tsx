@@ -1,7 +1,8 @@
 import { Box, CircularProgress, Grid } from '@mui/material';
 import { useAppSelector } from '../reducers/hooks';
-import { useGetTransactionsCategorySummaryQuery } from '../services/api';
-import { GetCategoriesSummaryOptions } from '../types/types';
+import { useGetSpendingByCategoryQuery } from '../services/api';
+import { GetSpendingByCategoryOptions } from '../types/types';
+import CategorySpendingPieChart from './CategorySpendingPieChart';
 import CategorySummary from './CategorySummaryCard';
 
 const CategoriesSummaryList = () => {
@@ -9,9 +10,10 @@ const CategoriesSummaryList = () => {
     (state) => state.txFilter,
   );
 
-  const queryFilter: GetCategoriesSummaryOptions = {
+  const queryFilter: GetSpendingByCategoryOptions = {
     startDate,
     endDate,
+    removeZeroCounts: true,
   };
 
   if (account) {
@@ -19,9 +21,10 @@ const CategoriesSummaryList = () => {
   }
 
   const { data: summaryData, isLoading: summaryIsLoading } =
-    useGetTransactionsCategorySummaryQuery(queryFilter);
+    useGetSpendingByCategoryQuery(queryFilter);
 
   if (!summaryIsLoading && summaryData) {
+    console.log('Summary data:');
     console.log(summaryData);
   }
 
@@ -32,13 +35,16 @@ const CategoriesSummaryList = () => {
       </Box>
     );
   return (
-    <Grid container spacing={2}>
-      {summaryData?.map((sd) => (
-        <Grid key={sd.id} item xs={12} md={6} lg={4}>
-          <CategorySummary summaryData={sd} />
-        </Grid>
-      ))}
-    </Grid>
+    <>
+      <CategorySpendingPieChart />
+      <Grid container spacing={2}>
+        {summaryData?.map((sd) => (
+          <Grid key={sd.id} item xs={12} md={6} lg={4}>
+            <CategorySummary summaryData={sd} />
+          </Grid>
+        ))}
+      </Grid>
+    </>
   );
 };
 
