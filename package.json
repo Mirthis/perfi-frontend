@@ -11,10 +11,7 @@
     "@mui/lab": "^5.0.0-alpha.88",
     "@mui/material": "^5.6.2",
     "@reduxjs/toolkit": "^1.8.1",
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.1.1",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/recharts": "^1.8.23",
+ 
     "axios": "^0.27.2",
     "plaid": "^10.3.0",
     "query-string": "^7.1.1",
@@ -75,6 +72,8 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.4.0",
-    "prettier": "^2.6.2"
+    "prettier": "^2.6.2",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/user-event": "^13.5.0"
   }
 }
