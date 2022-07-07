@@ -138,12 +138,25 @@ export interface GetTransactionsOptions {
   startDate?: string;
   endDate?: string;
   categoryIds?: number[];
+  orderBy?: string;
 }
 
 export interface GetTransactionsSummaryOptions {
   startDate?: string;
   endDate?: string;
 }
+
+export interface GetTopMechantsOptions {
+  startDate?: string;
+  endDate?: string;
+  limit?: number;
+}
+
+export type GetTopMechantsRes = Array<{
+  name: string;
+  txAmount: string;
+  txCount: string;
+}>;
 
 export type GetTransactionsSummaryRes = Array<{
   year: number;

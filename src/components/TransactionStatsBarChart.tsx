@@ -1,4 +1,4 @@
-import { Bar, BarChart, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { Bar, BarChart, XAxis, YAxis, Tooltip, Legend, Cell } from 'recharts';
 import { useGetTransactionsSummaryQuery } from '../services/api';
 import {
   chartDateFormatter,
@@ -45,7 +45,7 @@ const TransactionStatsBarChart = ({ month }: { month: string }) => {
   console.log('Transactions Summary cleanses data');
   console.log(cleansedData);
 
-  return (
+  return cleansedData ? (
     <BarChart
       width={500}
       height={250}
@@ -79,14 +79,14 @@ const TransactionStatsBarChart = ({ month }: { month: string }) => {
         fill="#8884d8"
         barSize={20}
         // onClick={handleBarClick}
-      />
-      {/* {cleansedData.map((entry) => (
+      >
+        {cleansedData.map((entry) => (
           <Cell
             key={entry.label}
-            fill={entry.monthKey === month ? '#009999' : '#005599'}
+            fill={entry.monthKey === month ? '#6664b6' : '#8884d8'}
           />
         ))}
-      </Bar> */}
+      </Bar>
       <Bar
         yAxisId="right"
         name="Transactions Count"
@@ -94,9 +94,16 @@ const TransactionStatsBarChart = ({ month }: { month: string }) => {
         fill="#82ca9d"
         barSize={20}
         // onClick={handleBarClick}
-      />
+      >
+        {cleansedData.map((entry) => (
+          <Cell
+            key={entry.label}
+            fill={entry.monthKey === month ? '#60a87b' : '#82ca9d'}
+          />
+        ))}
+      </Bar>
     </BarChart>
-  );
+  ) : null;
 };
 
 export default TransactionStatsBarChart;

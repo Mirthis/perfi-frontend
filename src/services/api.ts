@@ -2,6 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
   AccountsGetResponse,
   GetSpendingByCategoryOptions,
+  GetTopMechantsOptions,
+  GetTopMechantsRes,
   GetTransactionsOptions,
   GetTransactionsSummaryOptions,
   GetTransactionsSummaryRes,
@@ -59,6 +61,13 @@ export const perfiApi = createApi({
         params: options,
       }),
     }),
+    getTopMechants: builder.query<GetTopMechantsRes, GetTopMechantsOptions>({
+      query: (options?: GetTopMechantsOptions) => ({
+        url: `transactions/transactions_summary`,
+        method: 'GET',
+        params: options,
+      }),
+    }),
     login: builder.mutation<User, LoginRequest>({
       query: (credentials) => ({
         url: 'auth/login',
@@ -88,6 +97,7 @@ export const {
   useGetSpendingByCategoryQuery,
   useGetUserCategoriesQuery,
   useGetTransactionsSummaryQuery,
+  useGetTopMechantsQuery,
   useLoginMutation,
   useLogoutMutation,
   useSignupMutation,

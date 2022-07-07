@@ -41,6 +41,7 @@ const TransactionsList = () => {
       let lastUsedDate: string = '';
       return (
         <Box>
+          <Typography variant="h4">Transactions List</Typography>
           {transactions.rows.map((tx) => {
             const mk = (
               <Box key={tx.txDate}>
