@@ -34,11 +34,11 @@ const TransactionLine = ({ transaction }: { transaction: TransactionData }) => (
         }}
       >
         <Avatar
-          alt={transaction.account.item.institution.name}
+          alt={transaction.account.name}
           src={`data:image/png;base64,${transaction.account.item.institution.logo}`}
         />
         <Typography variant="body2" display={{ xs: 'none', sm: 'flex' }}>
-          {transaction.account.item.institution.name}
+          {transaction.account.name}
         </Typography>
       </Box>
     </Grid>

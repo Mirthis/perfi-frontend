@@ -1,38 +1,40 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { usePlaidLink } from 'react-plaid-link';
-// import Button from 'plaid-threads/Button';
-import { Button } from '@mui/material';
-// import { useAppDispatch, useAppSelector } from '../reducers/hooks';
-import { usePlaidState } from './PlaidProvider';
-import plaidService from '../services/plaid';
+import { Box, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import {
+  useGetUserAccountsQuery,
+  useSetAccessTokenMutation,
+} from '../services/api';
 
 const LinkAccount = ({ linkToken }: { linkToken: string }) => {
-  const { dispatch: plaidDispatch } = usePlaidState();
+  // const { dispatch: plaidDispatch } = usePlaidState();
   // const dispatch = useAppDispatch();
+  const { refetch } = useGetUserAccountsQuery();
+  const [setAccessToken, { isLoading, isSuccess }] =
+    useSetAccessTokenMutation();
 
-  const onSuccess = React.useCallback(
-    (public_token: string) => {
-      // send public_token to server
-      const setToken = async () => {
-        console.log(public_token);
-        const data = await plaidService.getAccessToken(public_token);
+  // const onSuccess = React.useCallback((public_token: string) => {
+  //   // send public_token to server
+  //   const setToken = async () => {
+  //     setAccessToken(public_token);
+  //     refetch();
+  //   };
+  //   setToken();
+  // }, []);
 
-        console.log(data);
-        plaidDispatch({
-          type: 'SET_STATE',
-          state: {
-            itemId: data.item_id,
-            accessToken: data.access_token,
-            isItemAccess: true,
-          },
-        });
-      };
-      setToken();
-      plaidDispatch({ type: 'SET_STATE', state: { linkSuccess: true } });
-      window.history.pushState('', '', '/');
-    },
-    [plaidDispatch],
-  );
+  const onSuccess = (public_token: string) => {
+    // send public_token to server
+    const setToken = async () => {
+      await setAccessToken(public_token);
+      refetch();
+    };
+    setToken();
+  };
+
+  if (isSuccess) {
+    console.log('Success');
+  }
 
   const config: Parameters<typeof usePlaidLink>[0] = {
     token: linkToken!,
@@ -55,9 +57,21 @@ const LinkAccount = ({ linkToken }: { linkToken: string }) => {
   }, [ready, open, isOauth]);
 
   return (
-    <Button variant="contained" onClick={() => open()} disabled={!ready}>
-      Add Account
-    </Button>
+    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+      <LoadingButton
+        loading={isLoading}
+        variant="contained"
+        onClick={() => open()}
+        disabled={!ready}
+      >
+        Add Account
+      </LoadingButton>
+      {isLoading && (
+        <Typography>
+          The selected accounts are being added to your account
+        </Typography>
+      )}
+    </Box>
   );
 };
 

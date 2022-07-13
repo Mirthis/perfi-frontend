@@ -80,7 +80,11 @@ const AccountCard = ({ account }: { account: AccountGetResponseItem }) => {
                 <Typography variant="body2">Balance</Typography>
               </Box>
             </Box>
-            <Divider />
+            <Box>
+              <Divider>
+                <Typography variant="subtitle1"> Spending</Typography>
+              </Divider>
+            </Box>
             <Box
               sx={{
                 display: 'flex',

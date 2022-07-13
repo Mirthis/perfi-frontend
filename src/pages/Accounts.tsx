@@ -4,11 +4,7 @@ import AddAccount from '../components/AddAccount';
 import { useGetUserAccountsQuery } from '../services/api';
 
 const Accounts = () => {
-  const { data: accountsList, error, isLoading } = useGetUserAccountsQuery();
-
-  if (error) {
-    console.log(error);
-  }
+  const { data: accountsList, isLoading } = useGetUserAccountsQuery();
 
   const accountsNumber =
     accountsList && accountsList.length ? accountsList.length : 0;

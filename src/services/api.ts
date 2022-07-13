@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { LinkTokenCreateResponse } from 'plaid';
 import {
   AccountsGetResponse,
   GetSpendingByCategoryOptions,
@@ -88,6 +89,19 @@ export const perfiApi = createApi({
         body: credentials,
       }),
     }),
+    createLinkToken: builder.mutation<LinkTokenCreateResponse, void>({
+      query: () => ({
+        url: `plaid/create_link_token`,
+        method: 'POST',
+      }),
+    }),
+    setAccessToken: builder.mutation<void, string>({
+      query: (publicToken) => ({
+        url: `plaid/set_access_token`,
+        method: 'POST',
+        body: { publicToken },
+      }),
+    }),
   }),
 });
 
@@ -101,4 +115,6 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useSignupMutation,
+  useCreateLinkTokenMutation,
+  useSetAccessTokenMutation,
 } = perfiApi;

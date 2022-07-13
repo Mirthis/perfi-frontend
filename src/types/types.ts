@@ -79,7 +79,7 @@ export interface TransactionData {
   unofficialCurrencyCode: string | null;
   account: {
     id: number;
-    name: number;
+    name: string;
     item: {
       id: number;
       institution: {

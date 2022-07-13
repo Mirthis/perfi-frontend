@@ -1,16 +1,15 @@
-import { useCallback, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../reducers/hooks';
+import { useEffect } from 'react';
 import LinkAccount from './LinkAccount';
-import { getLinkToken, setLinkToken } from '../reducers/plaidReducer';
+import { setLinkToken } from '../reducers/plaidReducer';
 import PlaidProvider from './PlaidProvider';
+import { useCreateLinkTokenMutation } from '../services/api';
+import { useAppSelector, useAppDispatch } from '../reducers/hooks';
 
 const AddAccount = () => {
-  const dispatch = useAppDispatch();
   const linkToken = useAppSelector((state) => state.plaid.linkToken);
+  const dispatch = useAppDispatch();
 
-  const generateToken = useCallback(async () => {
-    await dispatch(getLinkToken());
-  }, [dispatch]);
+  const [createLinkToken, { isLoading }] = useCreateLinkTokenMutation();
 
   useEffect(() => {
     const init = async () => {
@@ -19,12 +18,13 @@ const AddAccount = () => {
         dispatch(setLinkToken(localStorage.getItem('link_token')));
         return;
       }
-      generateToken();
+      const data = await createLinkToken().unwrap();
+      dispatch(setLinkToken(data.link_token));
     };
     init();
-  }, [dispatch, generateToken]);
+  }, [dispatch]);
 
-  if (linkToken === null) return <div>Loading...</div>;
+  if (isLoading || linkToken === null) return <div>Loading...</div>;
   return (
     <PlaidProvider>
       <LinkAccount linkToken={linkToken} />
