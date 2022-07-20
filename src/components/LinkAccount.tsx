@@ -3,16 +3,18 @@ import { usePlaidLink } from 'react-plaid-link';
 import { Box, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import {
-  useGetUserAccountsQuery,
+  useGetAccountsWithStatsQuery,
   useSetAccessTokenMutation,
 } from '../services/api';
+import { queryDateFormatter } from '../utils/formatters';
 
 const LinkAccount = ({ linkToken }: { linkToken: string }) => {
   // const { dispatch: plaidDispatch } = usePlaidState();
   // const dispatch = useAppDispatch();
-  const { refetch } = useGetUserAccountsQuery();
-  const [setAccessToken, { isLoading, isSuccess }] =
-    useSetAccessTokenMutation();
+  const monthKey = queryDateFormatter.format(new Date());
+
+  const { refetch } = useGetAccountsWithStatsQuery(monthKey);
+  const [setAccessToken, { isLoading }] = useSetAccessTokenMutation();
 
   // const onSuccess = React.useCallback((public_token: string) => {
   //   // send public_token to server
@@ -31,10 +33,6 @@ const LinkAccount = ({ linkToken }: { linkToken: string }) => {
     };
     setToken();
   };
-
-  if (isSuccess) {
-    console.log('Success');
-  }
 
   const config: Parameters<typeof usePlaidLink>[0] = {
     token: linkToken!,

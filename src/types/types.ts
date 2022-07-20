@@ -53,9 +53,9 @@ export interface AccountData {
   isoCurrencyCode: string | null;
 }
 
-export type AccountsGetResponse = AccountGetResponseItem[];
+export type GetAccountsRes = GetAccountsItemRes[];
 
-export interface AccountGetResponseItem extends AccountData {
+export interface GetAccountsItemRes extends AccountData {
   item: {
     id: number;
     status: string;
@@ -77,6 +77,7 @@ export interface TransactionData {
   merchantName: string | null;
   isoCurrencyCode: string | null;
   unofficialCurrencyCode: string | null;
+  exclude: boolean;
   account: {
     id: number;
     name: string;
@@ -94,6 +95,7 @@ export interface TransactionData {
     name: string;
     iconName: string;
     iconColor: string;
+    exclude: boolean;
   };
   plaidCategory: {
     id: number;
@@ -131,6 +133,12 @@ export interface GetSpendingByCategoryOptions {
   removeZeroCounts?: boolean;
 }
 
+export enum ExcludedTransactionsFilter {
+  ONLY_EXCLUDED,
+  ONLY_INCLUDED,
+  ALL,
+}
+
 export interface GetTransactionsOptions {
   offset?: number;
   limit?: number;
@@ -139,6 +147,7 @@ export interface GetTransactionsOptions {
   endDate?: string;
   categoryIds?: number[];
   orderBy?: string;
+  excludedTransactions?: ExcludedTransactionsFilter;
 }
 
 export interface GetTransactionsSummaryOptions {
@@ -209,4 +218,40 @@ export interface AlertState {
 
 export interface NavigateFromState {
   from: Location;
+}
+
+export interface AccountWithStats {
+  id: number;
+  name: string;
+  officialName: string;
+  type: string;
+  subType: string;
+  currentBalance: string;
+  isoCurrencyCode: string;
+  institutionId: number;
+  institutionName: string;
+  institutionColor: string;
+  institutionLogo: Buffer;
+  currMonthAmount: string;
+  prevMonthAmount: string;
+  currYearAmount: string;
+}
+
+export type AccountListWithStats = Array<AccountWithStats>;
+
+export interface ExcludeTransactionReq {
+  transactionId: number;
+  exclude: boolean;
+}
+
+export interface PrivateRouteData {
+  path: string;
+  element: React.ReactElement;
+  key?: string;
+  onlyLoggedOut?: boolean;
+}
+
+export interface SetTransactionCategoryReq {
+  transactionId: number;
+  categoryId: number;
 }

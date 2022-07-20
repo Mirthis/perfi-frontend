@@ -1,7 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { LinkTokenCreateResponse } from 'plaid';
 import {
-  AccountsGetResponse,
+  AccountListWithStats,
+  ExcludeTransactionReq,
+  GetAccountsRes,
   GetSpendingByCategoryOptions,
   GetTopMechantsOptions,
   GetTopMechantsRes,
@@ -13,7 +15,9 @@ import {
   SignUpReq,
   TransactionsCategorySummaryRes,
   TransactionsGetResponse,
+  TransactionData,
   User,
+  SetTransactionCategoryReq,
 } from '../types/types';
 
 const baseUrl = '/api/';
@@ -25,12 +29,24 @@ const baseUrl = '/api/';
 export const perfiApi = createApi({
   reducerPath: 'perfiApi',
   baseQuery: fetchBaseQuery({ baseUrl }),
+  tagTypes: ['Accounts', 'Transactions', 'Categories'],
   endpoints: (builder) => ({
-    getUserAccounts: builder.query<AccountsGetResponse, void>({
-      query: () => 'accounts',
+    getAccounts: builder.query<GetAccountsRes, void>({
+      query: () => ({
+        url: 'accounts',
+        method: 'GET',
+      }),
     }),
-    getUserCategories: builder.query<GetUserCategoriesRes, void>({
+    getAccountsWithStats: builder.query<AccountListWithStats, string>({
+      query: (monthKey) => ({
+        url: 'accounts/with_stats',
+        method: 'GET',
+        params: { monthKey },
+      }),
+    }),
+    getCategories: builder.query<GetUserCategoriesRes, void>({
       query: () => 'categories',
+      providesTags: ['Categories'],
     }),
     getTransactions: builder.query<
       TransactionsGetResponse,
@@ -41,6 +57,7 @@ export const perfiApi = createApi({
         method: 'GET',
         params: options,
       }),
+      providesTags: ['Transactions'],
     }),
     getSpendingByCategory: builder.query<
       TransactionsCategorySummaryRes,
@@ -51,6 +68,13 @@ export const perfiApi = createApi({
         method: 'GET',
         params: options,
       }),
+    }),
+    getTransaction: builder.query<TransactionData, number>({
+      query: (transactionId) => ({
+        url: `transactions/${transactionId}`,
+        method: 'GET',
+      }),
+      providesTags: ['Transactions'],
     }),
     getTransactionsSummary: builder.query<
       GetTransactionsSummaryRes,
@@ -68,6 +92,39 @@ export const perfiApi = createApi({
         method: 'GET',
         params: options,
       }),
+    }),
+    excludeTransaction: builder.mutation<
+      TransactionData,
+      ExcludeTransactionReq
+    >({
+      query: (params) => ({
+        url: 'transactions/exclude',
+        method: 'POST',
+        body: params,
+      }),
+      invalidatesTags: ['Transactions'],
+    }),
+    setTransactionCategory: builder.mutation<
+      TransactionData,
+      SetTransactionCategoryReq
+    >({
+      query: (params) => ({
+        url: 'transactions/update_category',
+        method: 'PUT',
+        body: params,
+      }),
+      invalidatesTags: ['Transactions'],
+    }),
+    setSimilarTransactionsCategory: builder.mutation<
+      number[],
+      SetTransactionCategoryReq
+    >({
+      query: (params) => ({
+        url: 'transactions/update_category_similar',
+        method: 'PUT',
+        body: params,
+      }),
+      invalidatesTags: ['Transactions'],
     }),
     login: builder.mutation<User, LoginRequest>({
       query: (credentials) => ({
@@ -106,10 +163,12 @@ export const perfiApi = createApi({
 });
 
 export const {
-  useGetUserAccountsQuery,
+  useGetAccountsQuery,
+  useGetAccountsWithStatsQuery,
   useGetTransactionsQuery,
   useGetSpendingByCategoryQuery,
-  useGetUserCategoriesQuery,
+  useGetCategoriesQuery,
+  useGetTransactionQuery,
   useGetTransactionsSummaryQuery,
   useGetTopMechantsQuery,
   useLoginMutation,
@@ -117,4 +176,7 @@ export const {
   useSignupMutation,
   useCreateLinkTokenMutation,
   useSetAccessTokenMutation,
+  useExcludeTransactionMutation,
+  useSetTransactionCategoryMutation,
+  useSetSimilarTransactionsCategoryMutation,
 } = perfiApi;

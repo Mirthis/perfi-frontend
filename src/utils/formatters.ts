@@ -58,7 +58,6 @@ export const getLastDayOfMonth = (date: Date, monthDelta: number = 0): Date => {
     date.getMonth() + 1 + monthDelta,
     0,
   );
-  console.log(endDate);
   // endDate.setMonth(date.getMonth() );
   return endDate;
 };

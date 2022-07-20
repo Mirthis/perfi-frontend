@@ -19,15 +19,10 @@ import {
   Terms,
 } from './pages';
 import { initializeLoggedUser } from './reducers/authReducer';
+import { PrivateRouteData } from './types/types';
+import Transaction from './pages/Transaction';
 
 const getPrivateRoutes = () => {
-  interface PrivateRouteData {
-    path: string;
-    element: React.ReactElement;
-    key?: string;
-    onlyLoggedOut?: boolean;
-  }
-
   const privateRoutes: Array<PrivateRouteData> = [
     {
       path: '/accounts',
@@ -36,6 +31,10 @@ const getPrivateRoutes = () => {
     {
       path: '/transactions',
       element: <Transactions />,
+    },
+    {
+      path: '/transaction/:id',
+      element: <Transaction />,
     },
     {
       path: '/logout',

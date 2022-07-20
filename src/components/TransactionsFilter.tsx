@@ -16,10 +16,7 @@ import {
   setModeFilter,
   setMonthFilter,
 } from '../reducers/txFilterReducer';
-import {
-  useGetUserAccountsQuery,
-  useGetUserCategoriesQuery,
-} from '../services/api';
+import { useGetAccountsQuery, useGetCategoriesQuery } from '../services/api';
 import { TxFilterMode } from '../types/types';
 import { queryDateFormatter, selectDateFormatter } from '../utils/formatters';
 
@@ -73,10 +70,8 @@ const TransactionsFilter = () => {
   };
 
   // TODO: manage loading and errors
-  const { data: categoriesList } = useGetUserCategoriesQuery();
-  const { data: accountsList } = useGetUserAccountsQuery();
-
-  console.log('selected filters: ', month, mode, category, account);
+  const { data: categoriesList } = useGetCategoriesQuery();
+  const { data: accountsList } = useGetAccountsQuery();
 
   return (
     <Box sx={{ minWidth: 120, display: 'flex', gap: 2, m: 2, p: 2 }}>

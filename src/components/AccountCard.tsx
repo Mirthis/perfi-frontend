@@ -10,10 +10,10 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../reducers/hooks';
 import { setAccountFilter } from '../reducers/txFilterReducer';
-import { AccountGetResponseItem } from '../types/types';
+import { AccountWithStats } from '../types/types';
 import { formatCurrency, capitalizeFirst } from '../utils/formatters';
 
-const AccountCard = ({ account }: { account: AccountGetResponseItem }) => {
+const AccountCard = ({ account }: { account: AccountWithStats }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -21,14 +21,13 @@ const AccountCard = ({ account }: { account: AccountGetResponseItem }) => {
     dispatch(setAccountFilter(id));
     navigate('/transactions');
   };
-  console.log(account);
 
   return (
     <Card
       variant="outlined"
       sx={{
         borderLeftWidth: 4,
-        borderLeftColor: account.item.institution.color,
+        borderLeftColor: account.institutionColor,
         height: '100%',
       }}
     >
@@ -54,17 +53,18 @@ const AccountCard = ({ account }: { account: AccountGetResponseItem }) => {
               }}
             >
               <Avatar
-                src={`data:image/png;base64,${account.item.institution.logo}`}
+                src={`data:image/png;base64,${account.institutionLogo}`}
               />
               <Box sx={{ flexGrow: 1 }}>
                 <Typography variant="body1" color="text.secondary">
-                  {account.item.institution.name}
+                  {account.institutionName}
                 </Typography>
                 <Typography variant="h5" color="text.secondary">
                   {account.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {account.type ? capitalizeFirst(account.type) : 'N/A'} {' / '}
+                  {account.type ? capitalizeFirst(account.subType) : 'N/A'}{' '}
+                  {' / '}
                   {account.subType ? capitalizeFirst(account.subType) : 'N/A'}
                 </Typography>
               </Box>
@@ -72,7 +72,7 @@ const AccountCard = ({ account }: { account: AccountGetResponseItem }) => {
                 <Typography variant="h6" color="text.secondary">
                   {account.currentBalance && account.isoCurrencyCode
                     ? formatCurrency(
-                        account.currentBalance,
+                        Number(account.currentBalance),
                         account.isoCurrencyCode,
                       )
                     : '-'}
@@ -93,15 +93,21 @@ const AccountCard = ({ account }: { account: AccountGetResponseItem }) => {
               }}
             >
               <Box sx={{ flexGrow: 1 }} textAlign="right">
-                <Typography variant="subtitle1">£500</Typography>
+                <Typography variant="subtitle1">
+                  {account.currYearAmount}
+                </Typography>
                 <Typography variant="body2">Year To Date</Typography>
               </Box>
               <Box sx={{ flexGrow: 1 }} textAlign="right">
-                <Typography variant="subtitle1">£500</Typography>
+                <Typography variant="subtitle1">
+                  {account.prevMonthAmount}
+                </Typography>
                 <Typography variant="body2">Previous Month</Typography>
               </Box>
               <Box sx={{ flexGrow: 1 }} textAlign="right">
-                <Typography variant="subtitle1">£500</Typography>
+                <Typography variant="subtitle1">
+                  {account.currMonthAmount}
+                </Typography>
                 <Typography variant="body2">Current Month</Typography>
               </Box>
             </Box>

@@ -1,10 +1,13 @@
 import { CircularProgress, Box, Typography, Stack } from '@mui/material';
 import AccountsList from '../components/AccountsList';
 import AddAccount from '../components/AddAccount';
-import { useGetUserAccountsQuery } from '../services/api';
+import { useGetAccountsWithStatsQuery } from '../services/api';
+import { queryDateFormatter } from '../utils/formatters';
 
 const Accounts = () => {
-  const { data: accountsList, isLoading } = useGetUserAccountsQuery();
+  const monthKey = queryDateFormatter.format(new Date());
+  const { data: accountsList, isLoading } =
+    useGetAccountsWithStatsQuery(monthKey);
 
   const accountsNumber =
     accountsList && accountsList.length ? accountsList.length : 0;
