@@ -18,12 +18,17 @@ import {
   TransactionData,
   User,
   SetTransactionCategoryReq,
+  GetSimilarTransactionCountRes,
+  GetuserCategoriesRes,
+  Category,
+  EditCategoryData,
 } from '../types/types';
 
 const baseUrl = '/api/';
 
 // TODO: fix naming convention for queries
 // TODO: split across different files: https://redux-toolkit.js.org/rtk-query/usage/examples
+// TODO: review tags
 // Define a service using a base URL and expected endpoints
 
 export const perfiApi = createApi({
@@ -59,6 +64,26 @@ export const perfiApi = createApi({
       }),
       providesTags: ['Transactions'],
     }),
+    getSimilarTransactionsCount: builder.query<
+      GetSimilarTransactionCountRes,
+      number
+    >({
+      query: (transactionId) => ({
+        url: `transactions/similar_count`,
+        method: 'GET',
+        params: { transactionId },
+      }),
+      providesTags: ['Transactions'],
+    }),
+
+    getUserCategories: builder.query<GetuserCategoriesRes, void>({
+      query: () => ({
+        url: `categories/userdefined`,
+        method: 'GET',
+      }),
+      providesTags: ['Categories'],
+    }),
+
     getSpendingByCategory: builder.query<
       TransactionsCategorySummaryRes,
       GetSpendingByCategoryOptions
@@ -71,7 +96,7 @@ export const perfiApi = createApi({
     }),
     getTransaction: builder.query<TransactionData, number>({
       query: (transactionId) => ({
-        url: `transactions/${transactionId}`,
+        url: `transactions/id/${transactionId}`,
         method: 'GET',
       }),
       providesTags: ['Transactions'],
@@ -126,6 +151,31 @@ export const perfiApi = createApi({
       }),
       invalidatesTags: ['Transactions'],
     }),
+    deleteCategory: builder.mutation<void, number>({
+      query: (categoryId) => ({
+        url: `categories/${categoryId}/delete`,
+        method: 'DELETE',
+        body: [categoryId],
+      }),
+      invalidatesTags: ['Transactions', 'Categories'],
+    }),
+    updateCategory: builder.mutation<Category, EditCategoryData>({
+      query: (categoryData) => ({
+        url: `categories/${categoryData.id}/update`,
+        method: 'PUT',
+        body: categoryData,
+      }),
+      invalidatesTags: ['Transactions', 'Categories'],
+    }),
+    createCategory: builder.mutation<Category, EditCategoryData>({
+      query: (categoryData) => ({
+        url: `categories/create`,
+        method: 'POST',
+        body: categoryData,
+      }),
+      invalidatesTags: ['Categories'],
+    }),
+
     login: builder.mutation<User, LoginRequest>({
       query: (credentials) => ({
         url: 'auth/login',
@@ -168,15 +218,20 @@ export const {
   useGetTransactionsQuery,
   useGetSpendingByCategoryQuery,
   useGetCategoriesQuery,
+  useGetUserCategoriesQuery,
   useGetTransactionQuery,
   useGetTransactionsSummaryQuery,
   useGetTopMechantsQuery,
+  useGetSimilarTransactionsCountQuery,
   useLoginMutation,
   useLogoutMutation,
   useSignupMutation,
   useCreateLinkTokenMutation,
   useSetAccessTokenMutation,
+  useDeleteCategoryMutation,
   useExcludeTransactionMutation,
   useSetTransactionCategoryMutation,
   useSetSimilarTransactionsCategoryMutation,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
 } = perfiApi;

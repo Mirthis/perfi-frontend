@@ -21,6 +21,14 @@ export type SignUpData = {
   acceptTerms: boolean;
 };
 
+export type EditCategoryData = {
+  id?: number;
+  name: string;
+  iconName: string;
+  iconColor: string;
+  exclude: boolean;
+};
+
 export type SignUpReq = {
   email: string;
   password: string;
@@ -150,6 +158,15 @@ export interface GetTransactionsOptions {
   excludedTransactions?: ExcludedTransactionsFilter;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+  iconName: string;
+  iconColor: string;
+  exclude: string;
+  userId: number;
+}
+
 export interface GetTransactionsSummaryOptions {
   startDate?: string;
   endDate?: string;
@@ -188,14 +205,21 @@ export interface TxFilter {
   account?: number;
 }
 
-export interface UserCategoryData {
+export interface CategoryData {
   id: number;
   name: string;
   iconName: string;
   iconColor: string;
+  exclude: boolean;
 }
 
-export type GetUserCategoriesRes = Array<UserCategoryData>;
+export interface UserCategoryData extends CategoryData {
+  txCount: string;
+}
+
+export type GetuserCategoriesRes = Array<UserCategoryData>;
+
+export type GetUserCategoriesRes = Array<CategoryData>;
 
 export enum AlertSeverity {
   ERROR = 'error',
@@ -254,4 +278,13 @@ export interface PrivateRouteData {
 export interface SetTransactionCategoryReq {
   transactionId: number;
   categoryId: number;
+}
+
+export interface GetSimilarTransactionCountRes {
+  txCount: number;
+}
+
+export interface EditCategoryModalState {
+  show: boolean;
+  category: UserCategoryData | null;
 }

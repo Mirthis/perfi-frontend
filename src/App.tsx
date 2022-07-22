@@ -21,6 +21,7 @@ import {
 import { initializeLoggedUser } from './reducers/authReducer';
 import { PrivateRouteData } from './types/types';
 import Transaction from './pages/Transaction';
+import ManageCategories from './pages/ManageCategories';
 
 const getPrivateRoutes = () => {
   const privateRoutes: Array<PrivateRouteData> = [
@@ -35,6 +36,10 @@ const getPrivateRoutes = () => {
     {
       path: '/transaction/:id',
       element: <Transaction />,
+    },
+    {
+      path: '/manage/categories',
+      element: <ManageCategories />,
     },
     {
       path: '/logout',

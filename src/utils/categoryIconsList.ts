@@ -16,6 +16,7 @@ import ConnectingAirportsOutlinedIcon from '@mui/icons-material/ConnectingAirpor
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 import { SvgIconTypeMap } from '@mui/material';
+import CategoryIcon from '@mui/icons-material/Category';
 
 type CategoryIconsList = {
   [name: string]: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
@@ -40,6 +41,7 @@ const categoryIconsList: CategoryIconsList = {
   transport: TrainOutlinedIcon,
   travel: ConnectingAirportsOutlinedIcon,
   utilties: DescriptionOutlinedIcon,
+  default: CategoryIcon,
 };
 
 export default categoryIconsList;

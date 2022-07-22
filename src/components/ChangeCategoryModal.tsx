@@ -16,6 +16,7 @@ import {
 import { useState } from 'react';
 import {
   useGetCategoriesQuery,
+  useGetSimilarTransactionsCountQuery,
   useSetSimilarTransactionsCategoryMutation,
   useSetTransactionCategoryMutation,
 } from '../services/api';
@@ -51,8 +52,15 @@ const ChangeCategoryModal = ({
     },
   ] = useSetSimilarTransactionsCategoryMutation();
 
-  console.log('setCategorySuccess:');
-  console.log(setCategorySuccess);
+  console.log('transaction.id');
+  console.log(transaction.id);
+  const { data: similarTransactionsCount } =
+    useGetSimilarTransactionsCountQuery(transaction.id);
+
+  if (similarTransactionsCount) {
+    console.log('similarTransactionsCount');
+    console.log(similarTransactionsCount);
+  }
 
   if (setCategorySuccess || setSimilarCategorySuccess) {
     if (updateSimilar) {
@@ -168,12 +176,18 @@ const ChangeCategoryModal = ({
                 <Typography variant="h6">
                   Update category for similar transactions?
                 </Typography>
+                {similarTransactionsCount && (
+                  <Typography>
+                    {similarTransactionsCount.txCount} similar transactions
+                    found
+                  </Typography>
+                )}
               </Grid>
               <Grid xs={6} item>
                 <Switch
                   checked={updateSimilar}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    setUpdateSimilar(event?.target.checked);
+                    setUpdateSimilar(event.target.checked);
                   }}
                 />
               </Grid>
