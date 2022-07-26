@@ -22,6 +22,9 @@ import {
   GetuserCategoriesRes,
   Category,
   EditCategoryData,
+  ResetPasswordReq,
+  GetSpendingTrendRes,
+  GetSpendingTrendOptions,
 } from '../types/types';
 
 const baseUrl = '/api/';
@@ -116,6 +119,44 @@ export const perfiApi = createApi({
         url: `transactions/transactions_summary`,
         method: 'GET',
         params: options,
+      }),
+    }),
+    getSpendingTrend: builder.query<
+      GetSpendingTrendRes,
+      GetSpendingTrendOptions
+    >({
+      query: (options) => ({
+        url: `transactions/spending/trend`,
+        method: 'GET',
+        params: options,
+      }),
+    }),
+    requestVerifyEmail: builder.mutation<void, string>({
+      query: (email) => ({
+        url: 'auth/verify_email',
+        method: 'POST',
+        body: { email },
+      }),
+    }),
+    verifyEmail: builder.mutation<void, string>({
+      query: (token) => ({
+        url: 'auth/verify_email',
+        method: 'PUT',
+        body: { token },
+      }),
+    }),
+    requestResetPassword: builder.mutation<void, string>({
+      query: (email) => ({
+        url: 'auth/reset_password',
+        method: 'POST',
+        body: { email },
+      }),
+    }),
+    resetPassword: builder.mutation<void, ResetPasswordReq>({
+      query: (params) => ({
+        url: 'auth/reset_password',
+        method: 'PUT',
+        body: params,
       }),
     }),
     excludeTransaction: builder.mutation<
@@ -222,6 +263,7 @@ export const {
   useGetTransactionQuery,
   useGetTransactionsSummaryQuery,
   useGetTopMechantsQuery,
+  useGetSpendingTrendQuery,
   useGetSimilarTransactionsCountQuery,
   useLoginMutation,
   useLogoutMutation,
@@ -234,4 +276,8 @@ export const {
   useSetSimilarTransactionsCategoryMutation,
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
+  useRequestVerifyEmailMutation,
+  useVerifyEmailMutation,
+  useRequestResetPasswordMutation,
+  useResetPasswordMutation,
 } = perfiApi;

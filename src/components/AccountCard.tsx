@@ -63,8 +63,7 @@ const AccountCard = ({ account }: { account: AccountWithStats }) => {
                   {account.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {account.type ? capitalizeFirst(account.subType) : 'N/A'}{' '}
-                  {' / '}
+                  {account.type ? capitalizeFirst(account.type) : 'N/A'} {' / '}
                   {account.subType ? capitalizeFirst(account.subType) : 'N/A'}
                 </Typography>
               </Box>

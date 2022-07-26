@@ -12,8 +12,6 @@ export interface User {
   email: string;
 }
 
-export type AuthState = User | null;
-
 export type SignUpData = {
   email: string;
   password: string;
@@ -54,7 +52,7 @@ export interface AccountData {
   plaidAccountId: string;
   name: string;
   officialName: string | null;
-  type: string | null;
+  type: string;
   subType: string | null;
   currentBalance: number | null;
   availableBalance: number | null;
@@ -141,11 +139,38 @@ export interface GetSpendingByCategoryOptions {
   removeZeroCounts?: boolean;
 }
 
+export interface GetSpendingTrendOptions {
+  refDate: string;
+}
+
+export interface SpendingTrendData {
+  day: number;
+  txAmount: string;
+  txCount: string;
+}
+
+export interface GetSpendingTrendRes {
+  cmValues: SpendingTrendData[];
+  pmValues: SpendingTrendData[];
+  p12Values: SpendingTrendData[];
+}
+
 export enum ExcludedTransactionsFilter {
   ONLY_EXCLUDED,
   ONLY_INCLUDED,
   ALL,
 }
+
+export enum LoginState {
+  PENDING,
+  LOGGEDOUT,
+  LOGGEDIN,
+}
+
+export type AuthState = {
+  state: LoginState;
+  user: User | null;
+};
 
 export interface GetTransactionsOptions {
   offset?: number;
@@ -288,3 +313,59 @@ export interface EditCategoryModalState {
   show: boolean;
   category: UserCategoryData | null;
 }
+
+export enum ErrorType {
+  AUTH_ERROR = 'AuthError',
+  VALIDATION_ERROR = 'ValidationError',
+}
+
+export enum AuthErrorName {
+  USER_ALREADY_VERIFIED = 'UserAlreadyVerified',
+  USER_INACTIVE = 'UserInactive',
+  USER_CREDENTIALS_NOT_FOUND = 'UserCredentialsNotFound',
+  USER_EMAIL_NOT_FOUND = 'UserEmailNotFound',
+  USER_NOT_VERIFIED = 'UserNotVerified',
+  USER_UNAUTHORIZED = 'UserUnauthorized',
+  VERIFY_EMAIL_TOKEN_NOT_FOUND = 'VerifyEmailTokenNotFound',
+  VERIFY_EMAIL_TOKEN_EXPIRED = 'VerifyEmailTokenExpired',
+  VERIFY_PASSWORD_TOKEN_NOT_FOUND = 'VerifyPasswordTokenNotFound',
+  VERIFY_PASSWORD_TOKEN_EXPIRED = 'VerifyPasswordTokenExpired',
+}
+
+export interface AuthError {
+  data: {
+    type: ErrorType.AUTH_ERROR;
+    name: AuthErrorName;
+    message: string;
+  };
+}
+
+export interface ValidationError {
+  data: {
+    type: ErrorType.VALIDATION_ERROR;
+    name: string;
+    errors: Array<{
+      type: string;
+      message: string;
+      path: string;
+    }>;
+  };
+}
+
+export type RequestVerifyEmailReq = {
+  email: string;
+};
+
+export type RequestResetPasswordReq = {
+  email: string;
+};
+
+export type ResetPasswordFields = {
+  password: string;
+  confirmPassword: string;
+};
+
+export type ResetPasswordReq = {
+  token: string;
+  password: string;
+};

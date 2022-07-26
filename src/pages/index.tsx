@@ -1,7 +1,12 @@
-export { default as Login } from './Login';
-export { default as Home } from './Home';
 export { default as Accounts } from './Accounts';
+export { default as Home } from './Home';
+export { default as Login } from './Login';
 export { default as Logout } from './Logout';
+export { default as ManageCategories } from './ManageCategories';
+export { default as ResetPassword } from './ResetPassword';
 export { default as SignUp } from './SignUp';
-export { default as Transactions } from './Transactions';
 export { default as Terms } from './Terms';
+export { default as Transactions } from './Transactions';
+export { default as Transaction } from './Transaction';
+export { default as VerifyEmail } from './VerifyEmail';
+export { default as Dashboard } from './Dashboard';

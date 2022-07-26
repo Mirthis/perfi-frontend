@@ -1,9 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User, AuthState } from '../types/types';
+import { User, AuthState, LoginState } from '../types/types';
 
 const LOC_STORAGE_KEY = 'perfi:loggedUser';
 
-const initialState: AuthState = null;
+const initialState: AuthState = {
+  state: LoginState.PENDING,
+  user: null,
+};
+
+const loggedOutState = { state: LoginState.LOGGEDOUT, user: null };
 
 const userSlice = createSlice({
   name: 'auth',
@@ -14,23 +19,23 @@ const userSlice = createSlice({
         LOC_STORAGE_KEY,
         JSON.stringify(action.payload),
       );
-      return action.payload;
+      return { state: LoginState.LOGGEDIN, user: action.payload };
     },
     clearUser() {
       window.localStorage.removeItem(LOC_STORAGE_KEY);
-      return initialState;
+      return loggedOutState;
     },
-    initializeLoggedUser() {
+    initializeAuthState() {
       const loggedUserJSON = window.localStorage.getItem(LOC_STORAGE_KEY);
       if (loggedUserJSON) {
         const user = JSON.parse(loggedUserJSON);
-        return user;
+        return { state: LoginState.LOGGEDIN, user };
       }
-      return initialState;
+      return loggedOutState;
     },
   },
 });
 
-export const { setUser, clearUser, initializeLoggedUser } = userSlice.actions;
+export const { setUser, clearUser, initializeAuthState } = userSlice.actions;
 
 export default userSlice.reducer;

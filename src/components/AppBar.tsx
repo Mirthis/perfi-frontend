@@ -10,10 +10,10 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Stack } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, Stack } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import { useAppSelector } from '../reducers/hooks';
+import { LoginState } from '../types/types';
 
 const settings = [
   { label: 'Manage Categories', link: '/manage/categories' },
@@ -24,12 +24,13 @@ const AppBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  const loggedUser = useAppSelector((state) => state.loggedUser);
+  const isLoggedIn =
+    useAppSelector((state) => state.auth.state) === LoginState.LOGGEDIN;
 
   const allPages = [
-    { label: 'Home', link: '/', show: true },
-    { label: 'Accounts', link: '/accounts', show: loggedUser !== null },
-    { label: 'Transactions', link: '/transactions', show: loggedUser !== null },
+    { label: 'Dashboard', link: '/dashboard', show: isLoggedIn },
+    { label: 'Accounts', link: '/accounts', show: isLoggedIn },
+    { label: 'Transactions', link: '/transactions', show: isLoggedIn },
   ];
 
   const pages = allPages.filter((page) => page.show);
@@ -51,7 +52,7 @@ const AppBar = () => {
 
   return (
     <MUIAppBar position="fixed">
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Toolbar disableGutters>
           <Typography
             variant="h6"
@@ -59,7 +60,7 @@ const AppBar = () => {
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
-            LOGO
+            Perfi
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -109,7 +110,7 @@ const AppBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link key={page.label} to={page.link}>
+              <Link key={page.label} href={page.link}>
                 <Button
                   key={page.label}
                   onClick={handleCloseNavMenu}
@@ -122,21 +123,21 @@ const AppBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {!loggedUser && (
+            {!isLoggedIn && (
               <Stack direction="row">
-                <Link to="/login">
+                <Link href="/login">
                   <Button sx={{ my: 2, color: 'white', display: 'block' }}>
                     Sign in
                   </Button>
                 </Link>
-                <Link to="/signup">
+                <Link href="/signup">
                   <Button sx={{ my: 2, color: 'white', display: 'block' }}>
                     Sign up
                   </Button>
                 </Link>
               </Stack>
             )}
-            {loggedUser && (
+            {isLoggedIn && (
               <>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -161,7 +162,7 @@ const AppBar = () => {
                 >
                   {settings.map((setting) => (
                     <MenuItem key={setting.label} onClick={handleCloseUserMenu}>
-                      <Link to={setting.link}>
+                      <Link href={setting.link}>
                         <Typography textAlign="center">
                           {setting.label}
                         </Typography>

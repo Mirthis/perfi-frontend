@@ -13,34 +13,13 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { SignUpData } from '../types/types';
 import { useSignupMutation } from '../services/api';
 import { useAlert } from './AlertProvider';
+import { isValidationErrror } from '../utils/errors';
 
 const SignUpForm = () => {
-  interface ValidationErrrorData {
-    type: string;
-    name: string;
-    errors: Array<{
-      type: string;
-      message: string;
-      path: string;
-    }>;
-  }
-
-  function isFetchBaseQueryError(
-    errorObj: unknown,
-  ): errorObj is FetchBaseQueryError {
-    return (errorObj as FetchBaseQueryError).data !== undefined;
-  }
-
-  function isValidationErrrorData(data: unknown): data is ValidationErrrorData {
-    return (data as ValidationErrrorData)?.type === 'ValidationError';
-  }
-
   const validationSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
@@ -57,11 +36,10 @@ const SignUpForm = () => {
     acceptTerms: Yup.bool().oneOf([true], 'Accept Terms is required'),
   });
 
-  const [signup, { isLoading, isSuccess, isError, error }] =
-    useSignupMutation();
+  const [signup, { isLoading }] = useSignupMutation();
 
   const navigate = useNavigate();
-  const { setError } = useAlert();
+  const { setError, setSuccess } = useAlert();
 
   const {
     register,
@@ -73,20 +51,16 @@ const SignUpForm = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  // TODO: handle error and success notifications, including duplicate email check
-  // const onSubmit: SubmitHandler<SignUpData> = async (data) => {
-  //   signup(data);
-  // };
-
-  useEffect(() => {
-    if (isSuccess) {
-      navigate('/login');
-      return;
-    }
-    if (isError && error) {
+  const submit = async (data: SignUpData) => {
+    try {
+      await signup(data).unwrap();
+      setSuccess(
+        'Sign up sucessfull! A verification email has been sent to your account',
+      );
+      navigate('/', { replace: true });
+    } catch (error) {
       if (
-        isFetchBaseQueryError(error) &&
-        isValidationErrrorData(error.data) &&
+        isValidationErrror(error) &&
         error.data.name === 'SequelizeUniqueConstraintError'
       ) {
         setFormError('email', {
@@ -98,7 +72,7 @@ const SignUpForm = () => {
         setError('Seomething went wrong!');
       }
     }
-  }, [isSuccess, isError, error]);
+  };
 
   return (
     <Container component="div" maxWidth="xs">
@@ -120,7 +94,7 @@ const SignUpForm = () => {
           component="form"
           noValidate
           width="100%"
-          onSubmit={handleSubmit(signup)}
+          onSubmit={handleSubmit(submit)}
           sx={{ mt: 3 }}
         >
           <TextField

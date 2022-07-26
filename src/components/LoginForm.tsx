@@ -14,13 +14,12 @@ import { Container } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-import { useEffect } from 'react';
-import { LoginRequest, NavigateFromState } from '../types/types';
+import { AuthErrorName, LoginRequest, NavigateFromState } from '../types/types';
 import { useLoginMutation } from '../services/api';
 import { useAppDispatch } from '../reducers/hooks';
 import { setUser } from '../reducers/authReducer';
 import { useAlert } from './AlertProvider';
+import { isAuthErrror } from '../utils/errors';
 
 const isNavigateFromState = (state: unknown): state is NavigateFromState =>
   (state as NavigateFromState)?.from !== undefined;
@@ -33,8 +32,7 @@ const LoginForm = () => {
 
   const { state } = useLocation();
 
-  const [login, { isLoading, isError, isSuccess, error, data }] =
-    useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { setError } = useAlert();
@@ -48,35 +46,30 @@ const LoginForm = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  function isFetchBaseQueryError(
-    errorObj: unknown,
-  ): errorObj is FetchBaseQueryError {
-    return (errorObj as FetchBaseQueryError).status !== undefined;
-  }
-
-  useEffect(() => {
-    if (isSuccess && data) {
-      dispatch(setUser(data));
+  const submit = async (data: LoginRequest) => {
+    try {
+      const loggedUser = await login(data).unwrap();
+      dispatch(setUser(loggedUser));
       if (isNavigateFromState(state)) {
-        navigate(state.from.pathname);
+        navigate(state.from.pathname, { replace: true });
       } else {
-        navigate('/');
+        navigate('/', { replace: true });
+      }
+    } catch (error) {
+      if (isAuthErrror(error)) {
+        if (error.data.name === AuthErrorName.USER_NOT_VERIFIED) {
+          setError('User email needs to be verified before login');
+          navigate('/verify_email', { replace: true });
+        } else if (
+          error.data.name === AuthErrorName.USER_CREDENTIALS_NOT_FOUND
+        ) {
+          setError('Invalid username or password', 'Login');
+        }
+      } else {
+        setError('Something went wrong. Please retry later or contact us.');
       }
     }
-    if (isError && error) {
-      if (isFetchBaseQueryError(error) && error.status === 401) {
-        setError('Invalid username or password', 'Login');
-      } else {
-        setError(
-          'Something went wrong. Please retry later or contact us.',
-          'Login',
-        );
-      }
-    }
-  }, [isSuccess, isError]);
-
-  // const loggedUser = useAppSelector((state) => state);
-  // console.log(loggedUser);
+  };
 
   return (
     <Container component="div" maxWidth="xs">
@@ -97,7 +90,7 @@ const LoginForm = () => {
         <Box
           component="form"
           width="100%"
-          onSubmit={handleSubmit(login)}
+          onSubmit={handleSubmit(submit)}
           noValidate
           sx={{ mt: 1 }}
         >

@@ -1,8 +1,9 @@
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
-const LoadingSpinner = () => (
+const LoadingSpinner = ({ text }: { text?: string }) => (
   <Box sx={{ display: 'flex' }}>
     <CircularProgress />
+    {text && <Typography>{text}</Typography>}
   </Box>
 );
 

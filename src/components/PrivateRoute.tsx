@@ -1,5 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../reducers/hooks';
+import { LoginState } from '../types/types';
+import LoadingSpinner from './LoadingSpinner';
 
 const PrivateRoute = ({
   children,
@@ -8,25 +10,25 @@ const PrivateRoute = ({
   children: React.ReactElement;
   onlyLoggedOut?: boolean;
 }) => {
-  const loggedUser = useAppSelector((state) => state.loggedUser);
+  const loginState = useAppSelector((state) => state.auth.state);
   const location = useLocation();
 
-  if (loggedUser) {
-    if (onlyLoggedOut) {
-      return <Navigate to="/" replace />;
-    }
-    return children;
+  switch (loginState) {
+    case LoginState.PENDING:
+      return <LoadingSpinner text="Loading..." />;
+    case LoginState.LOGGEDIN:
+      if (onlyLoggedOut) {
+        return <Navigate to="/" replace />;
+      }
+      return children;
+    case LoginState.LOGGEDOUT:
+      if (onlyLoggedOut) {
+        return children;
+      }
+      return <Navigate to="/login" replace state={{ from: location }} />;
+    default:
+      return null;
   }
-  if (onlyLoggedOut) {
-    return children;
-  }
-  return <Navigate to="/login" replace state={{ from: location }} />;
-
-  // return loggedUser ? (
-  //   children
-  // ) : (
-  //   <Navigate to="/login" replace state={{ from: location }} />
-  // );
 };
 
 export default PrivateRoute;
