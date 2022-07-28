@@ -1,11 +1,11 @@
 import { Avatar, Box, Grid, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { TransactionData } from '../types/types';
+import { Transaction } from '../types/types';
 import { amountStyle, formatCurrency } from '../utils/formatters';
 import CategoryIcon from './CategoryIcon';
 // import { useExcludeTransactionMutation } from '../services/api';
 
-const TransactionLine = ({ transaction }: { transaction: TransactionData }) => (
+const TransactionLine = ({ transaction }: { transaction: Transaction }) => (
   // const [excludeTrasnaction, { data }] = useExcludeTransactionMutation();
 
   // const hideTransaction = () => {

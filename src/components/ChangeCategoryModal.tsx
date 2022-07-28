@@ -20,7 +20,7 @@ import {
   useSetSimilarTransactionsCategoryMutation,
   useSetTransactionCategoryMutation,
 } from '../services/api';
-import { TransactionData } from '../types/types';
+import { Transaction } from '../types/types';
 import CategoryIcon from './CategoryIcon';
 
 const ChangeCategoryModal = ({
@@ -30,7 +30,7 @@ const ChangeCategoryModal = ({
 }: {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  transaction: TransactionData;
+  transaction: Transaction;
 }) => {
   const { data: categories } = useGetCategoriesQuery();
   const [newCategory, setNewCategory] = useState<string>('-1');

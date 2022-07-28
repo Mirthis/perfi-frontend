@@ -1,5 +1,5 @@
 import { Bar, BarChart, XAxis, YAxis, Tooltip, Legend, Cell } from 'recharts';
-import { useGetTransactionsSummaryQuery } from '../services/api';
+import { useGetSpendingQuery } from '../services/api';
 import {
   chartDateFormatter,
   getFirstDayOfMonth,
@@ -7,12 +7,11 @@ import {
   queryDateFormatter,
 } from '../utils/formatters';
 
-const TransactionStatsBarChart = ({ month }: { month: string }) => {
-  const monthDate = new Date(month);
+const TransactionTrendBarChart = ({ month }: { month: Date }) => {
   const summaryStartDate =
-    getFirstDayOfMonth(monthDate) < getFirstDayOfMonth(new Date())
-      ? getFirstDayOfMonth(monthDate, -1)
-      : getFirstDayOfMonth(monthDate, -2);
+    getFirstDayOfMonth(month) < getFirstDayOfMonth(new Date())
+      ? getFirstDayOfMonth(month, -1)
+      : getFirstDayOfMonth(month, -2);
 
   const summaryEndDate = getLastDayOfMonth(summaryStartDate, 2);
   const summaryStart = queryDateFormatter.format(summaryStartDate);
@@ -21,7 +20,7 @@ const TransactionStatsBarChart = ({ month }: { month: string }) => {
 
   // TODO: add isLoading and error logic
 
-  const { data: transactionsSummary } = useGetTransactionsSummaryQuery({
+  const { data: transactionsSummary } = useGetSpendingQuery({
     startDate: summaryStart,
     endDate: summaryEnd,
   });
@@ -83,7 +82,7 @@ const TransactionStatsBarChart = ({ month }: { month: string }) => {
         {cleansedData.map((entry) => (
           <Cell
             key={entry.label}
-            fill={entry.monthKey === month ? '#6664b6' : '#8884d8'}
+            fill={entry.date === month ? '#6664b6' : '#8884d8'}
           />
         ))}
       </Bar>
@@ -98,7 +97,7 @@ const TransactionStatsBarChart = ({ month }: { month: string }) => {
         {cleansedData.map((entry) => (
           <Cell
             key={entry.label}
-            fill={entry.monthKey === month ? '#60a87b' : '#82ca9d'}
+            fill={entry.date === month ? '#60a87b' : '#82ca9d'}
           />
         ))}
       </Bar>
@@ -106,4 +105,4 @@ const TransactionStatsBarChart = ({ month }: { month: string }) => {
   ) : null;
 };
 
-export default TransactionStatsBarChart;
+export default TransactionTrendBarChart;

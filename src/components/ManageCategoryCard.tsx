@@ -10,16 +10,16 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CategoryIcon from './CategoryIcon';
-import { UserCategoryData } from '../types/types';
+import { CategorySummary } from '../types/types';
 
 const ManageCategoryCard = ({
   category,
   handleDeleteButton,
   handleEditButton,
 }: {
-  category: UserCategoryData;
-  handleDeleteButton: (category: UserCategoryData) => void;
-  handleEditButton: (category: UserCategoryData) => void;
+  category: CategorySummary;
+  handleDeleteButton: (category: CategorySummary) => void;
+  handleEditButton: (category: CategorySummary) => void;
 }) => {
   const aa = 'bb';
   console.log(aa);

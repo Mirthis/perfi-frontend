@@ -34,6 +34,7 @@ const TopExpensesBarChart = ({
     endDate: summaryEnd,
     limit: numberOfItems,
     orderBy: 'amount',
+    onlyPositiveAmounts: true,
   });
 
   console.log('Top expenses filter: ', summaryStart, summaryEnd);

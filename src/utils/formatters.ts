@@ -14,6 +14,11 @@ export const chartDateFormatter = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
 });
 
+export const ddmmDateFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit',
+  month: 'short',
+});
+
 // TODO: miove together with other styling
 export const amountStyle = (value: Number) => ({
   fontWeight: 'bold',

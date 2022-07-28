@@ -24,7 +24,7 @@ import {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
 } from '../services/api';
-import { EditCategoryData, EditCategoryModalState } from '../types/types';
+import { EditCategory, EditCategoryModalState } from '../types/types';
 import CategoryIcon from './CategoryIcon';
 import categoryIconsList from '../utils/categoryIconsList';
 
@@ -71,7 +71,7 @@ const EditCategoryModal = ({
     handleSubmit,
     formState: { errors },
     reset: resetForm,
-  } = useForm<EditCategoryData>({
+  } = useForm<EditCategory>({
     mode: 'onTouched',
     resolver: yupResolver(validationSchema),
   });
@@ -150,7 +150,7 @@ const EditCategoryModal = ({
     p: 4,
   };
 
-  const submitForm = (data: EditCategoryData) => {
+  const submitForm = (data: EditCategory) => {
     console.log('submitted data');
     console.log(data);
     if (category) {

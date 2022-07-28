@@ -1,5 +1,76 @@
-import { AccountBase, TransactionPaymentChannelEnum } from 'plaid';
+import {
+  AccountSubtype,
+  AccountType,
+  TransactionPaymentChannelEnum,
+} from 'plaid';
 import { Location } from 'react-router-dom';
+
+// Category
+export interface BaseCategory {
+  name: string;
+  iconName: string;
+  iconColor: string;
+  exclude: boolean;
+}
+
+export interface Category extends BaseCategory {
+  id: number;
+}
+
+export interface CategorySummary extends Category {
+  year: number;
+  month: number;
+  txAmount: string;
+  txCount: string;
+}
+
+export interface EditCategory extends BaseCategory {
+  id?: number;
+}
+
+export interface GetSpendingByOptionsBase {
+  accountIds?: number[];
+  startDate?: string;
+  endDate?: string;
+  refDate?: string;
+  categoryIds?: number[];
+  removeZeroCounts?: boolean;
+}
+
+export interface GetSpendingByOptions extends GetSpendingByOptionsBase {
+  aggregateBy?: string[];
+}
+
+export interface SetTransactionCategoryReq {
+  transactionId: number;
+  categoryId: number;
+}
+
+export interface EditCategoryModalState {
+  show: boolean;
+  category: CategorySummary | null;
+}
+
+export interface SpendingByCategoryLatest {
+  cmValues: CategorySummary[];
+  pmValues: CategorySummary[];
+}
+
+export interface TopCategorySummaryDataPoint {
+  name: string;
+  label: string;
+  cmAmount: number;
+  pmAmount: number;
+}
+
+export type TopCategorySummaryChartData = TopCategorySummaryDataPoint[];
+
+// Auth
+export enum LoginState {
+  PENDING,
+  LOGGEDOUT,
+  LOGGEDIN,
+}
 
 export type LoginRequest = {
   email: string;
@@ -19,26 +90,36 @@ export type SignUpData = {
   acceptTerms: boolean;
 };
 
-export type EditCategoryData = {
-  id?: number;
+export type SignUpReq = Pick<SignUpData, 'email' | 'password'>;
+
+export type AuthState = {
+  state: LoginState;
+  user: User | null;
+};
+
+// Item
+export interface Item {
+  id: number;
+  status: string;
+  institution: Institution;
+}
+
+//  Accounts
+export interface Account {
+  id: number;
+  plaidAccountId: string;
   name: string;
-  iconName: string;
-  iconColor: string;
-  exclude: boolean;
-};
+  officialName: string | null;
+  type: AccountType;
+  subType: AccountSubtype | null;
+  currentBalance: number | null;
+  availableBalance: number | null;
+  isoCurrencyCode: string | null;
+  item: Item;
+}
 
-export type SignUpReq = {
-  email: string;
-  password: string;
-};
-
-export type AccountListItemData = AccountBase & {
-  institution_name: string;
-  institution_logo: string;
-  institution_color: string;
-};
-
-export interface InstitutionData {
+// institutions
+export interface Institution {
   id: number;
   plaidInstitutionId: string;
   name: string;
@@ -47,29 +128,8 @@ export interface InstitutionData {
   logo: string | null;
 }
 
-export interface AccountData {
-  id: number;
-  plaidAccountId: string;
-  name: string;
-  officialName: string | null;
-  type: string;
-  subType: string | null;
-  currentBalance: number | null;
-  availableBalance: number | null;
-  isoCurrencyCode: string | null;
-}
-
-export type GetAccountsRes = GetAccountsItemRes[];
-
-export interface GetAccountsItemRes extends AccountData {
-  item: {
-    id: number;
-    status: string;
-    institution: InstitutionData;
-  };
-}
-
-export interface TransactionData {
+// transaction
+export interface Transaction {
   id: number;
   name: string;
   amount: number;
@@ -84,25 +144,8 @@ export interface TransactionData {
   isoCurrencyCode: string | null;
   unofficialCurrencyCode: string | null;
   exclude: boolean;
-  account: {
-    id: number;
-    name: string;
-    item: {
-      id: number;
-      institution: {
-        logo: string;
-        name: string;
-        color: string;
-      };
-    };
-  };
-  category: {
-    id: number;
-    name: string;
-    iconName: string;
-    iconColor: string;
-    exclude: boolean;
-  };
+  account: Account;
+  category: Category;
   plaidCategory: {
     id: number;
     name_lvl1: string;
@@ -111,36 +154,40 @@ export interface TransactionData {
   };
 }
 
-export interface TransactionsGetResponse {
+export interface GetTransactionsRes {
   count: number;
-  rows: TransactionData[];
+  rows: Transaction[];
 }
 
-export interface CategorySummaryItem {
-  id: number;
-  name: string;
+export interface GetSpendByBase {
   year: number;
   month: number;
-  iconName: string;
-  iconColor: string;
-  txAmount: string;
-  txCount: string;
 }
 
-export type TransactionsCategorySummaryRes = Array<CategorySummaryItem>;
-
-export type AccountsListData = AccountListItemData[];
-
-export interface GetSpendingByCategoryOptions {
+export interface GetTransactionsOptions {
+  offset?: number;
+  limit?: number;
   accountIds?: number[];
   startDate?: string;
   endDate?: string;
   categoryIds?: number[];
-  removeZeroCounts?: boolean;
+  orderBy?: string;
+  excludedTransactions?: ExcludedTransactionsFilter;
+  onlyPositiveAmounts?: boolean;
 }
 
-export interface GetSpendingTrendOptions {
-  refDate: string;
+export enum ExcludedTransactionsFilter {
+  ONLY_EXCLUDED,
+  ONLY_INCLUDED,
+  ALL,
+}
+
+export interface TransactionTrendBarChartDataPoint {
+  label: string;
+  monthKey: string;
+  date: Date;
+  txAmount: number;
+  txCount: number;
 }
 
 export interface SpendingTrendData {
@@ -155,48 +202,6 @@ export interface GetSpendingTrendRes {
   p12Values: SpendingTrendData[];
 }
 
-export enum ExcludedTransactionsFilter {
-  ONLY_EXCLUDED,
-  ONLY_INCLUDED,
-  ALL,
-}
-
-export enum LoginState {
-  PENDING,
-  LOGGEDOUT,
-  LOGGEDIN,
-}
-
-export type AuthState = {
-  state: LoginState;
-  user: User | null;
-};
-
-export interface GetTransactionsOptions {
-  offset?: number;
-  limit?: number;
-  accountIds?: number[];
-  startDate?: string;
-  endDate?: string;
-  categoryIds?: number[];
-  orderBy?: string;
-  excludedTransactions?: ExcludedTransactionsFilter;
-}
-
-export interface Category {
-  id: number;
-  name: string;
-  iconName: string;
-  iconColor: string;
-  exclude: string;
-  userId: number;
-}
-
-export interface GetTransactionsSummaryOptions {
-  startDate?: string;
-  endDate?: string;
-}
-
 export interface GetTopMechantsOptions {
   startDate?: string;
   endDate?: string;
@@ -209,7 +214,7 @@ export type GetTopMechantsRes = Array<{
   txCount: string;
 }>;
 
-export type GetTransactionsSummaryRes = Array<{
+export type GetSpendingRes = Array<{
   year: number;
   month: number;
   txAmount: string;
@@ -229,22 +234,6 @@ export interface TxFilter {
   category?: number;
   account?: number;
 }
-
-export interface CategoryData {
-  id: number;
-  name: string;
-  iconName: string;
-  iconColor: string;
-  exclude: boolean;
-}
-
-export interface UserCategoryData extends CategoryData {
-  txCount: string;
-}
-
-export type GetuserCategoriesRes = Array<UserCategoryData>;
-
-export type GetUserCategoriesRes = Array<CategoryData>;
 
 export enum AlertSeverity {
   ERROR = 'error',
@@ -286,8 +275,6 @@ export interface AccountWithStats {
   currYearAmount: string;
 }
 
-export type AccountListWithStats = Array<AccountWithStats>;
-
 export interface ExcludeTransactionReq {
   transactionId: number;
   exclude: boolean;
@@ -300,18 +287,8 @@ export interface PrivateRouteData {
   onlyLoggedOut?: boolean;
 }
 
-export interface SetTransactionCategoryReq {
-  transactionId: number;
-  categoryId: number;
-}
-
 export interface GetSimilarTransactionCountRes {
   txCount: number;
-}
-
-export interface EditCategoryModalState {
-  show: boolean;
-  category: UserCategoryData | null;
 }
 
 export enum ErrorType {
@@ -369,3 +346,16 @@ export type ResetPasswordReq = {
   token: string;
   password: string;
 };
+
+export type BarChartExpensesData = Array<{
+  amount: number;
+  name: string;
+  label: string;
+}>;
+
+export interface SpendingChartDataPoint {
+  dateLabel: string;
+  amount: Number;
+  amountLabel: string;
+  count: Number;
+}

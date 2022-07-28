@@ -1,7 +1,9 @@
 import { Grid } from '@mui/material';
-import { TransactionsStats } from '../components';
-import CategoriesSummaryList from '../components/CategorySummaryList';
-import CategorySummaryBarChart from '../components/CategorySummaryBarChart';
+import {
+  TransactionsStats,
+  CategorySummaryBarChart,
+  CategorySummaryList,
+} from '../components';
 import TransactionsFilter from '../components/TransactionsFilter';
 import TransactionsList from '../components/TransactionsList';
 import { useAppSelector } from '../reducers/hooks';
@@ -12,7 +14,7 @@ const Transactions = () => {
   return (
     <>
       <TransactionsFilter />
-      {mode === TxFilterMode.Summary && <CategoriesSummaryList />}
+      {mode === TxFilterMode.Summary && <CategorySummaryList />}
       {mode === TxFilterMode.List && category && (
         <CategorySummaryBarChart categoryId={category} />
       )}

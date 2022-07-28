@@ -9,13 +9,13 @@ import {
 } from '@mui/material';
 import { useAppDispatch } from '../reducers/hooks';
 import { setCategoryFilter } from '../reducers/txFilterReducer';
-import { CategorySummaryItem } from '../types/types';
+import { CategorySummary } from '../types/types';
 import CategoryIcon from './CategoryIcon';
 
-const CategorySummary = ({
+const CategorySummaryCard = ({
   summaryData,
 }: {
-  summaryData: CategorySummaryItem;
+  summaryData: CategorySummary;
 }) => {
   const dispatch = useAppDispatch();
 
@@ -49,4 +49,4 @@ const CategorySummary = ({
   );
 };
 
-export default CategorySummary;
+export default CategorySummaryCard;

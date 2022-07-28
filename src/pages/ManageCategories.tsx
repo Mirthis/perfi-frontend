@@ -5,7 +5,7 @@ import EditCategoryModal from '../components/EditCategoryModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ManageCategoryCard from '../components/ManageCategoryCard';
 import { useGetUserCategoriesQuery } from '../services/api';
-import { EditCategoryModalState, UserCategoryData } from '../types/types';
+import { EditCategoryModalState, CategorySummary } from '../types/types';
 
 const ManageCategories = () => {
   const { data: userCategories, isLoading } = useGetUserCategoriesQuery();
@@ -18,11 +18,11 @@ const ManageCategories = () => {
     category: null,
   });
 
-  const showDeleteModal = (category: UserCategoryData) => {
+  const showDeleteModal = (category: CategorySummary) => {
     setDeleteModal({ show: true, category });
   };
 
-  const showEditModal = (category: UserCategoryData | null) => {
+  const showEditModal = (category: CategorySummary | null) => {
     setEditModal({ show: true, category });
   };
 

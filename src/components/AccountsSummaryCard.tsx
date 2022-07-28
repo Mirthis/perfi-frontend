@@ -49,13 +49,18 @@ const AccountsSummaryCard = () => {
     <>
       {isLoading && <LoadingSpinner />}
       {accounts && uniqueInstitutions && balances && (
-        <Card variant="outlined">
+        <Card sx={{ height: '100%' }} variant="outlined">
           <CardContent>
-            <Typography variant="h5" component="div">
-              {accounts.length} Linked Accounts
+            <Typography mb={2} variant="h6">
+              Accounts summary
             </Typography>
+
             <Stack mt={2} direction="row" justifyContent="space-between">
               <Box>
+                <Typography variant="subtitle2" component="div">
+                  {accounts.length} Accounts tracked /{' '}
+                  {uniqueInstitutions.length} Linked Institutions
+                </Typography>
                 <Stack direction="row" justifyContent="flex-start">
                   <AvatarGroup max={4}>
                     {uniqueInstitutions!.map((i) => (
@@ -67,12 +72,6 @@ const AccountsSummaryCard = () => {
                     ))}
                   </AvatarGroup>
                 </Stack>
-                {/* <Typography>3 current accounts</Typography>
-                <Typography>1 credit card</Typography>
-                <Typography>1 mortgage account</Typography> */}
-                {/* <Typography variant="subtitle1">
-                  {uniqueInstitutions.length} linked institutions
-                </Typography> */}
               </Box>
               <Box>
                 <Stack direction="column" gap={2} textAlign="right">

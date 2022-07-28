@@ -1,18 +1,61 @@
 import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
-import { Line, LineChart, XAxis } from 'recharts';
-import { useGetSpendingTrendQuery } from '../services/api';
+import { LabelList, Line, LineChart, XAxis } from 'recharts';
+import { useGetSpendingCumulativeQuery } from '../services/api';
 import { queryDateFormatter } from '../utils/formatters';
+
+interface DataPoint {
+  day: number;
+  cmAmount?: number;
+  pmAmount: number;
+  p12Amount: number;
+  label?: string;
+  lastItem?: boolean;
+}
+
+const CustomizedDot = ({
+  cx,
+  cy,
+  stroke,
+  payload,
+}: // value,
+{
+  cx: number;
+  cy: number;
+  stroke: string;
+  payload: DataPoint;
+  // value: number;
+}) => {
+  // const { cx, cy, stroke, payload, value } = props;
+  // console.log(`cx ${cx} cy ${cy} stroke ${stroke} value ${value}`);
+  // console.log('payload');
+  // console.log(payload);
+  if (payload.lastItem) {
+    return (
+      <circle
+        cx={cx}
+        cy={cy}
+        r={3}
+        stroke={stroke}
+        strokeWidth={1}
+        fill="black"
+        textAnchor=""
+      />
+    );
+  }
+
+  return null;
+};
+
+// @ts-ignore
+// const CustomizedDot = (props) => {
+//   console.log('props');
+//   console.log(props);
+//   return null;
+// };
 
 const SpendTrendCard = () => {
   const refDate = queryDateFormatter.format(new Date());
-  const { data: spendingTrend } = useGetSpendingTrendQuery({ refDate });
-
-  interface DataPoint {
-    day: number;
-    cmAmount?: number;
-    pmAmount: number;
-    p12Amount: number;
-  }
+  const { data: spendingTrend } = useGetSpendingCumulativeQuery(refDate);
 
   const data: Array<DataPoint> = [];
   // TODO:  create better way to merge data;
@@ -35,34 +78,45 @@ const SpendTrendCard = () => {
         dataPoint.cmAmount =
           Number(cmValues[i]?.txAmount) || data[i - 1]?.cmAmount || 0;
       }
+      if (i === cmValues.length - 1) {
+        dataPoint.label = `${dataPoint.cmAmount}`;
+        dataPoint.lastItem = true;
+      }
       data.push(dataPoint);
     }
   }
-
-  console.log('data');
-  console.log(data);
 
   if (spendingTrend) {
     return (
       <Card variant="outlined">
         <CardContent>
-          <Stack direction="row">
-            <Box>
-              <Typography>Current Month (to date)</Typography>
+          <Typography mb={2} variant="h6">
+            Spending trend - to date
+          </Typography>
+          <Stack direction="row" justifyContent="space-between">
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography>This Month</Typography>
               <Typography>£600</Typography>
             </Box>
-            <Box>
-              <Typography>Previous Month (to date)</Typography>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography>Last Month</Typography>
               <Typography>£600</Typography>
             </Box>
-            <Box>
-              <Typography>12 Month Average (to date)</Typography>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography>12 Month Average</Typography>
               <Typography>£600</Typography>
             </Box>
           </Stack>
           <LineChart data={data} width={300} height={200}>
             <XAxis dataKey="day" />
-            <Line dataKey="cmAmount" dot={false} />
+            <Line
+              dataKey="cmAmount"
+              // @ts-ignore
+              dot={<CustomizedDot />}
+              // @ts-ignore
+            >
+              <LabelList dataKey="label" position="bottom" />
+            </Line>
             <Line dataKey="pmAmount" dot={false} />
             <Line dataKey="p12Amount" dot={false} />
           </LineChart>
