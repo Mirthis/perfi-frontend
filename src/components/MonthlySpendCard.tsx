@@ -61,7 +61,7 @@ const MonthlySpendCard = ({
       {data && (
         <Card>
           <CardContent>
-            <CardTitle title="Spending Trend" />
+            <CardTitle title="Monthly Spending" />
             <SpendingBarChart data={data} />
           </CardContent>
         </Card>
