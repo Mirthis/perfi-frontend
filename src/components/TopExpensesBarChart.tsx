@@ -37,10 +37,6 @@ const TopExpensesBarChart = ({
     onlyPositiveAmounts: true,
   });
 
-  console.log('Top expenses filter: ', summaryStart, summaryEnd);
-  console.log('Top expenses data');
-  console.log(data);
-
   const cleansedData = data?.rows?.map((d) => {
     const amount = Number(d.amount);
     const name = d.merchantName || d.name;
@@ -51,9 +47,6 @@ const TopExpensesBarChart = ({
       label: formatCurrency(amount, d.isoCurrencyCode || 'GBP', 0),
     };
   });
-
-  console.log('Top expenses cleanses data');
-  console.log(cleansedData);
 
   return cleansedData ? (
     <ResponsiveContainer height={300}>

@@ -9,7 +9,7 @@ import {
 } from 'recharts';
 import { SpendingChartDataPoint } from '../types/types';
 
-const SpendingBarChart = ({ data }: { data: SpendingChartDataPoint[] }) => (
+const MonthlySpendBarChart = ({ data }: { data: SpendingChartDataPoint[] }) => (
   <ResponsiveContainer height={300}>
     <LineChart data={data}>
       <XAxis dataKey="dateLabel" type="category" tick={{ fontSize: 10 }} />
@@ -22,4 +22,4 @@ const SpendingBarChart = ({ data }: { data: SpendingChartDataPoint[] }) => (
   </ResponsiveContainer>
 );
 
-export default SpendingBarChart;
+export default MonthlySpendBarChart;

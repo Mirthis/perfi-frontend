@@ -1,8 +1,8 @@
 import { LoadingButton } from '@mui/lab';
 import { Backdrop, Box, Button, Fade, Modal, Typography } from '@mui/material';
-import { useDeleteCategoryMutation } from '../services/api';
-import { EditCategoryModalState } from '../types/types';
-import LoadingSpinner from './LoadingSpinner';
+import { useDeleteCategoryMutation } from '../../services/api';
+import { EditCategoryModalState } from '../../types/types';
+import LoadingSpinner from '../LoadingSpinner';
 
 const DeleteCategoryModal = ({
   state: { show, category },

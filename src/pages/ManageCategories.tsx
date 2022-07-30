@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { useState } from 'react';
-import DeleteCategoryModal from '../components/DeleteCategoryModal';
-import EditCategoryModal from '../components/EditCategoryModal';
+import DeleteCategoryModal from '../components/modals/DeleteCategoryModal';
+import EditCategoryModal from '../components/modals/EditCategoryModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ManageCategoryCard from '../components/ManageCategoryCard';
 import { useGetUserCategoriesQuery } from '../services/api';

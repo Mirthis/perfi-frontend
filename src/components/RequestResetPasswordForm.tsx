@@ -32,7 +32,6 @@ const RequestResetPasswordForm = () => {
 
   const submit = async (data: RequestResetPasswordReq) => {
     try {
-      console.log('Submitting.');
       await requestResetPassword(data.email).unwrap();
       setSuccess(`A reset password email has been sent tou ${data.email}`);
       navigate('/');
@@ -46,7 +45,7 @@ const RequestResetPasswordForm = () => {
             setError(
               `User at ${data.email} is not verified. Verify your account first.`,
             );
-            navigate('/verify_email', { replace: true });
+            navigate('/verify-email', { replace: true });
             break;
           default:
             setError(

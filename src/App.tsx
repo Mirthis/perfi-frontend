@@ -11,6 +11,8 @@ const App = () => {
   const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
   const dispatch = useAppDispatch();
 
+  /* Initilize auth state. This determine routes and accss 
+  to different pages and components */
   useEffect(() => {
     dispatch(initializeAuthState());
   }, [dispatch]);
@@ -20,6 +22,7 @@ const App = () => {
       <AppBar />
       <Offset />
       <Container component="main" maxWidth="xl">
+        {/* Alert status and visibility is managed through the AlertProvider */}
         <Alert />
         <AppRoutes />
       </Container>

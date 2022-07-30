@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@mui/material';
-import { LoadingSpinner, SpendingBarChart } from '.';
+import LoadingSpinner from './LoadingSpinner';
+import MonthlySpendBarChart from './MonthlySpendBarChart';
 import { useGetSpendingQuery } from '../services/api';
 import { GetSpendingByOptions, SpendingChartDataPoint } from '../types/types';
 import {
@@ -22,9 +23,6 @@ const MonthlySpendCard = ({
   categoryId?: number;
   accountId?: number;
 }) => {
-  console.log('refMonth');
-  console.log(refMonth);
-  console.log(new Date(refMonth));
   const startDate = queryDateFormatter.format(
     getFirstDayOfMonth(new Date(refMonth), -(months - 1)),
   );
@@ -36,25 +34,21 @@ const MonthlySpendCard = ({
   if (categoryId) queryParams.categoryIds = [categoryId];
   if (accountId) queryParams.accountIds = [accountId];
 
-  console.log('Spending Card params');
-  console.log(queryParams);
-
   const { data: spendingData, isLoading } = useGetSpendingQuery(queryParams);
-  console.log('Spending Card data');
-  console.log(spendingData);
 
-  const data: SpendingChartDataPoint[] | undefined = spendingData?.map((d) => {
-    const date = new Date(d.year, d.month - 1, 1);
-    const amount = Number(d.txAmount);
-    return {
-      dateLabel: chartDateFormatter.format(date),
-      amount,
-      amountLabel: formatCurrency(amount, 'GBP', 0),
-      count: Number(d.txCount),
-    };
-  });
-  console.log('cleansedData');
-  console.log(data);
+  const data: SpendingChartDataPoint[] | undefined = spendingData
+    ?.map((d) => {
+      const date = new Date(d.year, d.month - 1, 1);
+      const amount = Number(d.txAmount);
+      return {
+        date,
+        dateLabel: chartDateFormatter.format(date),
+        amount,
+        amountLabel: formatCurrency(amount, 'GBP', 0),
+        count: Number(d.txCount),
+      };
+    })
+    .sort((prev, next) => Number(prev.date) - Number(next.date));
   return (
     <>
       {isLoading && <LoadingSpinner />}
@@ -62,7 +56,7 @@ const MonthlySpendCard = ({
         <Card>
           <CardContent>
             <CardTitle title="Monthly Spending" />
-            <SpendingBarChart data={data} />
+            <MonthlySpendBarChart data={data} />
           </CardContent>
         </Card>
       )}

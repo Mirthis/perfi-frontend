@@ -9,13 +9,13 @@ import LoadingSpinner from './LoadingSpinner';
 import TransactionsListSimple from './TransactionsListSimple';
 
 const TopExpensesCard = ({
-  month,
+  refMonth,
   numberOfItems,
 }: {
-  month: string;
+  refMonth: string;
   numberOfItems: number;
 }) => {
-  const monthDate = new Date(month);
+  const monthDate = new Date(refMonth);
 
   const startDate = queryDateFormatter.format(getFirstDayOfMonth(monthDate));
   const endDate = queryDateFormatter.format(getLastDayOfMonth(monthDate));
@@ -27,9 +27,6 @@ const TopExpensesCard = ({
     orderBy: 'amount',
     onlyPositiveAmounts: true,
   });
-
-  console.log('transactions');
-  console.log(transactions);
 
   return (
     <Card variant="outlined">

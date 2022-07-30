@@ -51,6 +51,11 @@ export interface EditCategoryModalState {
   category: CategorySummary | null;
 }
 
+export interface ChangeCategoryModalState {
+  show: boolean;
+  transaction: Transaction | null;
+}
+
 export interface SpendingByCategoryLatest {
   cmValues: CategorySummary[];
   pmValues: CategorySummary[];
@@ -233,6 +238,8 @@ export interface TxFilter {
   mode: TxFilterMode;
   category?: number;
   account?: number;
+  page: number;
+  hasMore: boolean;
 }
 
 export enum AlertSeverity {
@@ -256,6 +263,10 @@ export interface AlertState {
 
 export interface NavigateFromState {
   from: Location;
+}
+
+export interface NavigateEmailState {
+  email: string;
 }
 
 export interface AccountWithStats {
@@ -294,6 +305,7 @@ export interface GetSimilarTransactionCountRes {
 export enum ErrorType {
   AUTH_ERROR = 'AuthError',
   VALIDATION_ERROR = 'ValidationError',
+  GENERIC_ERROR = 'GenericError',
 }
 
 export enum AuthErrorName {

@@ -10,7 +10,7 @@ import { AuthErrorName, RequestVerifyEmailReq } from '../types/types';
 import { useAlert } from './AlertProvider';
 import { isAuthErrror } from '../utils/errors';
 
-const RequestVerifyEmailForm = () => {
+const RequestVerifyEmailForm = ({ email }: { email?: string }) => {
   const navigate = useNavigate();
 
   const { setError, setSuccess } = useAlert();
@@ -26,6 +26,7 @@ const RequestVerifyEmailForm = () => {
     formState: { errors },
   } = useForm<RequestVerifyEmailReq>({
     mode: 'onTouched',
+    defaultValues: { email },
     resolver: yupResolver(validationSchema),
   });
 

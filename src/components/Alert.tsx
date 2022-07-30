@@ -2,8 +2,8 @@ import {
   Alert as MUIAlert,
   AlertTitle,
   Box,
-  Collapse,
   IconButton,
+  Snackbar,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAlert } from './AlertProvider';
@@ -18,10 +18,18 @@ const Alert = () => {
     //     {message}
     //   </MUIAlert>
     // </Box>
-    <Box sx={{ width: '100%', my: 2 }}>
-      <Collapse in={alertOpen}>
+    <Box sx={{ my: 2 }}>
+      <Snackbar
+        open={alertOpen}
+        onClose={() => {
+          clearAlert();
+        }}
+      >
         <MUIAlert
           severity={alertSeverity}
+          onClose={() => {
+            clearAlert();
+          }}
           action={
             <IconButton
               aria-label="close"
@@ -39,7 +47,7 @@ const Alert = () => {
           {alertTitle && <AlertTitle>{alertTitle}</AlertTitle>}
           {alertMessage}
         </MUIAlert>
-      </Collapse>
+      </Snackbar>
     </Box>
   );
 };

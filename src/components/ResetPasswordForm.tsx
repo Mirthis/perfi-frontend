@@ -54,13 +54,13 @@ const ResetPasswordForm = ({ token }: { token: string }) => {
             setError(
               `Reset password token is expired. Please request again to reset your password.`,
             );
-            navigate('/reset_password', { replace: true });
+            navigate('/reset-password', { replace: true });
             break;
           case AuthErrorName.VERIFY_PASSWORD_TOKEN_NOT_FOUND:
             setError(
               `Reset password token not found. Please request to reset your password.`,
             );
-            navigate('/reset_password', { replace: true });
+            navigate('/reset-password', { replace: true });
             break;
           default:
             setError(

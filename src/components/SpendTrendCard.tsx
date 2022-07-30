@@ -1,7 +1,6 @@
 import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
 import { LabelList, Line, LineChart, XAxis } from 'recharts';
 import { useGetSpendingCumulativeQuery } from '../services/api';
-import { queryDateFormatter } from '../utils/formatters';
 
 interface DataPoint {
   day: number;
@@ -26,9 +25,6 @@ const CustomizedDot = ({
   // value: number;
 }) => {
   // const { cx, cy, stroke, payload, value } = props;
-  // console.log(`cx ${cx} cy ${cy} stroke ${stroke} value ${value}`);
-  // console.log('payload');
-  // console.log(payload);
   if (payload.lastItem) {
     return (
       <circle
@@ -46,16 +42,8 @@ const CustomizedDot = ({
   return null;
 };
 
-// @ts-ignore
-// const CustomizedDot = (props) => {
-//   console.log('props');
-//   console.log(props);
-//   return null;
-// };
-
-const SpendTrendCard = () => {
-  const refDate = queryDateFormatter.format(new Date());
-  const { data: spendingTrend } = useGetSpendingCumulativeQuery(refDate);
+const SpendTrendCard = ({ refMonth }: { refMonth: string }) => {
+  const { data: spendingTrend } = useGetSpendingCumulativeQuery(refMonth);
 
   const data: Array<DataPoint> = [];
   // TODO:  create better way to merge data;

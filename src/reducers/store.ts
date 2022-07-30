@@ -11,7 +11,7 @@ import txFilterReducer from './txFilterReducer';
 //     // if(action.payload.data)
 //     console.log('action');
 //     console.log(action);
-//     if (action.payload.data.name === AuthErrorName.USER_UNAUTHORIZED) {
+//     if (aandtion.payload.data.name === AuthErrorName.USER_UNAUTHORIZED) {
 //       console.warn('Unauthorized');
 //     }
 //   }

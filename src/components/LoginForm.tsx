@@ -4,7 +4,6 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { LoadingButton } from '@mui/lab';
@@ -21,21 +20,22 @@ import { setUser } from '../reducers/authReducer';
 import { useAlert } from './AlertProvider';
 import { isAuthErrror } from '../utils/errors';
 
+// Determine type of the state retrieved from useLocation to allow access
+// to from property
 const isNavigateFromState = (state: unknown): state is NavigateFromState =>
   (state as NavigateFromState)?.from !== undefined;
 
 const LoginForm = () => {
-  const validationSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required').email('Email is invalid'),
-    password: Yup.string().required('Password is required'),
-  });
-
   const { state } = useLocation();
-
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { setError } = useAlert();
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().required('Email is required').email('Email is invalid'),
+    password: Yup.string().required('Password is required'),
+  });
 
   const {
     register,
@@ -51,15 +51,19 @@ const LoginForm = () => {
       const loggedUser = await login(data).unwrap();
       dispatch(setUser(loggedUser));
       if (isNavigateFromState(state)) {
+        // redirect to from Location is this is defined
         navigate(state.from.pathname, { replace: true });
       } else {
-        navigate('/', { replace: true });
+        navigate('/dashboard', { replace: true });
       }
     } catch (error) {
       if (isAuthErrror(error)) {
         if (error.data.name === AuthErrorName.USER_NOT_VERIFIED) {
           setError('User email needs to be verified before login');
-          navigate('/verify_email', { replace: true });
+          navigate('/verify-email', {
+            replace: true,
+            state: { email: data.email },
+          });
         } else if (
           error.data.name === AuthErrorName.USER_CREDENTIALS_NOT_FOUND
         ) {
@@ -121,9 +125,20 @@ const LoginForm = () => {
             autoComplete="current-password"
             error={errors.password !== undefined}
           />
-          <Typography variant="inherit" color="error">
-            {errors.password?.message}
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Typography
+              sx={{ flexGrow: 1 }}
+              textAlign="left"
+              variant="inherit"
+              color="error"
+            >
+              {errors.password?.message}
+            </Typography>
+            <Link textAlign="right" href="/reset-password" variant="body2">
+              Forgot password?
+            </Link>
+          </Box>
+          {/* TODO: Implement remember me on back-end session */}
           <FormControlLabel
             control={
               <Checkbox
@@ -143,18 +158,13 @@ const LoginForm = () => {
           >
             Sign In
           </LoadingButton>
-          <Grid container>
-            <Grid item xs>
-              <Link href="/api/reset-password" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="/api/sign-up" variant="body2">
-                Sign Up
-              </Link>
-            </Grid>
-          </Grid>
+
+          <Typography variant="body2">
+            Not having an account?{' '}
+            <Link href="/signup" variant="body2">
+              Sign Up
+            </Link>
+          </Typography>
         </Box>
       </Box>
     </Container>

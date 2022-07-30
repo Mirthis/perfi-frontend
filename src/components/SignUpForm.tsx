@@ -4,22 +4,26 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import * as Yup from 'yup';
+import { useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
 import { SignUpData } from '../types/types';
 import { useSignupMutation } from '../services/api';
 import { useAlert } from './AlertProvider';
 import { isValidationErrror } from '../utils/errors';
+import TermAndConditionsModal from './modals/TermAndConditionsModal';
 
 const SignUpForm = () => {
+  const [showModal, setShowModal] = useState(false);
+
   const validationSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
@@ -76,6 +80,10 @@ const SignUpForm = () => {
 
   return (
     <Container component="div" maxWidth="xs">
+      <TermAndConditionsModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+      />
       <Box
         sx={{
           marginTop: 8,
@@ -147,8 +155,14 @@ const SignUpForm = () => {
             }
             label={
               <Typography>
-                I agree to the
-                <a href="/terms">terms and conditions</a>
+                I agree to the{' '}
+                <Button
+                  sx={{ textTransform: 'none', m: 0 }}
+                  variant="text"
+                  onClick={() => setShowModal(true)}
+                >
+                  Terms and Conditions
+                </Button>
               </Typography>
             }
           />
@@ -164,13 +178,10 @@ const SignUpForm = () => {
           >
             Sign Up
           </LoadingButton>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link href="signup" variant="body2">
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
+
+          <Typography variant="body2">
+            Already have an account? <Link href="login">Sign in</Link>
+          </Typography>
         </Box>
       </Box>
     </Container>

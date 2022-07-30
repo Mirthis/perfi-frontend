@@ -5,8 +5,6 @@ import {
   AccountWithStats,
   ExcludeTransactionReq,
   GetSpendingByOptionsBase,
-  GetTopMechantsOptions,
-  GetTopMechantsRes,
   GetTransactionsOptions,
   LoginRequest,
   SignUpReq,
@@ -36,11 +34,13 @@ export const perfiApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl }),
   tagTypes: ['Accounts', 'Transactions', 'Categories'],
   endpoints: (builder) => ({
+    // accounts queries
     getAccounts: builder.query<Account[], void>({
       query: () => ({
         url: 'accounts',
         method: 'GET',
       }),
+      providesTags: ['Accounts'],
     }),
     getAccountsWithStats: builder.query<AccountWithStats[], string>({
       query: (monthKey) => ({
@@ -48,7 +48,9 @@ export const perfiApi = createApi({
         method: 'GET',
         params: { monthKey },
       }),
+      providesTags: ['Accounts'],
     }),
+    // categories queries
     getCategories: builder.query<CategorySummary[], void>({
       query: () => 'categories',
       providesTags: ['Categories'],
@@ -60,6 +62,7 @@ export const perfiApi = createApi({
       }),
       providesTags: ['Categories'],
     }),
+    // transactions queries
     getTransactions: builder.query<GetTransactionsRes, GetTransactionsOptions>({
       query: (options?: GetTransactionsOptions) => ({
         url: `transactions`,
@@ -79,17 +82,6 @@ export const perfiApi = createApi({
       }),
       providesTags: ['Transactions'],
     }),
-
-    // getSpendingByCategory: builder.query<
-    //   TransactionsCategorySummaryRes,
-    //   GetSpendingByOptionsBase
-    // >({
-    //   query: (options?: GetSpendingByOptionsBase) => ({
-    //     url: `transactions/spending_summary_category`,
-    //     method: 'GET',
-    //     params: options,
-    //   }),
-    // }),
     getTransaction: builder.query<Transaction, number>({
       query: (transactionId) => ({
         url: `transactions/id/${transactionId}`,
@@ -106,8 +98,9 @@ export const perfiApi = createApi({
         method: 'GET',
         params: options,
       }),
+      providesTags: ['Transactions'],
     }),
-    getSpendingByCategoryLatest: builder.query<
+    getSpendingCompareByCategory: builder.query<
       SpendingByCategoryLatest,
       string
     >({
@@ -116,6 +109,7 @@ export const perfiApi = createApi({
         method: 'GET',
         params: { refDate },
       }),
+      providesTags: ['Transactions'],
     }),
     getSpending: builder.query<GetSpendingRes, GetSpendingByOptionsBase>({
       query: (options?: GetSpendingByOptionsBase) => ({
@@ -123,13 +117,7 @@ export const perfiApi = createApi({
         method: 'GET',
         params: options,
       }),
-    }),
-    getTopMechants: builder.query<GetTopMechantsRes, GetTopMechantsOptions>({
-      query: (options?: GetTopMechantsOptions) => ({
-        url: `transactions/transactions_summary`,
-        method: 'GET',
-        params: options,
-      }),
+      providesTags: ['Transactions'],
     }),
     getSpendingCumulative: builder.query<GetSpendingTrendRes, string>({
       query: (refDate) => ({
@@ -137,31 +125,32 @@ export const perfiApi = createApi({
         method: 'GET',
         params: { refDate },
       }),
+      providesTags: ['Transactions'],
     }),
     requestVerifyEmail: builder.mutation<void, string>({
       query: (email) => ({
-        url: 'auth/verify_email',
+        url: 'auth/verify-email',
         method: 'POST',
         body: { email },
       }),
     }),
     verifyEmail: builder.mutation<void, string>({
       query: (token) => ({
-        url: 'auth/verify_email',
+        url: 'auth/verify-email',
         method: 'PUT',
         body: { token },
       }),
     }),
     requestResetPassword: builder.mutation<void, string>({
       query: (email) => ({
-        url: 'auth/reset_password',
+        url: 'auth/reset-password',
         method: 'POST',
         body: { email },
       }),
     }),
     resetPassword: builder.mutation<void, ResetPasswordReq>({
       query: (params) => ({
-        url: 'auth/reset_password',
+        url: 'auth/reset-password',
         method: 'PUT',
         body: params,
       }),
@@ -183,7 +172,7 @@ export const perfiApi = createApi({
         method: 'PUT',
         body: params,
       }),
-      invalidatesTags: ['Transactions'],
+      invalidatesTags: ['Transactions', 'Categories'],
     }),
     setSimilarTransactionsCategory: builder.mutation<
       number[],
@@ -194,7 +183,7 @@ export const perfiApi = createApi({
         method: 'PUT',
         body: params,
       }),
-      invalidatesTags: ['Transactions'],
+      invalidatesTags: ['Transactions', 'Categories'],
     }),
     deleteCategory: builder.mutation<void, number>({
       query: (categoryId) => ({
@@ -265,10 +254,11 @@ export const {
   useGetCategoriesQuery,
   useGetUserCategoriesQuery,
   useGetTransactionQuery,
-  useGetTopMechantsQuery,
+  useLazyGetTransactionsQuery,
   useGetSpendingCumulativeQuery,
-  useGetSpendingByCategoryLatestQuery,
+  useGetSpendingCompareByCategoryQuery,
   useGetSimilarTransactionsCountQuery,
+  useLazyGetSimilarTransactionsCountQuery,
   useGetSpendingQuery,
   useLoginMutation,
   useLogoutMutation,

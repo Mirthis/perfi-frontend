@@ -14,13 +14,9 @@ const AccountsSummaryCard = () => {
   const { data: accounts, isLoading } = useGetAccountsQuery();
 
   const debitAccountTypes = ['credit', 'loan'];
-  console.log('accounts');
-  console.log(accounts);
   const uniqueInstitutions = accounts
     ?.map((acc) => acc.item.institution)
     .filter((v, i, a) => a.findIndex((v2) => v2.id === v.id) === i);
-  console.log('uniqueInstitutions');
-  console.log(uniqueInstitutions);
 
   const balances = accounts?.reduce(
     (bal, acc) => {
@@ -41,9 +37,6 @@ const AccountsSummaryCard = () => {
       debit: 0,
     },
   );
-
-  console.log('balances');
-  console.log(balances);
 
   return (
     <>

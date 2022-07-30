@@ -1,16 +1,16 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../reducers/hooks';
 import { LoginState } from '../types/types';
 import LoadingSpinner from './LoadingSpinner';
 
 const PrivateRoute = ({
   children,
+  loginState,
   onlyLoggedOut = false,
 }: {
   children: React.ReactElement;
+  loginState: LoginState;
   onlyLoggedOut?: boolean;
 }) => {
-  const loginState = useAppSelector((state) => state.auth.state);
   const location = useLocation();
 
   switch (loginState) {

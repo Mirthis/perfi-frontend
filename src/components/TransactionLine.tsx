@@ -1,11 +1,19 @@
-import { Avatar, Box, Grid, Typography } from '@mui/material';
+import { Avatar, Box, Grid, IconButton, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { MouseEventHandler } from 'react';
 import { Transaction } from '../types/types';
 import { amountStyle, formatCurrency } from '../utils/formatters';
 import CategoryIcon from './CategoryIcon';
 // import { useExcludeTransactionMutation } from '../services/api';
 
-const TransactionLine = ({ transaction }: { transaction: Transaction }) => (
+const TransactionLine = ({
+  transaction,
+  handleMenuClick,
+}: {
+  transaction: Transaction;
+  handleMenuClick: MouseEventHandler<HTMLButtonElement>;
+}) => (
   // const [excludeTrasnaction, { data }] = useExcludeTransactionMutation();
 
   // const hideTransaction = () => {
@@ -29,7 +37,6 @@ const TransactionLine = ({ transaction }: { transaction: Transaction }) => (
         {transaction.merchantName}
       </Typography>
     </Grid>
-
     <Grid item container xs={2} direction="column">
       <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
         <CategoryIcon name={transaction.category.iconName} />
@@ -38,7 +45,7 @@ const TransactionLine = ({ transaction }: { transaction: Transaction }) => (
           </Typography> */}
       </Box>
     </Grid>
-    <Grid item xs={3}>
+    <Grid item xs={2}>
       <Box
         sx={{
           display: 'flex',
@@ -55,13 +62,24 @@ const TransactionLine = ({ transaction }: { transaction: Transaction }) => (
           </Typography> */}
       </Box>
     </Grid>
-    <Grid item xs={1} textAlign="right">
+    <Grid item xs={2} textAlign="right">
       <Typography variant="subtitle1" sx={amountStyle(transaction.amount)}>
         {formatCurrency(
           transaction.amount,
           transaction.isoCurrencyCode || 'GBP',
         )}
       </Typography>
+    </Grid>
+    <Grid item xs={1} textAlign="right">
+      <IconButton
+        aria-label="more"
+        id="long-button"
+        aria-haspopup="true"
+        data-transactionid={transaction.id}
+        onClick={handleMenuClick}
+      >
+        <MoreVertIcon />
+      </IconButton>
     </Grid>
     {/* <Grid item xs={1} textAlign="right" onClick={() => hideTransaction()}>
         <IconButton color="primary">

@@ -10,11 +10,12 @@ import {
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CategoryIcon } from '../components';
-import ChangeCategoryModal from '../components/ChangeCategoryModal';
+import ChangeCategoryModal from '../components/modals/ChangeCategoryModal';
 import {
   useExcludeTransactionMutation,
   useGetTransactionQuery,
 } from '../services/api';
+import { ChangeCategoryModalState } from '../types/types';
 import { formatCurrency } from '../utils/formatters';
 
 const Transaction = () => {
@@ -22,7 +23,10 @@ const Transaction = () => {
 
   const { isLoading, data: transaction } = useGetTransactionQuery(Number(id));
   const [toggleExclusion] = useExcludeTransactionMutation();
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalState, setModalState] = useState<ChangeCategoryModalState>({
+    show: false,
+    transaction: null,
+  });
 
   const toggleTransactionExclusion = async () => {
     await toggleExclusion({
@@ -50,11 +54,7 @@ const Transaction = () => {
       )}
       {transaction && (
         <>
-          <ChangeCategoryModal
-            transaction={transaction}
-            showModal={showModal}
-            setShowModal={setShowModal}
-          />
+          <ChangeCategoryModal state={modalState} setState={setModalState} />
           <Box
             sx={{
               display: 'flex',
@@ -111,7 +111,9 @@ const Transaction = () => {
                 <Typography variant="h5">
                   {transaction.category.name}
                 </Typography>
-                <Button onClick={() => setShowModal(true)}>
+                <Button
+                  onClick={() => setModalState({ show: true, transaction })}
+                >
                   Change Category
                 </Button>
               </Box>

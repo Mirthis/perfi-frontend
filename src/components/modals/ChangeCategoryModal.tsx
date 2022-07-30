@@ -13,24 +13,22 @@ import {
   Switch,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useGetCategoriesQuery,
-  useGetSimilarTransactionsCountQuery,
+  useLazyGetSimilarTransactionsCountQuery,
   useSetSimilarTransactionsCategoryMutation,
   useSetTransactionCategoryMutation,
-} from '../services/api';
-import { Transaction } from '../types/types';
-import CategoryIcon from './CategoryIcon';
+} from '../../services/api';
+import { ChangeCategoryModalState } from '../../types/types';
+import CategoryIcon from '../CategoryIcon';
 
 const ChangeCategoryModal = ({
-  showModal,
-  setShowModal,
-  transaction,
+  state: { show, transaction },
+  setState,
 }: {
-  showModal: boolean;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  transaction: Transaction;
+  state: ChangeCategoryModalState;
+  setState: React.Dispatch<React.SetStateAction<ChangeCategoryModalState>>;
 }) => {
   const { data: categories } = useGetCategoriesQuery();
   const [newCategory, setNewCategory] = useState<string>('-1');
@@ -52,15 +50,14 @@ const ChangeCategoryModal = ({
     },
   ] = useSetSimilarTransactionsCategoryMutation();
 
-  console.log('transaction.id');
-  console.log(transaction.id);
-  const { data: similarTransactionsCount } =
-    useGetSimilarTransactionsCountQuery(transaction.id);
+  const [getSimilarTransaction, { data: similarTransactionsCount }] =
+    useLazyGetSimilarTransactionsCountQuery();
 
-  if (similarTransactionsCount) {
-    console.log('similarTransactionsCount');
-    console.log(similarTransactionsCount);
-  }
+  useEffect(() => {
+    if (transaction) {
+      getSimilarTransaction(transaction.id, true);
+    }
+  }, [transaction]);
 
   if (setCategorySuccess || setSimilarCategorySuccess) {
     if (updateSimilar) {
@@ -68,11 +65,12 @@ const ChangeCategoryModal = ({
     } else {
       setCategoryReset();
     }
-    setShowModal(false);
+    setState({ show: false, transaction: null });
     setNewCategory('-1');
   }
 
   const handleSubmit = () => {
+    if (!transaction) return;
     if (updateSimilar) {
       setSimilarTransacctionsCategory({
         transactionId: transaction.id,
@@ -86,9 +84,6 @@ const ChangeCategoryModal = ({
     }
   };
 
-  console.log('Modal state:');
-  console.log(showModal);
-
   const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -101,19 +96,19 @@ const ChangeCategoryModal = ({
     p: 4,
   };
   return (
-    <div>
+    transaction && (
       <Modal
         aria-labelledby="Change transaction category"
         aria-describedby="Change transaction category"
-        open={showModal}
-        onClose={() => setShowModal(false)}
+        open={show}
+        onClose={() => setState({ show: false, transaction: null })}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={showModal}>
+        <Fade in={show}>
           <Box sx={style}>
             <Typography variant="h6" component="h2">
               Change Transaction Category
@@ -178,7 +173,7 @@ const ChangeCategoryModal = ({
                 </Typography>
                 {similarTransactionsCount && (
                   <Typography>
-                    {similarTransactionsCount.txCount} similar transactions
+                    {similarTransactionsCount.txCount - 1} similar transactions
                     found
                   </Typography>
                 )}
@@ -203,7 +198,7 @@ const ChangeCategoryModal = ({
               <Button
                 variant="outlined"
                 color="error"
-                onClick={() => setShowModal(false)}
+                onClick={() => setState({ show: false, transaction: null })}
               >
                 Cancel
               </Button>
@@ -218,7 +213,7 @@ const ChangeCategoryModal = ({
           </Box>
         </Fade>
       </Modal>
-    </div>
+    )
   );
 };
 

@@ -1,20 +1,19 @@
 import { Card, CardContent, Typography } from '@mui/material';
-import { useGetSpendingByCategoryLatestQuery } from '../services/api';
+import { useGetSpendingCompareByCategoryQuery } from '../services/api';
 import { TopCategorySummaryChartData } from '../types/types';
-import { formatCurrency, queryDateFormatter } from '../utils/formatters';
+import { formatCurrency } from '../utils/formatters';
 import LoadingSpinner from './LoadingSpinner';
 import TopCategorySummaryChart from './TopCategorySpendChart';
 
 const TopCategorySummaryCard = ({
+  refMonth,
   numberOfItems,
 }: {
+  refMonth: string;
   numberOfItems: number;
 }) => {
-  const refDate = queryDateFormatter.format(new Date());
-  const { data: categories } = useGetSpendingByCategoryLatestQuery(refDate);
+  const { data: categories } = useGetSpendingCompareByCategoryQuery(refMonth);
 
-  console.log('Top spending categories');
-  console.log(categories);
   // TODO: manage different currencies
   const chartData: TopCategorySummaryChartData | undefined =
     categories?.cmValues

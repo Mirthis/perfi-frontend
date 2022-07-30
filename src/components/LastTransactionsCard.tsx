@@ -4,13 +4,15 @@ import { getLastDayOfMonth, queryDateFormatter } from '../utils/formatters';
 import LoadingSpinner from './LoadingSpinner';
 import TransactionsListSimple from './TransactionsListSimple';
 
-const LastTransactionsCard = ({ numberOfItems }: { numberOfItems: number }) => {
-  const monthDate = new Date();
-
+const LastTransactionsCard = ({
+  refMonth,
+  numberOfItems,
+}: {
+  refMonth: string;
+  numberOfItems: number;
+}) => {
+  const monthDate = new Date(refMonth);
   const endDate = queryDateFormatter.format(getLastDayOfMonth(monthDate));
-
-  console.log('LastTransactionCard filters');
-  console.log(`endDate ${endDate} numberOfItems ${numberOfItems}`);
 
   const { data: transactions } = useGetTransactionsQuery({
     endDate,
@@ -18,9 +20,6 @@ const LastTransactionsCard = ({ numberOfItems }: { numberOfItems: number }) => {
     orderBy: 'txDate',
     onlyPositiveAmounts: true,
   });
-
-  console.log('transactions');
-  console.log(transactions);
 
   return (
     <Card variant="outlined">

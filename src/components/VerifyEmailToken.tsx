@@ -25,13 +25,13 @@ const VerifyEmailToken = ({ token }: { token: string }) => {
               setError(
                 `Email verification token expired. Please request a new one`,
               );
-              navigate('/verify_email', { replace: true });
+              navigate('/verify-email', { replace: true });
               break;
             case AuthErrorName.VERIFY_EMAIL_TOKEN_NOT_FOUND:
               setError(
                 `Email verification token not found. Please request a new one`,
               );
-              navigate('/verify_email', { replace: true });
+              navigate('/verify-email', { replace: true });
               break;
             default:
               setError(

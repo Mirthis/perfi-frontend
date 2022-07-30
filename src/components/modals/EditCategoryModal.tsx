@@ -23,10 +23,10 @@ import ColorLensIcon from '@mui/icons-material/ColorLens';
 import {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
-} from '../services/api';
-import { EditCategory, EditCategoryModalState } from '../types/types';
-import CategoryIcon from './CategoryIcon';
-import categoryIconsList from '../utils/categoryIconsList';
+} from '../../services/api';
+import { EditCategory, EditCategoryModalState } from '../../types/types';
+import CategoryIcon from '../CategoryIcon';
+import categoryIconsList from '../../utils/categoryIconsList';
 
 const EditCategoryModal = ({
   state: { show, category },
@@ -151,8 +151,6 @@ const EditCategoryModal = ({
   };
 
   const submitForm = (data: EditCategory) => {
-    console.log('submitted data');
-    console.log(data);
     if (category) {
       editCategory(data)
         .unwrap()

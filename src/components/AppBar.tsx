@@ -51,18 +51,27 @@ const AppBar = () => {
   };
 
   return (
-    <MUIAppBar position="fixed">
+    <MUIAppBar
+      // position="fixed"
+      sx={{
+        backgroundColor: '#ffffff',
+        color: '#000000',
+      }}
+    >
       <Container maxWidth="lg">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
-          >
-            Perfi
-          </Typography>
-
+          {/* Only display on md or bigger screens */}
+          <Link underline="none" href="/" sx={{ color: 'black' }}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            >
+              Perfi
+            </Typography>
+          </Link>
+          {/* Only display on xs or sm screens */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -100,6 +109,7 @@ const AppBar = () => {
             </Menu>
           </Box>
 
+          {/* Only display on xs and sm screens */}
           <Typography
             variant="h6"
             noWrap
@@ -108,13 +118,14 @@ const AppBar = () => {
           >
             LOGO
           </Typography>
+          {/* Only display on md or bigger screens */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link key={page.label} href={page.link}>
+              <Link underline="none" key={page.label} href={page.link}>
                 <Button
                   key={page.label}
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
+                  sx={{ my: 2, color: 'black', display: 'block' }}
                 >
                   {page.label}
                 </Button>
@@ -124,14 +135,14 @@ const AppBar = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             {!isLoggedIn && (
-              <Stack direction="row">
-                <Link href="/login">
-                  <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+              <Stack direction="row" gap={2}>
+                <Link underline="none" href="/login">
+                  <Button variant="outlined" sx={{ my: 2, display: 'block' }}>
                     Sign in
                   </Button>
                 </Link>
-                <Link href="/signup">
-                  <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                <Link underline="none" href="/signup">
+                  <Button variant="contained" sx={{ my: 2, display: 'block' }}>
                     Sign up
                   </Button>
                 </Link>
