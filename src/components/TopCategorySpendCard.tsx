@@ -1,7 +1,7 @@
 import { Card, CardContent, Typography } from '@mui/material';
 import { useGetSpendingCompareByCategoryQuery } from '../services/api';
 import { TopCategorySummaryChartData } from '../types/types';
-import { formatCurrency } from '../utils/formatters';
+import { formatCurrency, selectDateFormatter } from '../utils/formatters';
 import LoadingSpinner from './LoadingSpinner';
 import TopCategorySummaryChart from './TopCategorySpendChart';
 
@@ -27,11 +27,13 @@ const TopCategorySummaryCard = ({
       .sort((prev, next) => next.cmAmount - prev.cmAmount)
       .slice(0, numberOfItems);
 
+  const monthTitle = selectDateFormatter.format(new Date(refMonth));
+
   return (
-    <Card variant="outlined">
+    <Card sx={{ height: '100%' }} variant="outlined">
       <CardContent>
         <Typography mb={2} variant="h6">
-          Top Expenses (current month)
+          Top Caegories - {monthTitle}
         </Typography>
         {chartData ? (
           <TopCategorySummaryChart data={chartData} />

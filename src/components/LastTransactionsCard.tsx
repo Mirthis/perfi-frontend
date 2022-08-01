@@ -22,7 +22,7 @@ const LastTransactionsCard = ({
   });
 
   return (
-    <Card variant="outlined">
+    <Card sx={{ height: '100%' }} variant="outlined">
       <CardContent>
         <Typography variant="h6">Last Transactions</Typography>
         {transactions ? (

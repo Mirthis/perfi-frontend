@@ -15,6 +15,9 @@ const Dashboard = () => {
   const month = queryDateFormatter.format(new Date());
   const { data: accounts, isLoading } = useGetAccountsQuery();
 
+  console.log('Dashboard monthRef');
+  console.log(month);
+
   return (
     <Box>
       <PageTitle title={pageTitle} />

@@ -4,6 +4,7 @@ import {
   getFirstDayOfMonth,
   getLastDayOfMonth,
   queryDateFormatter,
+  selectDateFormatter,
 } from '../utils/formatters';
 import LoadingSpinner from './LoadingSpinner';
 import TransactionsListSimple from './TransactionsListSimple';
@@ -28,11 +29,15 @@ const TopExpensesCard = ({
     onlyPositiveAmounts: true,
   });
 
+  const monthTitle = selectDateFormatter.format(monthDate);
+
+  console.log('TopExpenses transaction');
+  console.log(transactions);
   return (
     <Card variant="outlined">
       <CardContent>
         <Typography mb={2} variant="h6">
-          Top Expenses (current month)
+          Top Expenses - {monthTitle}
         </Typography>
         {transactions ? (
           <TransactionsListSimple transactions={transactions.rows} />

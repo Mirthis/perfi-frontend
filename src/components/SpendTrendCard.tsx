@@ -1,6 +1,14 @@
-import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
-import { LabelList, Line, LineChart, XAxis } from 'recharts';
+import { Card, CardContent, Typography } from '@mui/material';
+import {
+  LabelList,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  XAxis,
+} from 'recharts';
 import { useGetSpendingCumulativeQuery } from '../services/api';
+import { selectDateFormatter } from '../utils/formatters';
 
 interface DataPoint {
   day: number;
@@ -46,6 +54,7 @@ const SpendTrendCard = ({ refMonth }: { refMonth: string }) => {
   const { data: spendingTrend } = useGetSpendingCumulativeQuery(refMonth);
 
   const data: Array<DataPoint> = [];
+  const currMonthLastDay = new Date(refMonth).getDate();
   // TODO:  create better way to merge data;
   if (spendingTrend) {
     const { cmValues, pmValues, p12Values } = spendingTrend;
@@ -62,11 +71,11 @@ const SpendTrendCard = ({ refMonth }: { refMonth: string }) => {
         p12Amount:
           Number(p12Values[i]?.txAmount) / 12 || data[i - 1]?.p12Amount || 0,
       };
-      if (i < cmValues.length) {
+      if (i < currMonthLastDay) {
         dataPoint.cmAmount =
           Number(cmValues[i]?.txAmount) || data[i - 1]?.cmAmount || 0;
       }
-      if (i === cmValues.length - 1) {
+      if (i === currMonthLastDay - 1) {
         dataPoint.label = `${dataPoint.cmAmount}`;
         dataPoint.lastItem = true;
       }
@@ -74,14 +83,21 @@ const SpendTrendCard = ({ refMonth }: { refMonth: string }) => {
     }
   }
 
+  const monthTitle = selectDateFormatter.format(new Date(refMonth));
+
+  // TODO: fix chart label (add curency sign and formattting)
+  // TODO: fix lengend lables, proper descriptions
+  // TODO: check if label on the line is visibile when close to chart margins
+  // TODO:  check if cumulative can be done on the chart rather than back-end
+
   if (spendingTrend) {
     return (
-      <Card variant="outlined">
+      <Card sx={{ height: '100%' }} variant="outlined">
         <CardContent>
           <Typography mb={2} variant="h6">
-            Spending trend - to date
+            Spending - {monthTitle} - to date
           </Typography>
-          <Stack direction="row" justifyContent="space-between">
+          {/* <Stack direction="row" justifyContent="space-between">
             <Box sx={{ flexGrow: 1 }}>
               <Typography>This Month</Typography>
               <Typography>£600</Typography>
@@ -94,20 +110,23 @@ const SpendTrendCard = ({ refMonth }: { refMonth: string }) => {
               <Typography>12 Month Average</Typography>
               <Typography>£600</Typography>
             </Box>
-          </Stack>
-          <LineChart data={data} width={300} height={200}>
-            <XAxis dataKey="day" />
-            <Line
-              dataKey="cmAmount"
-              // @ts-ignore
-              dot={<CustomizedDot />}
-              // @ts-ignore
-            >
-              <LabelList dataKey="label" position="bottom" />
-            </Line>
-            <Line dataKey="pmAmount" dot={false} />
-            <Line dataKey="p12Amount" dot={false} />
-          </LineChart>
+          </Stack> */}
+          <ResponsiveContainer height={250}>
+            <LineChart data={data}>
+              <XAxis dataKey="day" />
+              <Legend />
+              <Line
+                dataKey="cmAmount"
+                // @ts-ignore
+                dot={<CustomizedDot />}
+                // @ts-ignore
+              >
+                <LabelList dataKey="label" position="bottom" />
+              </Line>
+              <Line dataKey="pmAmount" dot={false} />
+              <Line dataKey="p12Amount" dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
     );

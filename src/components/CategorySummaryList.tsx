@@ -1,8 +1,9 @@
-import { Box, CircularProgress, Grid } from '@mui/material';
+import { Box, CircularProgress, Grid, Typography } from '@mui/material';
 import { useAppSelector } from '../reducers/hooks';
 import { useGetSpendingByCategoryQuery } from '../services/api';
 import { GetSpendingByOptionsBase } from '../types/types';
 import CategorySummaryCard from './CategorySummaryCard';
+import PageTitle from './PageTitle';
 
 const CategorYSummaryList = () => {
   const { startDate, endDate, account } = useAppSelector(
@@ -22,18 +23,25 @@ const CategorYSummaryList = () => {
   const { data: summaryData, isLoading: summaryIsLoading } =
     useGetSpendingByCategoryQuery(queryFilter);
 
-  return summaryIsLoading ? (
-    <Box sx={{ display: 'flex' }}>
-      <CircularProgress />
-    </Box>
-  ) : (
-    <Grid container spacing={2}>
-      {summaryData?.map((sd) => (
-        <Grid key={sd.id} item xs={12} md={6} lg={4}>
-          <CategorySummaryCard summaryData={sd} />
-        </Grid>
-      ))}
-    </Grid>
+  return (
+    <>
+      <PageTitle title="Spending View" />
+      {summaryIsLoading && (
+        <Box sx={{ display: 'flex' }}>
+          <CircularProgress />
+        </Box>
+      )}
+      {summaryData && summaryData.length === 0 && (
+        <Typography>No data</Typography>
+      )}
+      <Grid container spacing={2}>
+        {summaryData?.map((sd) => (
+          <Grid key={sd.id} item xs={12} md={6} lg={4}>
+            <CategorySummaryCard summaryData={sd} />
+          </Grid>
+        ))}
+      </Grid>
+    </>
   );
 };
 

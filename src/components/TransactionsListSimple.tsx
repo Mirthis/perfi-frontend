@@ -36,6 +36,9 @@ const TransactionsListSimple = ({
   transactions: Transaction[];
 }) => (
   <Box>
+    {transactions.length === 0 && (
+      <Typography>No transactions found</Typography>
+    )}
     {transactions.map((t) => (
       <TransactionLineSimple transaction={t} key={t.id} />
     ))}
