@@ -12,6 +12,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link, Stack } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import { useAppSelector } from '../reducers/hooks';
 import { LoginState } from '../types/types';
 
@@ -62,14 +63,17 @@ const AppBar = () => {
         <Toolbar disableGutters>
           {/* Only display on md or bigger screens */}
           <Link underline="none" href="/" sx={{ color: 'black' }}>
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
+            <Box
               sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+              alignItems="center"
+              display="flex"
+              gap={2}
             >
-              Perfi
-            </Typography>
+              <AccountBalanceWalletOutlinedIcon fontSize="large" />
+              <Typography variant="h6" noWrap component="div">
+                Perfi
+              </Typography>
+            </Box>
           </Link>
           {/* Only display on xs or sm screens */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -102,22 +106,27 @@ const AppBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page.label} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page.label}</Typography>
-                </MenuItem>
+                <Link underline="none" key={page.label} href={page.link}>
+                  <MenuItem key={page.label} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page.label}</Typography>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>
 
           {/* Only display on xs and sm screens */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
+          <Box
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+            alignItems="center"
+            display="flex"
+            gap={2}
           >
-            LOGO
-          </Typography>
+            <AccountBalanceWalletOutlinedIcon fontSize="large" />
+            <Typography variant="h6" noWrap component="div">
+              Perfi
+            </Typography>
+          </Box>
           {/* Only display on md or bigger screens */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (

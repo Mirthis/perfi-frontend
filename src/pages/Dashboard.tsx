@@ -12,11 +12,8 @@ import { queryDateFormatter } from '../utils/formatters';
 
 const Dashboard = () => {
   const pageTitle = 'Dashboard';
-  const month = queryDateFormatter.format(new Date());
+  const month = queryDateFormatter.format(new Date('2022-07-15'));
   const { data: accounts, isLoading } = useGetAccountsQuery();
-
-  console.log('Dashboard monthRef');
-  console.log(month);
 
   return (
     <Box>

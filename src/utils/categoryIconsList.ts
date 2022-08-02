@@ -14,6 +14,7 @@ import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import TrainOutlinedIcon from '@mui/icons-material/TrainOutlined';
 import ConnectingAirportsOutlinedIcon from '@mui/icons-material/ConnectingAirportsOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 import { SvgIconTypeMap } from '@mui/material';
 import CategoryIcon from '@mui/icons-material/Category';
@@ -36,6 +37,8 @@ const categoryIconsList: CategoryIconsList = {
   groceries: LocalGroceryStoreIcon,
   health: HealthAndSafetyIcon,
   housing: HomeIcon,
+  internal: CompareArrowsIcon,
+  misc: CategoryIcon,
   shopping: ShoppingBagOutlinedIcon,
   transfer: CurrencyExchangeIcon,
   transport: TrainOutlinedIcon,

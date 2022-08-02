@@ -9,6 +9,37 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { TopCategorySummaryChartData } from '../types/types';
+import { formatCurrency } from '../utils/formatters';
+
+const renderCustomizedLabel = ({
+  x,
+  y,
+  width,
+  height,
+  value,
+}: {
+  x?: string | number | undefined;
+  y?: string | number | undefined;
+  width?: string | number | undefined;
+  height?: string | number | undefined;
+  value?: string | number | undefined;
+}) => {
+  if (!x || !y || !width || !height || !value) return null;
+
+  const fireOffset = Number(width) < 20;
+  const offset = fireOffset ? -25 : 5;
+  return (
+    <text
+      x={Number(x) + Number(width) - offset}
+      y={Number(y) + Number(height) / 1.5}
+      fill={fireOffset ? '#285A64' : '#fff'}
+      textAnchor="end"
+      fontSize={12}
+    >
+      {formatCurrency(Number(value), 'GBP', 0)}
+    </text>
+  );
+};
 
 const TopCategorySummaryChart = ({
   data,
@@ -26,12 +57,15 @@ const TopCategorySummaryChart = ({
           width={100}
           tickFormatter={(entry: string) => entry.slice(0, 15)}
         />
-        <Tooltip label="name" />
-        <Bar dataKey="cmAmount" fill="#8884d8">
-          <LabelList dataKey="label" fill="#ffffff" fontSize={12} />
+        <Tooltip
+          label="name"
+          formatter={(value: number) => formatCurrency(value, 'GBP', 0)}
+        />
+        <Bar name="Current Month" dataKey="cmAmount" fill="#bc92f6">
+          <LabelList content={renderCustomizedLabel} position="insideRight" />
         </Bar>
-        <Bar dataKey="pmAmount" fill="#8884d8">
-          <LabelList dataKey="label" fill="#ffffff" fontSize={12} />
+        <Bar name="Previous Month" dataKey="pmAmount" fill="#ff77c2">
+          <LabelList content={renderCustomizedLabel} position="insideRight" />
         </Bar>
       </BarChart>
     </ResponsiveContainer>

@@ -1,4 +1,11 @@
-import { Avatar, Box, Grid, IconButton, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { MouseEventHandler } from 'react';
@@ -10,9 +17,13 @@ import CategoryIcon from './CategoryIcon';
 const TransactionLine = ({
   transaction,
   handleMenuClick,
+  handleCategoryClick,
+  handleAccountClick,
 }: {
   transaction: Transaction;
   handleMenuClick: MouseEventHandler<HTMLButtonElement>;
+  handleCategoryClick: MouseEventHandler<HTMLButtonElement>;
+  handleAccountClick: MouseEventHandler<HTMLButtonElement>;
 }) => (
   // const [excludeTrasnaction, { data }] = useExcludeTransactionMutation();
 
@@ -39,10 +50,12 @@ const TransactionLine = ({
     </Grid>
     <Grid item container xs={2} direction="column">
       <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
-        <CategoryIcon name={transaction.category.iconName} />
-        {/* <Typography variant="body2" display={{ xs: 'none', sm: 'flex' }}>
-            {transaction.category.name}
-          </Typography> */}
+        <Button
+          onClick={handleCategoryClick}
+          data-categoryid={transaction.category.id}
+        >
+          <CategoryIcon name={transaction.category.iconName} />
+        </Button>
       </Box>
     </Grid>
     <Grid item xs={2}>
@@ -53,10 +66,15 @@ const TransactionLine = ({
           gap: 1,
         }}
       >
-        <Avatar
-          alt={transaction.account.name}
-          src={`data:image/png;base64,${transaction.account.item.institution.logo}`}
-        />
+        <Button
+          onClick={handleAccountClick}
+          data-accountid={transaction.account.id}
+        >
+          <Avatar
+            alt={transaction.account.name}
+            src={`data:image/png;base64,${transaction.account.item.institution.logo}`}
+          />
+        </Button>
         {/* <Typography variant="body2" display={{ xs: 'none', sm: 'flex' }}>
             {transaction.account.name}
           </Typography> */}

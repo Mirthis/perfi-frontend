@@ -2,7 +2,12 @@ import { Box, Button, Menu, MenuItem, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAppDispatch, useAppSelector } from '../reducers/hooks';
-import { setHasMore, setPageFilter } from '../reducers/txFilterReducer';
+import {
+  setAccountFilter,
+  setCategoryFilter,
+  setHasMore,
+  setPageFilter,
+} from '../reducers/txFilterReducer';
 import {
   useExcludeTransactionMutation,
   useLazyGetTransactionsQuery,
@@ -147,6 +152,14 @@ const TransactionsList = () => {
     },
   });
 
+  const handleCategoryClick = (event: React.MouseEvent<HTMLElement>) => {
+    dispatch(setCategoryFilter(Number(event.currentTarget.dataset.categoryid)));
+  };
+
+  const handleAccountClick = (event: React.MouseEvent<HTMLElement>) => {
+    dispatch(setAccountFilter(Number(event.currentTarget.dataset.accountid)));
+  };
+
   let lastUsedDate: string = '';
 
   return (
@@ -204,6 +217,8 @@ const TransactionsList = () => {
                   key={tx.id}
                   transaction={tx}
                   handleMenuClick={handleMenuClick}
+                  handleCategoryClick={handleCategoryClick}
+                  handleAccountClick={handleAccountClick}
                 />
               </Box>
             );

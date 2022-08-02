@@ -21,7 +21,7 @@ export { default as PageTitle } from './PageTitle';
 export { default as PlaidProvider } from './PlaidProvider';
 export { default as PrivateRoute } from './PrivateRoute';
 export { default as SignUpForm } from './SignUpForm';
-export { default as MonthlySpendBarChart } from './MonthlySpendBarChart';
+export { default as MonthlySpendLineChart } from './MonthlySpendLineChart';
 export { default as TransactionsFilter } from './TransactionsFilter';
 export { default as TransactionsList } from './TransactionsList';
 export { default as TransactionLine } from './TransactionLine';

@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@mui/material';
 import LoadingSpinner from './LoadingSpinner';
-import MonthlySpendBarChart from './MonthlySpendBarChart';
+import MonthlySpendLineChart from './MonthlySpendLineChart';
 import { useGetSpendingQuery } from '../services/api';
 import { GetSpendingByOptions, SpendingChartDataPoint } from '../types/types';
 import {
@@ -43,7 +43,7 @@ const MonthlySpendCard = ({
       return {
         date,
         dateLabel: chartDateFormatter.format(date),
-        amount,
+        amount: Math.round(amount),
         amountLabel: formatCurrency(amount, 'GBP', 0),
         count: Number(d.txCount),
       };
@@ -53,10 +53,10 @@ const MonthlySpendCard = ({
     <>
       {isLoading && <LoadingSpinner />}
       {data && (
-        <Card>
+        <Card sx={{ height: '100%' }} variant="outlined">
           <CardContent>
             <CardTitle title="Monthly Spending" />
-            <MonthlySpendBarChart data={data} />
+            <MonthlySpendLineChart data={data} />
           </CardContent>
         </Card>
       )}

@@ -24,9 +24,21 @@ const CategorySummaryCard = ({
   };
 
   return (
-    <Card variant="outlined">
+    <Card
+      variant="outlined"
+      sx={{
+        borderLeftWidth: 4,
+        borderLeftColor: summaryData.iconColor,
+        height: '100%',
+      }}
+    >
       <CardHeader
-        avatar={<CategoryIcon name={summaryData.iconName} />}
+        avatar={
+          <CategoryIcon
+            name={summaryData.iconName}
+            color={summaryData.iconColor}
+          />
+        }
         titleTypographyProps={{ variant: 'h4' }}
         title={summaryData.name}
       />

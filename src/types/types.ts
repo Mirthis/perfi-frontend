@@ -227,7 +227,8 @@ export type GetSpendingRes = Array<{
 }>;
 
 export enum TxFilterMode {
-  Summary = 'Summary',
+  Category = 'Categories',
+  Account = 'Accounts',
   List = 'List',
 }
 
@@ -367,7 +368,7 @@ export type BarChartExpensesData = Array<{
 
 export interface SpendingChartDataPoint {
   dateLabel: string;
-  amount: Number;
+  amount: number;
   amountLabel: string;
-  count: Number;
+  count: number;
 }

@@ -6,12 +6,17 @@ import {
   LineChart,
   ResponsiveContainer,
   XAxis,
+  Tooltip,
 } from 'recharts';
 import { useGetSpendingCumulativeQuery } from '../services/api';
-import { selectDateFormatter } from '../utils/formatters';
+import {
+  ddmmDateFormatter,
+  formatCurrency,
+  selectDateFormatter,
+} from '../utils/formatters';
 
 interface DataPoint {
-  day: number;
+  date: string;
   cmAmount?: number;
   pmAmount: number;
   p12Amount: number;
@@ -50,6 +55,31 @@ const CustomizedDot = ({
   return null;
 };
 
+const renderCustomizedLabel = ({
+  x,
+  y,
+  value,
+}: {
+  x?: string | number | undefined;
+  y?: string | number | undefined;
+  value?: string | number | undefined;
+}) => {
+  if (!x || !y || !value) return null;
+
+  const offset = Number(x) < 20 ? -20 : 0;
+  return (
+    <text
+      x={Number(x) - offset}
+      y={Number(y) + 20}
+      fill="#000"
+      textAnchor="end"
+      fontSize={12}
+    >
+      {formatCurrency(Number(value), 'GBP', 0)}
+    </text>
+  );
+};
+
 const SpendTrendCard = ({ refMonth }: { refMonth: string }) => {
   const { data: spendingTrend } = useGetSpendingCumulativeQuery(refMonth);
 
@@ -65,8 +95,9 @@ const SpendTrendCard = ({ refMonth }: { refMonth: string }) => {
     );
 
     for (let i = 0; i < maxLength; i += 1) {
+      const dayNum = cmValues[i]?.day || pmValues[i]?.day || p12Values[i]?.day;
       const dataPoint: DataPoint = {
-        day: cmValues[i]?.day || pmValues[i]?.day || p12Values[i]?.day,
+        date: ddmmDateFormatter.format(new Date(refMonth).setDate(dayNum)),
         pmAmount: Number(pmValues[i]?.txAmount) || data[i - 1]?.pmAmount || 0,
         p12Amount:
           Number(p12Values[i]?.txAmount) / 12 || data[i - 1]?.p12Amount || 0,
@@ -113,18 +144,45 @@ const SpendTrendCard = ({ refMonth }: { refMonth: string }) => {
           </Stack> */}
           <ResponsiveContainer height={250}>
             <LineChart data={data}>
-              <XAxis dataKey="day" />
+              <XAxis
+                dataKey="date"
+                type="category"
+                tick={{ fontSize: 12 }}
+                angle={-45}
+                textAnchor="end"
+                height={50}
+              />
+              <Tooltip
+                formatter={(value: number) => formatCurrency(value, 'GBP', 0)}
+              />
               <Legend />
               <Line
+                name="Current Month"
                 dataKey="cmAmount"
                 // @ts-ignore
                 dot={<CustomizedDot />}
-                // @ts-ignore
+                stroke="#bc92f6"
+                strokeWidth={3}
               >
-                <LabelList dataKey="label" position="bottom" />
+                <LabelList
+                  dataKey="label"
+                  position="bottom"
+                  formatter={(value: number) => formatCurrency(value, 'GBP', 0)}
+                  content={renderCustomizedLabel}
+                />
               </Line>
-              <Line dataKey="pmAmount" dot={false} />
-              <Line dataKey="p12Amount" dot={false} />
+              <Line
+                name="Previous Month"
+                dataKey="pmAmount"
+                dot={false}
+                stroke="#ff77c2"
+              />
+              <Line
+                name="12 Month Average"
+                dataKey="p12Amount"
+                dot={false}
+                stroke="#ff7b6f"
+              />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>

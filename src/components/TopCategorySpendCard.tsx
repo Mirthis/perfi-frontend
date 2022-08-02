@@ -14,6 +14,9 @@ const TopCategorySummaryCard = ({
 }) => {
   const { data: categories } = useGetSpendingCompareByCategoryQuery(refMonth);
 
+  console.log('Top spending categories');
+  console.log(categories);
+
   // TODO: manage different currencies
   const chartData: TopCategorySummaryChartData | undefined =
     categories?.cmValues
@@ -25,7 +28,7 @@ const TopCategorySummaryCard = ({
           Number(categories.pmValues.find((i) => i.id === c.id)?.txAmount) || 0,
       }))
       .sort((prev, next) => next.cmAmount - prev.cmAmount)
-      .slice(0, numberOfItems);
+      .slice(0, Math.min(numberOfItems, categories?.cmValues.length));
 
   const monthTitle = selectDateFormatter.format(new Date(refMonth));
 

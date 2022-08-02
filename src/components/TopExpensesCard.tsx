@@ -31,10 +31,8 @@ const TopExpensesCard = ({
 
   const monthTitle = selectDateFormatter.format(monthDate);
 
-  console.log('TopExpenses transaction');
-  console.log(transactions);
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{ height: '100%' }}>
       <CardContent>
         <Typography mb={2} variant="h6">
           Top Expenses - {monthTitle}

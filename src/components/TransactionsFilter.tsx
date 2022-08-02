@@ -1,18 +1,17 @@
 import {
-  Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
   ToggleButtonGroup,
   ToggleButton,
+  Tabs,
+  Tab,
+  Stack,
+  Button,
+  Typography,
 } from '@mui/material';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useAppDispatch, useAppSelector } from '../reducers/hooks';
 import {
   clearAccountFilter,
-  setAccountFilter,
-  setCategoryFilter,
+  clearCategoryFilter,
   setModeFilter,
   setMonthFilter,
 } from '../reducers/txFilterReducer';
@@ -24,9 +23,9 @@ const getMonthsList = (earliestDate: Date, latestDate: Date) => {
   latestDate.setDate(1);
   const selectDateOptions: Array<{ key: string; value: string }> = [];
   for (
-    let curDate = latestDate;
-    curDate >= earliestDate;
-    curDate.setMonth(curDate.getMonth() - 1)
+    let curDate = earliestDate;
+    curDate <= latestDate;
+    curDate.setMonth(curDate.getMonth() + 1)
   ) {
     selectDateOptions.push({
       key: queryDateFormatter.format(curDate),
@@ -45,8 +44,11 @@ const TransactionsFilter = () => {
   const earliestDate = new Date('01 January 2021');
   const selectDateOptions = getMonthsList(earliestDate, latestDate);
 
-  const handleMonthChange = (event: SelectChangeEvent) => {
-    dispatch(setMonthFilter(event.target.value));
+  const handleMonthChange = (
+    _event: React.SyntheticEvent,
+    newValue: string,
+  ) => {
+    dispatch(setMonthFilter(newValue));
   };
 
   const handleModeChange = (
@@ -58,15 +60,23 @@ const TransactionsFilter = () => {
     }
   };
 
-  const handleCategoryChange = (event: SelectChangeEvent) => {
-    dispatch(setCategoryFilter(Number(event.target.value)));
+  // const handleCategoryChange = (event: SelectChangeEvent) => {
+  //   dispatch(setCategoryFilter(Number(event.target.value)));
+  // };
+
+  // const handleAccountChange = (event: SelectChangeEvent) => {
+  //   if (event.target.value === '-1') {
+  //     dispatch(clearAccountFilter());
+  //   }
+  //   dispatch(setAccountFilter(Number(event.target.value)));
+  // };
+
+  const handleCategoryFilterClick = () => {
+    dispatch(clearCategoryFilter());
   };
 
-  const handleAccountChange = (event: SelectChangeEvent) => {
-    if (event.target.value === '-1') {
-      dispatch(clearAccountFilter());
-    }
-    dispatch(setAccountFilter(Number(event.target.value)));
+  const handleAccountFilterClick = () => {
+    dispatch(clearAccountFilter());
   };
 
   // TODO: manage loading and errors
@@ -74,79 +84,62 @@ const TransactionsFilter = () => {
   const { data: accountsList } = useGetAccountsQuery();
 
   return (
-    <Box sx={{ minWidth: 120, display: 'flex', gap: 2, m: 2, p: 2 }}>
-      <FormControl>
-        <InputLabel id="transaction-month-label">Month</InputLabel>
-        <Select
-          labelId="dtransaction-month-label"
-          id="transaction-month"
+    <Stack rowGap={4}>
+      <Stack direction="row" columnGap={4}>
+        <ToggleButtonGroup
+          color="primary"
+          value={mode}
+          exclusive
+          onChange={handleModeChange}
+        >
+          {Object.entries(TxFilterMode).map(([key, value]) => (
+            <ToggleButton key={key} value={value}>
+              {key}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+        <Tabs
           value={month}
-          label="Month"
           onChange={handleMonthChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="scrollable auto tabs example"
         >
           {selectDateOptions.map((d) => (
-            <MenuItem key={d.key} value={d.key}>
-              {d.value}
-            </MenuItem>
+            <Tab key={d.key} label={d.value} value={d.key} />
           ))}
-        </Select>
-      </FormControl>
-      <ToggleButtonGroup
-        color="primary"
-        value={mode}
-        exclusive
-        onChange={handleModeChange}
-      >
-        {Object.entries(TxFilterMode).map(([key, value]) => (
-          <ToggleButton key={key} value={value}>
-            {key}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
-
-      {accountsList && (
-        <FormControl>
-          <InputLabel id="transaction-category-label">Account</InputLabel>
-          <Select
-            labelId="transaction-account-label"
-            id="transaction-account"
-            value={account?.toString() || '-1'}
-            label="account"
-            onChange={handleAccountChange}
-          >
-            <MenuItem key={-1} value="-1">
-              Select an account
-            </MenuItem>
-            {accountsList.map((acc) => (
-              <MenuItem key={acc.id} value={acc.id}>
-                {acc.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      )}
-      {categoriesList && mode === TxFilterMode.List && (
-        <FormControl>
-          <InputLabel id="transaction-category-label">Category</InputLabel>
-          <Select
-            labelId="transaction-category-label"
-            id="transaction-category"
-            value={category?.toString() || '-1'}
-            label="Category"
-            onChange={handleCategoryChange}
-          >
-            <MenuItem key={-1} value="-1">
-              Select a category
-            </MenuItem>
-            {categoriesList.map((c) => (
-              <MenuItem key={c.id} value={c.id}>
-                {c.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      )}
-    </Box>
+        </Tabs>
+      </Stack>
+      <Stack direction="row" columnGap={4} alignItems="center">
+        {(category || account) && (
+          <Typography variant="subtitle1">Selected filters</Typography>
+        )}
+        {category && (
+          <Stack>
+            <Typography>Category</Typography>
+            <Button
+              onClick={handleCategoryFilterClick}
+              startIcon={<HighlightOffIcon />}
+              variant="text"
+            >
+              {categoriesList?.find((c) => c.id === category)?.name}
+            </Button>
+          </Stack>
+        )}
+        {account && (
+          <Stack>
+            <Typography>Account</Typography>
+            <Button
+              onClick={handleAccountFilterClick}
+              startIcon={<HighlightOffIcon />}
+              variant="text"
+            >
+              {accountsList?.find((a) => a.id === account)?.name}
+            </Button>
+          </Stack>
+        )}
+      </Stack>
+    </Stack>
   );
 };
 

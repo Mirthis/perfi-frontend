@@ -11,7 +11,7 @@ const initMonth = getFirstDayOfMonth(new Date());
 const initialState: TxFilter = {
   month: queryDateFormatter.format(initMonth),
   ...getStartEndDate(initMonth),
-  mode: TxFilterMode.Summary,
+  mode: TxFilterMode.Category,
   page: 1,
   hasMore: false,
 };
