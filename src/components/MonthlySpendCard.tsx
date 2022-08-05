@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@mui/material';
+import { Card, CardContent, Stack, Typography } from '@mui/material';
 import LoadingSpinner from './LoadingSpinner';
 import MonthlySpendLineChart from './MonthlySpendLineChart';
 import { useGetSpendingQuery } from '../services/api';
@@ -55,7 +55,12 @@ const MonthlySpendCard = ({
       {data && (
         <Card sx={{ height: '100%' }} variant="outlined">
           <CardContent>
-            <CardTitle title="Monthly Spending" />
+            <Stack direction="row" gap={1} alignItems="baseline">
+              <CardTitle title="Monthly Spending" />
+              {(categoryId || accountId) && (
+                <Typography variant="body2">(Filtered)</Typography>
+              )}
+            </Stack>
             <MonthlySpendLineChart data={data} />
           </CardContent>
         </Card>

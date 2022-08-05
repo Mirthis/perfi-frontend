@@ -11,7 +11,7 @@ const initMonth = getFirstDayOfMonth(new Date());
 const initialState: TxFilter = {
   month: queryDateFormatter.format(initMonth),
   ...getStartEndDate(initMonth),
-  mode: TxFilterMode.Category,
+  mode: TxFilterMode.Categories,
   page: 1,
   hasMore: false,
 };
@@ -30,7 +30,7 @@ const txFilterSlice = createSlice({
     },
     setCategoryFilter(state, action: PayloadAction<number>) {
       const newCategory = action.payload;
-      const newMode = newCategory !== -1 ? TxFilterMode.List : state.mode;
+      const newMode = newCategory !== -1 ? TxFilterMode.Categories : state.mode;
       const newState: TxFilter = {
         ...state,
         mode: newMode,

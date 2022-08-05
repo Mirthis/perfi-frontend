@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import LinkAccount from './LinkAccount';
+import LinkAccountNew from './LinkAccountNew';
 import { setLinkToken } from '../reducers/plaidReducer';
 import PlaidProvider from './PlaidProvider';
 import { useCreateLinkTokenMutation } from '../services/api';
@@ -27,7 +27,7 @@ const AddAccount = () => {
   if (isLoading || linkToken === null) return <div>Loading...</div>;
   return (
     <PlaidProvider>
-      <LinkAccount linkToken={linkToken} />
+      <LinkAccountNew linkToken={linkToken} />
     </PlaidProvider>
   );
 };

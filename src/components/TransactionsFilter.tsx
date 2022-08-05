@@ -19,6 +19,7 @@ import { useGetAccountsQuery, useGetCategoriesQuery } from '../services/api';
 import { TxFilterMode } from '../types/types';
 import { queryDateFormatter, selectDateFormatter } from '../utils/formatters';
 
+// TODO: Get months list from back-end
 const getMonthsList = (earliestDate: Date, latestDate: Date) => {
   latestDate.setDate(1);
   const selectDateOptions: Array<{ key: string; value: string }> = [];
@@ -35,7 +36,7 @@ const getMonthsList = (earliestDate: Date, latestDate: Date) => {
   return selectDateOptions;
 };
 
-const TransactionsFilter = () => {
+const TransactionsFilter = ({ showMode = false }: { showMode?: boolean }) => {
   const dispatch = useAppDispatch();
   const { month, mode, category, account } = useAppSelector(
     (state) => state.txFilter,
@@ -60,17 +61,6 @@ const TransactionsFilter = () => {
     }
   };
 
-  // const handleCategoryChange = (event: SelectChangeEvent) => {
-  //   dispatch(setCategoryFilter(Number(event.target.value)));
-  // };
-
-  // const handleAccountChange = (event: SelectChangeEvent) => {
-  //   if (event.target.value === '-1') {
-  //     dispatch(clearAccountFilter());
-  //   }
-  //   dispatch(setAccountFilter(Number(event.target.value)));
-  // };
-
   const handleCategoryFilterClick = () => {
     dispatch(clearCategoryFilter());
   };
@@ -84,39 +74,38 @@ const TransactionsFilter = () => {
   const { data: accountsList } = useGetAccountsQuery();
 
   return (
-    <Stack rowGap={4}>
-      <Stack direction="row" columnGap={4}>
-        <ToggleButtonGroup
-          color="primary"
-          value={mode}
-          exclusive
-          onChange={handleModeChange}
-        >
-          {Object.entries(TxFilterMode).map(([key, value]) => (
-            <ToggleButton key={key} value={value}>
-              {key}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-        <Tabs
-          value={month}
-          onChange={handleMonthChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="scrollable auto tabs example"
-        >
-          {selectDateOptions.map((d) => (
-            <Tab key={d.key} label={d.value} value={d.key} />
-          ))}
-        </Tabs>
-      </Stack>
+    <Stack rowGap={1}>
+      <Tabs
+        value={month}
+        onChange={handleMonthChange}
+        variant="scrollable"
+        scrollButtons="auto"
+        aria-label="scrollable auto tabs example"
+      >
+        {selectDateOptions.map((d) => (
+          <Tab key={d.key} label={d.value} value={d.key} />
+        ))}
+      </Tabs>
       <Stack direction="row" columnGap={4} alignItems="center">
-        {(category || account) && (
-          <Typography variant="subtitle1">Selected filters</Typography>
+        {showMode && (
+          <ToggleButtonGroup
+            color="primary"
+            value={mode}
+            exclusive
+            onChange={handleModeChange}
+          >
+            {Object.entries(TxFilterMode).map(([key, value]) => (
+              <ToggleButton key={key} value={value}>
+                {key}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
         )}
-        {category && (
-          <Stack>
-            <Typography>Category</Typography>
+        <Stack direction="row" columnGap={1} alignItems="center">
+          {(category || account) && (
+            <Typography variant="subtitle1">Filters</Typography>
+          )}
+          {category && (
             <Button
               onClick={handleCategoryFilterClick}
               startIcon={<HighlightOffIcon />}
@@ -124,11 +113,8 @@ const TransactionsFilter = () => {
             >
               {categoriesList?.find((c) => c.id === category)?.name}
             </Button>
-          </Stack>
-        )}
-        {account && (
-          <Stack>
-            <Typography>Account</Typography>
+          )}
+          {account && (
             <Button
               onClick={handleAccountFilterClick}
               startIcon={<HighlightOffIcon />}
@@ -136,8 +122,8 @@ const TransactionsFilter = () => {
             >
               {accountsList?.find((a) => a.id === account)?.name}
             </Button>
-          </Stack>
-        )}
+          )}
+        </Stack>
       </Stack>
     </Stack>
   );

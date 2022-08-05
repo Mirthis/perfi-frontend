@@ -30,8 +30,9 @@ const AppBar = () => {
 
   const allPages = [
     { label: 'Dashboard', link: '/dashboard', show: isLoggedIn },
-    { label: 'Accounts', link: '/accounts', show: isLoggedIn },
+    { label: 'Spending', link: '/spending', show: isLoggedIn },
     { label: 'Transactions', link: '/transactions', show: isLoggedIn },
+    { label: 'Accounts', link: '/accounts', show: isLoggedIn },
   ];
 
   const pages = allPages.filter((page) => page.show);
@@ -59,7 +60,7 @@ const AppBar = () => {
         color: '#000000',
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Only display on md or bigger screens */}
           <Link underline="none" href="/" sx={{ color: 'black' }}>

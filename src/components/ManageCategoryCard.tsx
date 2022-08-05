@@ -36,17 +36,17 @@ const ManageCategoryCard = ({
     </CardContent>
     <CardActions sx={{ justifyContent: 'flex-end' }}>
       <Button
+        onClick={() => handleEditButton(category)}
+        startIcon={<EditIcon />}
+      >
+        Edit
+      </Button>
+      <Button
         onClick={() => handleDeleteButton(category)}
         color="error"
         startIcon={<DeleteIcon />}
       >
         Delete
-      </Button>
-      <Button
-        onClick={() => handleEditButton(category)}
-        startIcon={<EditIcon />}
-      >
-        Edit
       </Button>
     </CardActions>
   </Card>

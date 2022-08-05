@@ -11,13 +11,12 @@ import { useGetAccountsQuery } from '../services/api';
 import { queryDateFormatter } from '../utils/formatters';
 
 const Dashboard = () => {
-  const pageTitle = 'Dashboard';
-  const month = queryDateFormatter.format(new Date('2022-07-15'));
+  const month = queryDateFormatter.format(new Date());
   const { data: accounts, isLoading } = useGetAccountsQuery();
 
   return (
     <Box>
-      <PageTitle title={pageTitle} />
+      <PageTitle title="Dashboard" />
       {isLoading && <LoadingSpinner />}
       {accounts && accounts.length === 0 && (
         <Box>

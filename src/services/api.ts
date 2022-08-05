@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { LinkTokenCreateResponse } from 'plaid';
+import { PlaidLinkOnSuccessMetadata } from 'react-plaid-link';
 import {
   Account,
   AccountWithStats,
@@ -20,6 +21,7 @@ import {
   CategorySummary,
   SpendingByCategoryLatest,
   GetSpendingRes,
+  AccountSummary,
 } from '../types/types';
 
 const baseUrl = '/api/';
@@ -95,6 +97,17 @@ export const perfiApi = createApi({
     >({
       query: (options) => ({
         url: `transactions/spending/bycategory`,
+        method: 'GET',
+        params: options,
+      }),
+      providesTags: ['Transactions'],
+    }),
+    getSpendingByAccount: builder.query<
+      AccountSummary[],
+      GetSpendingByOptionsBase
+    >({
+      query: (options) => ({
+        url: `transactions/spending/byaccount`,
         method: 'GET',
         params: options,
       }),
@@ -230,18 +243,42 @@ export const perfiApi = createApi({
         body: credentials,
       }),
     }),
-    createLinkToken: builder.mutation<LinkTokenCreateResponse, void>({
-      query: () => ({
+    createLinkToken: builder.mutation<LinkTokenCreateResponse, number | void>({
+      query: (itemId) => ({
         url: `plaid/create_link_token`,
         method: 'POST',
+        body: { itemId },
       }),
     }),
-    setAccessToken: builder.mutation<void, string>({
-      query: (publicToken) => ({
+    setAccessToken: builder.mutation<
+      void,
+      { publicToken: string; metadata: PlaidLinkOnSuccessMetadata }
+    >({
+      query: (params) => ({
         url: `plaid/set_access_token`,
         method: 'POST',
-        body: { publicToken },
+        body: params,
       }),
+      invalidatesTags: ['Accounts', 'Categories', 'Transactions'],
+    }),
+    syncTransactions: builder.mutation<void, number>({
+      query: (itemId) => ({
+        url: `plaid/sync_transactions`,
+        method: 'POST',
+        body: { itemId },
+      }),
+      invalidatesTags: ['Accounts', 'Categories', 'Transactions'],
+    }),
+    updateItemAccess: builder.mutation<
+      void,
+      { publicToken: string; metadata: PlaidLinkOnSuccessMetadata }
+    >({
+      query: (params) => ({
+        url: `plaid/update_item_access`,
+        method: 'POST',
+        body: params,
+      }),
+      invalidatesTags: ['Accounts', 'Categories', 'Transactions'],
     }),
   }),
 });
@@ -251,6 +288,7 @@ export const {
   useGetAccountsWithStatsQuery,
   useGetTransactionsQuery,
   useGetSpendingByCategoryQuery,
+  useGetSpendingByAccountQuery,
   useGetCategoriesQuery,
   useGetUserCategoriesQuery,
   useGetTransactionQuery,
@@ -275,4 +313,6 @@ export const {
   useVerifyEmailMutation,
   useRequestResetPasswordMutation,
   useResetPasswordMutation,
+  useUpdateItemAccessMutation,
+  useSyncTransactionsMutation,
 } = perfiApi;

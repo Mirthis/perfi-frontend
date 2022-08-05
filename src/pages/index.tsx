@@ -5,6 +5,7 @@ export { default as Logout } from './Logout';
 export { default as ManageCategories } from './ManageCategories';
 export { default as ResetPassword } from './ResetPassword';
 export { default as SignUp } from './SignUp';
+export { default as Spending } from './Spending';
 export { default as Terms } from './Terms';
 export { default as Transactions } from './Transactions';
 export { default as Transaction } from './Transaction';

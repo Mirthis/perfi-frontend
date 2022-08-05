@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/indent */
 import { Grid, Typography } from '@mui/material';
 import { useAppSelector } from '../reducers/hooks';
-import { useGetSpendingByAccountQuery } from '../services/api';
+import { useGetSpendingByCategoryQuery } from '../services/api';
 import { GetSpendingByOptionsBase } from '../types/types';
-import AccountCard from './AccountCard';
+import CategoryCard from './CategoryCard';
 import LoadingSpinner from './LoadingSpinner';
 
-const AccountsList = () => {
+const CategoriesList = () => {
   const { startDate, endDate } = useAppSelector((state) => state.txFilter);
 
   const queryFilter: GetSpendingByOptionsBase = {
@@ -15,19 +14,19 @@ const AccountsList = () => {
     removeZeroCounts: true,
   };
 
-  const { data: accounts, isLoading } =
-    useGetSpendingByAccountQuery(queryFilter);
+  const { data: categories, isLoading } =
+    useGetSpendingByCategoryQuery(queryFilter);
 
   return (
     <>
       {isLoading && <LoadingSpinner />}
-      {accounts && accounts.length === 0 && (
+      {categories && categories.length === 0 && (
         <Typography>No transactions.</Typography>
       )}
       <Grid container spacing={2}>
-        {accounts?.map((acc) => (
-          <Grid key={acc.id} item xs={12} md={6} lg={4}>
-            <AccountCard account={acc} />
+        {categories?.map((sd) => (
+          <Grid key={sd.id} item xs={12} md={6} lg={4}>
+            <CategoryCard category={sd} />
           </Grid>
         ))}
       </Grid>
@@ -35,4 +34,4 @@ const AccountsList = () => {
   );
 };
 
-export default AccountsList;
+export default CategoriesList;

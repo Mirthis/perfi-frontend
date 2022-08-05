@@ -54,7 +54,10 @@ const TransactionLine = ({
           onClick={handleCategoryClick}
           data-categoryid={transaction.category.id}
         >
-          <CategoryIcon name={transaction.category.iconName} />
+          <CategoryIcon
+            name={transaction.category.iconName}
+            color={transaction.category.iconColor}
+          />
         </Button>
       </Box>
     </Grid>

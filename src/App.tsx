@@ -21,7 +21,7 @@ const App = () => {
     <Router>
       <AppBar />
       <Offset />
-      <Container component="main" maxWidth="xl">
+      <Container component="main" maxWidth="xl" sx={{ mt: 4, minWidth: 350 }}>
         {/* Alert status and visibility is managed through the AlertProvider */}
         <Alert />
         <AppRoutes />

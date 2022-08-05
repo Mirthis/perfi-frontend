@@ -107,12 +107,13 @@ export interface Item {
   id: number;
   status: string;
   institution: Institution;
+  consentExpirationTime: string;
+  lastSynced: string;
 }
 
 //  Accounts
 export interface Account {
   id: number;
-  plaidAccountId: string;
   name: string;
   officialName: string | null;
   type: AccountType;
@@ -121,6 +122,17 @@ export interface Account {
   availableBalance: number | null;
   isoCurrencyCode: string | null;
   item: Item;
+}
+
+export interface AccountSummary extends Omit<Account, 'item'> {
+  year: number;
+  month: number;
+  institutionId: number;
+  institutionName: string;
+  institutionColor: string;
+  institutionLogo: string;
+  txAmount: string;
+  txCount: string;
 }
 
 // institutions
@@ -227,9 +239,8 @@ export type GetSpendingRes = Array<{
 }>;
 
 export enum TxFilterMode {
-  Category = 'Categories',
-  Account = 'Accounts',
-  List = 'List',
+  Categories = 'Categories',
+  Accounts = 'Accounts',
 }
 
 export interface TxFilter {
@@ -306,7 +317,12 @@ export interface GetSimilarTransactionCountRes {
 export enum ErrorType {
   AUTH_ERROR = 'AuthError',
   VALIDATION_ERROR = 'ValidationError',
+  PLAID_ERROR = 'PlaidError',
   GENERIC_ERROR = 'GenericError',
+}
+
+export enum PlaidErrorName {
+  DUPLICATE_INSTITUTION = 'DuplicateInstitution',
 }
 
 export enum AuthErrorName {
@@ -326,6 +342,14 @@ export interface AuthError {
   data: {
     type: ErrorType.AUTH_ERROR;
     name: AuthErrorName;
+    message: string;
+  };
+}
+
+export interface PlaidError {
+  data: {
+    type: ErrorType.PLAID_ERROR;
+    name: PlaidErrorName;
     message: string;
   };
 }

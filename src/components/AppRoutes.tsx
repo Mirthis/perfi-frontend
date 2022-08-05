@@ -5,13 +5,14 @@ import {
   Transaction,
   ManageCategories,
   Login,
-  Accounts,
   Logout,
   Transactions,
   SignUp,
   VerifyEmail,
   Dashboard,
   ResetPassword,
+  Spending,
+  Accounts,
 } from '../pages';
 import { useAppSelector } from '../reducers/hooks';
 import { LoginState, PrivateRouteData } from '../types/types';
@@ -19,12 +20,16 @@ import PrivateRoute from './PrivateRoute';
 
 const privateRoutes: Array<PrivateRouteData> = [
   {
-    path: '/accounts',
-    element: <Accounts />,
+    path: '/spending',
+    element: <Spending />,
   },
   {
     path: '/transactions',
     element: <Transactions />,
+  },
+  {
+    path: '/accounts',
+    element: <Accounts />,
   },
   {
     path: '/transaction/:id',
