@@ -21,7 +21,6 @@ const LinkAccountNew = ({ linkToken }: { linkToken: string }) => {
       try {
         await setAccessToken({ publicToken, metadata }).unwrap();
       } catch (error) {
-        console.log(error);
         if (
           isPlaidErrror(error) &&
           error.data.name === PlaidErrorName.DUPLICATE_INSTITUTION

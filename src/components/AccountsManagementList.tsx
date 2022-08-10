@@ -18,23 +18,14 @@ const AccountsManagementList = () => {
   const [syncTransctions] = useSyncTransactionsMutation();
 
   const handleSyncButton = (event: React.MouseEvent<HTMLElement>) => {
-    console.log('Sync');
-    console.log(event);
     const itemId = event.currentTarget.dataset.itemid;
     if (!itemId) return;
-    console.log(itemId);
     syncTransctions(Number(itemId));
   };
 
   const uniqueItems = accounts
     ?.map((acc) => acc.item)
     .filter((v, i, a) => a.findIndex((v2) => v2.id === v.id) === i);
-
-  console.log('accounts');
-  console.log(accounts);
-
-  console.log('uniqueItems');
-  console.log(uniqueItems);
 
   return (
     <>

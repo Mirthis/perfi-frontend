@@ -14,13 +14,11 @@ const TopCategorySummaryCard = ({
 }) => {
   const { data: categories } = useGetSpendingCompareByCategoryQuery(refMonth);
 
-  console.log('Top spending categories');
-  console.log(categories);
-
   // TODO: manage different currencies
   const chartData: TopCategorySummaryChartData | undefined =
     categories?.cmValues
       .map((c) => ({
+        categoryId: c.id,
         name: c.name,
         label: formatCurrency(Number(c.txAmount), 'GBP', 0),
         cmAmount: Number(c.txAmount),

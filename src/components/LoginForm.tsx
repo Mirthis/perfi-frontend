@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { Container } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link as RouterLink } from 'react-router-dom';
 import { AuthErrorName, LoginRequest, NavigateFromState } from '../types/types';
 import { useLoginMutation } from '../services/api';
 import { useAppDispatch } from '../reducers/hooks';
@@ -49,9 +49,13 @@ const LoginForm = () => {
   const submit = async (data: LoginRequest) => {
     try {
       const loggedUser = await login(data).unwrap();
+      console.log('loggedUser');
+      console.log(loggedUser);
       dispatch(setUser(loggedUser));
+      // if (loggedUser) throw new Error('stop');
       if (isNavigateFromState(state)) {
         // redirect to from Location is this is defined
+
         navigate(state.from.pathname, { replace: true });
       } else {
         navigate('/dashboard', { replace: true });
@@ -96,7 +100,7 @@ const LoginForm = () => {
           width="100%"
           onSubmit={handleSubmit(submit)}
           noValidate
-          sx={{ mt: 1 }}
+          sx={{ mt: 3 }}
         >
           <TextField
             margin="normal"
@@ -105,7 +109,7 @@ const LoginForm = () => {
             id="email"
             label="Email Address"
             autoComplete="email"
-            defaultValue="aaa@sss.ddd"
+            defaultValue="sample@perfiapp.io"
             autoFocus
             {...register('email')}
             error={errors.email !== undefined}
@@ -119,7 +123,7 @@ const LoginForm = () => {
             fullWidth
             label="Password"
             type="password"
-            defaultValue="A!23456z"
+            defaultValue="F!zb4n82"
             id="password"
             {...register('password')}
             autoComplete="current-password"
@@ -134,7 +138,12 @@ const LoginForm = () => {
             >
               {errors.password?.message}
             </Typography>
-            <Link textAlign="right" href="/reset-password" variant="body2">
+            <Link
+              textAlign="right"
+              to="/reset-password"
+              variant="body2"
+              component={RouterLink}
+            >
               Forgot password?
             </Link>
           </Box>
@@ -161,7 +170,7 @@ const LoginForm = () => {
 
           <Typography variant="body2">
             Not having an account?{' '}
-            <Link href="/signup" variant="body2">
+            <Link to="/signup" variant="body2" component={RouterLink}>
               Sign Up
             </Link>
           </Typography>

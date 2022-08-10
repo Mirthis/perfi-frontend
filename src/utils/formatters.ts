@@ -11,7 +11,7 @@ export const selectDateFormatter = new Intl.DateTimeFormat('en-GB', {
 
 export const chartDateFormatter = new Intl.DateTimeFormat('en-GB', {
   month: 'short',
-  year: 'numeric',
+  year: '2-digit',
 });
 
 export const ddmmDateFormatter = new Intl.DateTimeFormat('en-GB', {
@@ -51,7 +51,7 @@ export const formatCurrency = (
 export const capitalizeFirst = (sentence: string): string =>
   sentence
     .split(' ')
-    .map((w: string) => w[0].toUpperCase() + w.substring(1))
+    .map((w: string) => w[0].toUpperCase() + w.substring(1).toLowerCase())
     .join(' ');
 
 export const formatPercentage = () => {};

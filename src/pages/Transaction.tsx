@@ -3,6 +3,8 @@ import {
   Avatar,
   Box,
   Button,
+  Card,
+  CardContent,
   CircularProgress,
   Grid,
   Typography,
@@ -58,14 +60,26 @@ const Transaction = () => {
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'space-between',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              columnGap: 2,
             }}
           >
-            <Box>
-              <Typography variant="h4">{transaction.name}</Typography>
-              <Typography variant="h5">{transaction.merchantName}</Typography>
+            <Box
+              flexGrow={3}
+              overflow="hidden"
+              whiteSpace="normal"
+              textOverflow="ellipsis"
+            >
+              <Typography variant="h5">{transaction.name}</Typography>
+              <Typography variant="h6">{transaction.merchantName}</Typography>
             </Box>
-            <Typography variant="h4" color="primary">
+            <Typography
+              flexGrow={1}
+              flexShrink={0}
+              variant="h5"
+              color="primary"
+            >
               {formatCurrency(
                 transaction.amount,
                 transaction.isoCurrencyCode || 'GBP',
@@ -73,72 +87,84 @@ const Transaction = () => {
             </Typography>
           </Box>
           {/* Account, category and visibility details */}
-          <Grid
-            container
-            columnSpacing={4}
-            rowSpacing={4}
-            alignItems="flex-start"
-            marginTop={4}
-          >
-            <Grid
-              item
-              sx={{ display: 'flex' }}
-              xs={12}
-              sm={6}
-              md={4}
-              border="1px solid black"
-            >
-              <Avatar
-                sx={{ width: 75, height: 75 }}
-                alt={transaction.account.name}
-                src={`data:image/png;base64,${transaction.account.item.institution.logo}`}
-              />
-              <Typography variant="h5">{transaction.account.name}</Typography>
-            </Grid>
-            <Grid
-              item
-              sx={{ display: 'flex' }}
-              xs={12}
-              sm={6}
-              md={4}
-              border="1px solid black"
-            >
-              <CategoryIcon
-                name={transaction.category.iconName}
-                fontSize={75}
-              />
-              <Box>
-                <Typography variant="h5">
-                  {transaction.category.name}
-                </Typography>
-                <Button
-                  onClick={() => setModalState({ show: true, transaction })}
+          <Grid container columnSpacing={2} rowSpacing={2} marginTop={4}>
+            <Grid item xs={12} sm={6} md={4}>
+              <Card variant="outlined" sx={{ height: '100%' }}>
+                <CardContent
+                  sx={{
+                    direction: 'row',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
                 >
-                  Change Category
-                </Button>
-              </Box>
+                  <Avatar
+                    sx={{ width: 75, height: 75 }}
+                    alt={transaction.account.name}
+                    src={`data:image/png;base64,${transaction.account.item.institution.logo}`}
+                  />
+                  <Typography variant="h6">
+                    {transaction.account.name}
+                  </Typography>
+                </CardContent>
+              </Card>
             </Grid>
-            <Grid
-              item
-              sx={{ display: 'flex' }}
-              xs={12}
-              sm={6}
-              md={4}
-              border="1px solid black"
-            >
-              {transaction.exclude || transaction.category.exclude ? (
-                <Visibility sx={{ padding: 1, fontSize: 75 }} />
-              ) : (
-                <VisibilityOff sx={{ padding: 1, fontSize: 75 }} />
-              )}
-              <Box>
-                <Typography variant="body1">{getExclusionText()}</Typography>
-                {!transaction.category.exclude && (
-                  <Button onClick={toggleTransactionExclusion}>
-                    {transaction.exclude ? 'Include' : 'Exclude'} Transaction
-                  </Button>
-                )}
-              </Box>
+            <Grid item xs={12} sm={6} md={4}>
+              <Card variant="outlined" sx={{ height: '100%' }}>
+                <CardContent
+                  sx={{
+                    direction: 'row',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
+                >
+                  <CategoryIcon
+                    name={transaction.category.iconName}
+                    color={transaction.category.iconColor}
+                    fontSize={75}
+                  />
+                  <Box>
+                    <Typography variant="h6">
+                      {transaction.category.name}
+                    </Typography>
+                    <Button
+                      onClick={() => setModalState({ show: true, transaction })}
+                    >
+                      Change Category
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>{' '}
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Card variant="outlined" sx={{ height: '100%' }}>
+                <CardContent
+                  sx={{
+                    direction: 'row',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
+                >
+                  {transaction.exclude || transaction.category.exclude ? (
+                    <Visibility sx={{ padding: 1, fontSize: 75 }} />
+                  ) : (
+                    <VisibilityOff sx={{ padding: 1, fontSize: 75 }} />
+                  )}
+                  <Box>
+                    <Typography variant="body1">
+                      {getExclusionText()}
+                    </Typography>
+                    {!transaction.category.exclude && (
+                      <Button onClick={toggleTransactionExclusion}>
+                        {transaction.exclude ? 'Include' : 'Exclude'}{' '}
+                        Transaction
+                      </Button>
+                    )}
+                  </Box>
+                </CardContent>
+              </Card>
             </Grid>
           </Grid>
         </>

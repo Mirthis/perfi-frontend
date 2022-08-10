@@ -24,11 +24,14 @@ const CategoriesList = () => {
         <Typography>No transactions.</Typography>
       )}
       <Grid container spacing={2}>
-        {categories?.map((sd) => (
-          <Grid key={sd.id} item xs={12} md={6} lg={4}>
-            <CategoryCard category={sd} />
-          </Grid>
-        ))}
+        {categories
+          ?.slice()
+          .sort((prev, next) => Number(next.txAmount) - Number(prev.txAmount))
+          .map((sd) => (
+            <Grid key={sd.id} item xs={12} sm={6} xl={4}>
+              <CategoryCard category={sd} />
+            </Grid>
+          ))}
       </Grid>
     </>
   );

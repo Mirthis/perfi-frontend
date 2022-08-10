@@ -14,6 +14,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useAppDispatch } from '../../reducers/hooks';
+import { setForceDataRefresh } from '../../reducers/txFilterReducer';
 import {
   useGetCategoriesQuery,
   useLazyGetSimilarTransactionsCountQuery,
@@ -35,20 +37,14 @@ const ChangeCategoryModal = ({
   const [updateSimilar, setUpdateSimilar] = useState<boolean>(false);
   const [
     setTransactionCategory,
-    {
-      isSuccess: setCategorySuccess,
-      isLoading: setCategoryLoading,
-      reset: setCategoryReset,
-    },
+    { isLoading: setCategoryLoading, reset: setCategoryReset },
   ] = useSetTransactionCategoryMutation();
   const [
     setSimilarTransacctionsCategory,
-    {
-      isSuccess: setSimilarCategorySuccess,
-      isLoading: setSimilarCategoryLoading,
-      reset: setSimilarCategoryReset,
-    },
+    { isLoading: setSimilarCategoryLoading, reset: setSimilarCategoryReset },
   ] = useSetSimilarTransactionsCategoryMutation();
+
+  const dispatch = useAppDispatch();
 
   const [getSimilarTransaction, { data: similarTransactionsCount }] =
     useLazyGetSimilarTransactionsCountQuery();
@@ -59,7 +55,19 @@ const ChangeCategoryModal = ({
     }
   }, [transaction]);
 
-  if (setCategorySuccess || setSimilarCategorySuccess) {
+  const handleSubmit = async () => {
+    if (!transaction) return;
+    if (updateSimilar) {
+      await setSimilarTransacctionsCategory({
+        transactionId: transaction.id,
+        categoryId: Number(newCategory),
+      }).unwrap();
+    } else {
+      await setTransactionCategory({
+        transactionId: transaction.id,
+        categoryId: Number(newCategory),
+      }).unwrap();
+    }
     if (updateSimilar) {
       setSimilarCategoryReset();
     } else {
@@ -67,21 +75,8 @@ const ChangeCategoryModal = ({
     }
     setState({ show: false, transaction: null });
     setNewCategory('-1');
-  }
-
-  const handleSubmit = () => {
-    if (!transaction) return;
-    if (updateSimilar) {
-      setSimilarTransacctionsCategory({
-        transactionId: transaction.id,
-        categoryId: Number(newCategory),
-      });
-    } else {
-      setTransactionCategory({
-        transactionId: transaction.id,
-        categoryId: Number(newCategory),
-      });
-    }
+    setUpdateSimilar(false);
+    dispatch(setForceDataRefresh(true));
   };
 
   const style = {
@@ -89,7 +84,7 @@ const ChangeCategoryModal = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 500,
+    width: { xs: '100%', sm: 600 },
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -124,10 +119,10 @@ const ChangeCategoryModal = ({
               rowSpacing={2}
               columnSpacing={2}
             >
-              <Grid item xs={6}>
-                <Typography variant="h6">Current category</Typography>
+              <Grid item xs={4} sm={6}>
+                <Typography>Current category</Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={8} sm={6}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <CategoryIcon
                     name={transaction.category.iconName}
@@ -136,10 +131,10 @@ const ChangeCategoryModal = ({
                   <Typography>{transaction.category.name}</Typography>
                 </Box>
               </Grid>
-              <Grid item xs={6}>
-                <Typography variant="h6">New Category</Typography>
+              <Grid item xs={4} sm={6}>
+                <Typography>New Category</Typography>
               </Grid>
-              <Grid xs={6} item>
+              <Grid xs={8} sm={6} item>
                 {categories && (
                   <FormControl fullWidth size="small">
                     <Select
@@ -167,24 +162,30 @@ const ChangeCategoryModal = ({
                   </FormControl>
                 )}
               </Grid>
-              <Grid item xs={6}>
-                <Typography variant="h6">
-                  Update category for similar transactions?
-                </Typography>
+              <Grid item xs={4} sm={6}>
+                {similarTransactionsCount &&
+                  similarTransactionsCount.txCount > 1 && (
+                    <Typography>Update similar?</Typography>
+                  )}
                 {similarTransactionsCount && (
-                  <Typography>
+                  <Typography variant="body2">
                     {similarTransactionsCount.txCount - 1} similar transactions
                     found
                   </Typography>
                 )}
               </Grid>
-              <Grid xs={6} item>
-                <Switch
-                  checked={updateSimilar}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    setUpdateSimilar(event.target.checked);
-                  }}
-                />
+              <Grid xs={8} sm={6} item>
+                {similarTransactionsCount &&
+                  similarTransactionsCount?.txCount > 1 && (
+                    <Switch
+                      checked={updateSimilar}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>,
+                      ) => {
+                        setUpdateSimilar(event.target.checked);
+                      }}
+                    />
+                  )}
               </Grid>
             </Grid>
             <Box

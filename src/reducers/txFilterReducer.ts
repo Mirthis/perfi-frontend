@@ -14,6 +14,7 @@ const initialState: TxFilter = {
   mode: TxFilterMode.Categories,
   page: 1,
   hasMore: false,
+  forceDataRefresh: false,
 };
 
 const txFilterSlice = createSlice({
@@ -23,10 +24,22 @@ const txFilterSlice = createSlice({
     setMonthFilter(state, action: PayloadAction<string>) {
       const month = action.payload;
       const { startDate, endDate } = getStartEndDate(new Date(month));
-      return { ...state, month, startDate, endDate, page: 1 };
+      return {
+        ...state,
+        month,
+        startDate,
+        endDate,
+        page: 1,
+        forceDataRefresh: false,
+      };
     },
     setModeFilter(state, action: PayloadAction<TxFilterMode>) {
-      return { ...state, mode: action.payload, page: 1 };
+      return {
+        ...state,
+        mode: action.payload,
+        page: 1,
+        forceDataRefresh: false,
+      };
     },
     setCategoryFilter(state, action: PayloadAction<number>) {
       const newCategory = action.payload;
@@ -36,6 +49,7 @@ const txFilterSlice = createSlice({
         mode: newMode,
         category: newCategory,
         page: 1,
+        forceDataRefresh: false,
       };
       if (newCategory === -1) {
         delete newState.category;
@@ -48,7 +62,12 @@ const txFilterSlice = createSlice({
       return newState;
     },
     setAccountFilter(state, action: PayloadAction<number>) {
-      return { ...state, account: action.payload, page: 1 };
+      return {
+        ...state,
+        account: action.payload,
+        page: 1,
+        forceDataRefresh: false,
+      };
     },
     clearAccountFilter(state) {
       const newState = { ...state };
@@ -59,10 +78,13 @@ const txFilterSlice = createSlice({
       return { ...state, page: action.payload };
     },
     clearPageFilter(state) {
-      return { ...state, page: 1 };
+      return { ...state, page: 1, forceDataRefresh: false };
     },
     setHasMore(state, action: PayloadAction<boolean>) {
       return { ...state, hasMore: action.payload };
+    },
+    setForceDataRefresh(state, action: PayloadAction<boolean>) {
+      return { ...state, forceDataRefresh: action.payload };
     },
   },
 });
@@ -77,5 +99,6 @@ export const {
   setPageFilter,
   clearPageFilter,
   setHasMore,
+  setForceDataRefresh,
 } = txFilterSlice.actions;
 export default txFilterSlice.reducer;

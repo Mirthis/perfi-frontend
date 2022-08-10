@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { useAppSelector } from '../reducers/hooks';
 import { queryDateFormatter } from '../utils/formatters';
 import MonthlySpendCard from './MonthlySpendCard';
@@ -20,20 +20,26 @@ const TransactionsStats = () => {
     <Stack width="100%" spacing={2}>
       <Typography variant="h4">Transaction Stats</Typography>
       {monthIsCurrent && (
-        <SpendTrendCard refMonth={queryDateFormatter.format(currDate)} />
+        <Box>
+          <SpendTrendCard refMonth={queryDateFormatter.format(currDate)} />
+        </Box>
       )}
-      <MonthlySpendCard
-        refMonth={month}
-        months={12}
-        categoryId={category}
-        accountId={account}
-      />
-      <TopExpensesCard
-        refMonth={month}
-        numberOfItems={10}
-        categoryId={category}
-        accountId={account}
-      />
+      <Box>
+        <MonthlySpendCard
+          refMonth={month}
+          months={12}
+          categoryId={category}
+          accountId={account}
+        />
+      </Box>
+      <Box>
+        <TopExpensesCard
+          refMonth={month}
+          numberOfItems={10}
+          categoryId={category}
+          accountId={account}
+        />
+      </Box>
     </Stack>
   );
 };

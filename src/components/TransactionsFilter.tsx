@@ -86,7 +86,13 @@ const TransactionsFilter = ({ showMode = false }: { showMode?: boolean }) => {
           <Tab key={d.key} label={d.value} value={d.key} />
         ))}
       </Tabs>
-      <Stack direction="row" columnGap={4} alignItems="center">
+      <Stack
+        direction="row"
+        columnGap={4}
+        rowGap={2}
+        alignItems="center"
+        flexWrap="wrap"
+      >
         {showMode && (
           <ToggleButtonGroup
             color="primary"

@@ -1,18 +1,18 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import { Transaction } from '../types/types';
-import { ddmmDateFormatter, formatCurrency } from '../utils/formatters';
+import {
+  capitalizeFirst,
+  ddmmDateFormatter,
+  formatCurrency,
+} from '../utils/formatters';
 
 const TransactionLineSimple = ({
   transaction,
 }: {
   transaction: Transaction;
 }) => {
-  const nameLength = 20;
   const date = ddmmDateFormatter.format(new Date(transaction.txDate));
-  const name =
-    transaction.name.length > nameLength
-      ? `${transaction.name.slice(0, nameLength)}...`
-      : transaction.name;
   const amount = formatCurrency(
     transaction.amount,
     transaction.isoCurrencyCode || 'GBP',
@@ -21,11 +21,27 @@ const TransactionLineSimple = ({
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-      <Typography textAlign="left">{date}</Typography>
-      <Typography sx={{ flexGrow: 1 }} textAlign="left">
-        {name}
+      <Typography flexShrink={0} textAlign="left">
+        {date}
       </Typography>
-      <Typography textAlign="right">{amount}</Typography>
+      <Typography
+        flexGrow={1}
+        textAlign="left"
+        whiteSpace="nowrap"
+        overflow="hidden"
+        textOverflow="ellipsis"
+      >
+        <Link
+          underline="none"
+          component={RouterLink}
+          to={`/transaction/${transaction.id}`}
+        >
+          {capitalizeFirst(transaction.name)}
+        </Link>
+      </Typography>
+      <Typography flexShrink={0} textAlign="right">
+        {amount}
+      </Typography>
     </Box>
   );
 };

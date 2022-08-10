@@ -23,12 +23,19 @@ const MonthlySpendCard = ({
   categoryId?: number;
   accountId?: number;
 }) => {
+  console.log('refMonth');
+  console.log(refMonth);
   const startDate = queryDateFormatter.format(
     getFirstDayOfMonth(new Date(refMonth), -(months - 1)),
   );
   const endDate = queryDateFormatter.format(
     getLastDayOfMonth(new Date(refMonth)),
   );
+  console.log('startDate');
+  console.log(startDate);
+
+  console.log('endDate');
+  console.log(endDate);
 
   const queryParams: GetSpendingByOptions = { startDate, endDate };
   if (categoryId) queryParams.categoryIds = [categoryId];
@@ -41,14 +48,15 @@ const MonthlySpendCard = ({
       const date = new Date(d.year, d.month - 1, 1);
       const amount = Number(d.txAmount);
       return {
-        date,
+        dateObj: date,
+        date: queryDateFormatter.format(date),
         dateLabel: chartDateFormatter.format(date),
         amount: Math.round(amount),
         amountLabel: formatCurrency(amount, 'GBP', 0),
         count: Number(d.txCount),
       };
     })
-    .sort((prev, next) => Number(prev.date) - Number(next.date));
+    .sort((prev, next) => Number(prev.dateObj) - Number(next.dateObj));
   return (
     <>
       {isLoading && <LoadingSpinner />}

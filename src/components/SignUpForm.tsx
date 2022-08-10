@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { SignUpData } from '../types/types';
 import { useSignupMutation } from '../services/api';
@@ -180,7 +180,10 @@ const SignUpForm = () => {
           </LoadingButton>
 
           <Typography variant="body2">
-            Already have an account? <Link href="login">Sign in</Link>
+            Already have an account?{' '}
+            <Link to="login" component={RouterLink}>
+              Sign in
+            </Link>
           </Typography>
         </Box>
       </Box>

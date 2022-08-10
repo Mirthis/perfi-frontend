@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User, AuthState, LoginState } from '../types/types';
-
-const LOC_STORAGE_KEY = 'perfi:loggedUser';
+import { LOC_STORAGE_KEY } from '../utils/config';
 
 const initialState: AuthState = {
   state: LoginState.PENDING,

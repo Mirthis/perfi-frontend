@@ -4,13 +4,14 @@ import {
   Button,
   Grid,
   IconButton,
+  Link,
   Typography,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { MouseEventHandler } from 'react';
 import { Transaction } from '../types/types';
-import { amountStyle, formatCurrency } from '../utils/formatters';
+import { formatCurrency } from '../utils/formatters';
 import CategoryIcon from './CategoryIcon';
 // import { useExcludeTransactionMutation } from '../services/api';
 
@@ -37,19 +38,25 @@ const TransactionLine = ({
   <Grid
     container
     key={transaction.id}
-    borderTop="2px solid lightgrey"
-    alignItems="flex-start"
+    borderTop="1px solid grey"
+    alignItems="center"
   >
     <Grid item xs={5}>
-      <Link to={`/transaction/${transaction.id}`}>
+      <Link
+        underline="none"
+        to={`/transaction/${transaction.id}`}
+        component={RouterLink}
+      >
         <Typography variant="subtitle1">{transaction.name}</Typography>
       </Link>
-      <Typography variant="subtitle2" minHeight="1.5em">
-        {transaction.merchantName}
-      </Typography>
+      {transaction.merchantName && (
+        <Typography variant="subtitle2" minHeight="1.5em">
+          {transaction.merchantName}
+        </Typography>
+      )}
     </Grid>
-    <Grid item container xs={2} direction="column">
-      <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
+    <Grid item xs={3} sm={2}>
+      <Box textAlign="center">
         <Button
           onClick={handleCategoryClick}
           data-categoryid={transaction.category.id}
@@ -61,13 +68,14 @@ const TransactionLine = ({
         </Button>
       </Box>
     </Grid>
-    <Grid item xs={2}>
+    <Grid item sm={2} display={{ xs: 'none', sm: 'flex' }}>
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'row',
           gap: 1,
         }}
+        textAlign="center"
       >
         <Button
           onClick={handleAccountClick}
@@ -83,8 +91,8 @@ const TransactionLine = ({
           </Typography> */}
       </Box>
     </Grid>
-    <Grid item xs={2} textAlign="right">
-      <Typography variant="subtitle1" sx={amountStyle(transaction.amount)}>
+    <Grid item xs={3} sm={2} textAlign="right">
+      <Typography variant="subtitle1" fontWeight="bold">
         {formatCurrency(
           transaction.amount,
           transaction.isoCurrencyCode || 'GBP',

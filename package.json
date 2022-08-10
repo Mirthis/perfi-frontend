@@ -13,7 +13,6 @@
     "@reduxjs/toolkit": "^1.8.1",
     "axios": "^0.27.2",
     "plaid": "^10.3.0",
-    "query-string": "^7.1.1",
     "react": "^17.0.2",
     "react-colorful": "^5.5.1",
     "react-dom": "^17.0.2",

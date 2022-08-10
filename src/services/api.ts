@@ -73,6 +73,16 @@ export const perfiApi = createApi({
       }),
       providesTags: ['Transactions'],
     }),
+    getTransactionsList: builder.query<
+      GetTransactionsRes,
+      GetTransactionsOptions
+    >({
+      query: (options?: GetTransactionsOptions) => ({
+        url: `transactions`,
+        method: 'GET',
+        params: options,
+      }),
+    }),
     getSimilarTransactionsCount: builder.query<
       GetSimilarTransactionCountRes,
       number
@@ -280,6 +290,12 @@ export const perfiApi = createApi({
       }),
       invalidatesTags: ['Accounts', 'Categories', 'Transactions'],
     }),
+    careteDemoAccount: builder.mutation<User, void>({
+      query: () => ({
+        url: `demo/create`,
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -293,6 +309,7 @@ export const {
   useGetUserCategoriesQuery,
   useGetTransactionQuery,
   useLazyGetTransactionsQuery,
+  useLazyGetTransactionsListQuery,
   useGetSpendingCumulativeQuery,
   useGetSpendingCompareByCategoryQuery,
   useGetSimilarTransactionsCountQuery,
@@ -315,4 +332,5 @@ export const {
   useResetPasswordMutation,
   useUpdateItemAccessMutation,
   useSyncTransactionsMutation,
+  useCareteDemoAccountMutation,
 } = perfiApi;

@@ -31,9 +31,9 @@ const ManageCategories = () => {
       <DeleteCategoryModal state={deleteModal} setState={setDeleteModal} />
       <EditCategoryModal state={editModal} setState={setEditModal} />
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-        <Typography variant="h4">User created categories</Typography>
+        <Typography variant="h4">User categories</Typography>
         <Button variant="contained" onClick={() => showEditModal(null)}>
-          Create category
+          Create
         </Button>
       </Box>
       {isLoading && <LoadingSpinner />}

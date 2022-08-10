@@ -62,6 +62,7 @@ export interface SpendingByCategoryLatest {
 }
 
 export interface TopCategorySummaryDataPoint {
+  categoryId: number;
   name: string;
   label: string;
   cmAmount: number;
@@ -252,6 +253,7 @@ export interface TxFilter {
   account?: number;
   page: number;
   hasMore: boolean;
+  forceDataRefresh: boolean;
 }
 
 export enum AlertSeverity {
@@ -391,8 +393,19 @@ export type BarChartExpensesData = Array<{
 }>;
 
 export interface SpendingChartDataPoint {
+  dateObj: Date;
+  date: string;
   dateLabel: string;
   amount: number;
   amountLabel: string;
   count: number;
+}
+
+export interface SpendingTrendDataPoint {
+  date: string;
+  cmAmount?: number;
+  pmAmount: number;
+  p12Amount: number;
+  label?: string;
+  lastItem?: boolean;
 }

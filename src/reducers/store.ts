@@ -1,23 +1,28 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  isRejectedWithValue,
+  Middleware,
+} from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import authReducer from './authReducer';
 import plaidReducer from './plaidReducer';
 import { perfiApi } from '../services/api';
 import txFilterReducer from './txFilterReducer';
+import { LOC_STORAGE_KEY } from '../utils/config';
+import { AuthErrorName } from '../types/types';
 
-// const rtkQueryErrorLogger: Middleware = () => (next) => (action) => {
-//   // RTK Query uses `createAsyncThunk` from redux-toolkit under the hood, so we're able to utilize these matchers!
-//   if (isRejectedWithValue(action)) {
-//     // if(action.payload.data)
-//     console.log('action');
-//     console.log(action);
-//     if (aandtion.payload.data.name === AuthErrorName.USER_UNAUTHORIZED) {
-//       console.warn('Unauthorized');
-//     }
-//   }
+const rtkQueryErrorLogger: Middleware = () => (next) => (action) => {
+  // RTK Query uses `createAsyncThunk` from redux-toolkit under the hood, so we're able to utilize these matchers!
+  if (isRejectedWithValue(action)) {
+    // if(action.payload.data)
+    if (action.payload.data.name === AuthErrorName.USER_UNAUTHORIZED) {
+      window.localStorage.removeItem(LOC_STORAGE_KEY);
+      window.location.reload();
+    }
+  }
 
-//   return next(action);
-// };
+  return next(action);
+};
 
 const store = configureStore({
   reducer: {
@@ -27,8 +32,9 @@ const store = configureStore({
     [perfiApi.reducerPath]: perfiApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(perfiApi.middleware),
-  // .concat(rtkQueryErrorLogger),
+    getDefaultMiddleware()
+      .concat(perfiApi.middleware)
+      .concat(rtkQueryErrorLogger),
 });
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

@@ -83,8 +83,14 @@ const EditCategoryModal = ({
       setValue('id', category?.id);
       setValue('name', category.name);
       setValue('iconColor', category.iconColor);
+      setFocus('iconColor');
       setValue('iconName', category.iconName);
+      setFocus('iconName');
       setValue('exclude', category.exclude || false);
+      setFocus('name');
+    } else {
+      setValue('iconColor', '#000000');
+      setValue('iconName', 'default');
     }
   }, [category]);
 
@@ -125,9 +131,10 @@ const EditCategoryModal = ({
     const categoryName = parentDiv.dataset?.categoryname;
     if (categoryName) {
       setIcon(categoryName);
-      setValue('iconName', categoryName);
       setFocus('iconName');
+      setValue('iconName', categoryName);
     }
+    setAnchorIconPicker(null);
   };
 
   const handleColorPickerClose = () => {
@@ -143,7 +150,7 @@ const EditCategoryModal = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 500,
+    width: { xs: '100%', sm: 600 },
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -214,7 +221,6 @@ const EditCategoryModal = ({
                   margin="normal"
                   id="iconName"
                   label="Icon Name"
-                  autoComplete="iconName"
                   {...register('iconName')}
                   error={errors.iconName !== undefined}
                   InputProps={{
@@ -257,18 +263,17 @@ const EditCategoryModal = ({
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Box sx={{ width: '50%' }}>
-                <input
+                {/* <input
                   type="hidden"
                   id="iconColor"
                   {...register('iconColor')}
-                />
+                /> */}
                 <TextField
                   required
                   fullWidth
                   margin="normal"
                   id="iconColor"
                   label="Icon Color"
-                  autoComplete="iconColor"
                   {...register('iconColor', {
                     onChange: (e) => setColor(e.target.value),
                   })}

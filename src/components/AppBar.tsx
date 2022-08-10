@@ -10,23 +10,34 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Link, Stack } from '@mui/material';
+import { Link, Stack, useTheme } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import { useAppSelector } from '../reducers/hooks';
+import { Link as RouterLink } from 'react-router-dom';
 import { LoginState } from '../types/types';
+import { useAppSelector } from '../reducers/hooks';
+import DarkModeSwitch from './DarkModeSwitch';
 
 const settings = [
   { label: 'Manage Categories', link: '/manage/categories' },
   { label: 'Logout', link: '/logout' },
 ];
 
-const AppBar = () => {
+const AppBar = ({
+  darkMode,
+  setDarkMode,
+}: {
+  darkMode: boolean;
+  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const theme = useTheme();
 
-  const isLoggedIn =
-    useAppSelector((state) => state.auth.state) === LoginState.LOGGEDIN;
+  const { user: loggedUser, state: authState } = useAppSelector(
+    (state) => state.auth,
+  );
+  const isLoggedIn = authState === LoginState.LOGGEDIN;
 
   const allPages = [
     { label: 'Dashboard', link: '/dashboard', show: isLoggedIn },
@@ -56,14 +67,14 @@ const AppBar = () => {
     <MUIAppBar
       // position="fixed"
       sx={{
-        backgroundColor: '#ffffff',
-        color: '#000000',
+        backgroundColor: theme.palette.background.default,
+        color: '#ffffff',
       }}
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Only display on md or bigger screens */}
-          <Link underline="none" href="/" sx={{ color: 'black' }}>
+          <Link underline="none" component={RouterLink} to="/">
             <Box
               sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
               alignItems="center"
@@ -80,11 +91,10 @@ const AppBar = () => {
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="Site Menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
             >
               <MenuIcon />
             </IconButton>
@@ -102,17 +112,27 @@ const AppBar = () => {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
+              sx={{ mt: '10px', display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <Link underline="none" key={page.label} href={page.link}>
+                <Link
+                  underline="none"
+                  key={page.label}
+                  to={page.link}
+                  component={RouterLink}
+                >
                   <MenuItem key={page.label} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{page.label}</Typography>
                   </MenuItem>
                 </Link>
               ))}
+              <MenuItem onClick={handleCloseNavMenu}>
+                <DarkModeSwitch
+                  // sx={{ m: 1, display: { xs: 'flex', sm: 'none' } }}
+                  checked={darkMode}
+                  onChange={() => setDarkMode(!darkMode)}
+                />
+              </MenuItem>
             </Menu>
           </Box>
 
@@ -123,19 +143,28 @@ const AppBar = () => {
             display="flex"
             gap={2}
           >
-            <AccountBalanceWalletOutlinedIcon fontSize="large" />
-            <Typography variant="h6" noWrap component="div">
-              Perfi
-            </Typography>
+            <Link underline="none" component={RouterLink} to="/">
+              <AccountBalanceWalletOutlinedIcon fontSize="large" />
+            </Link>
+            <Link underline="none" component={RouterLink} to="/">
+              <Typography variant="h6" noWrap component="div">
+                Perfi
+              </Typography>
+            </Link>
           </Box>
           {/* Only display on md or bigger screens */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link underline="none" key={page.label} href={page.link}>
+              <Link
+                underline="none"
+                key={page.label}
+                to={page.link}
+                component={RouterLink}
+              >
                 <Button
                   key={page.label}
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'black', display: 'block' }}
+                  sx={{ my: 2, display: 'block' }}
                 >
                   {page.label}
                 </Button>
@@ -143,26 +172,40 @@ const AppBar = () => {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box
+            sx={{ flexGrow: 0, flexDirection: 'row', display: 'flex' }}
+            alignItems="center"
+          >
+            <DarkModeSwitch
+              sx={{ m: 1, display: { xs: 'none', sm: 'flex' } }}
+              checked={darkMode}
+              onChange={() => setDarkMode(!darkMode)}
+            />
+
             {!isLoggedIn && (
               <Stack direction="row" gap={2}>
-                <Link underline="none" href="/login">
+                <Link underline="none" to="/login" component={RouterLink}>
                   <Button variant="outlined" sx={{ my: 2, display: 'block' }}>
                     Sign in
                   </Button>
                 </Link>
-                <Link underline="none" href="/signup">
-                  <Button variant="contained" sx={{ my: 2, display: 'block' }}>
+                <Link underline="none" to="/signup" component={RouterLink}>
+                  <Button
+                    variant="contained"
+                    sx={{ my: 2, display: { xs: 'none', sm: 'block' } }}
+                  >
                     Sign up
                   </Button>
                 </Link>
               </Stack>
             )}
-            {isLoggedIn && (
+            {loggedUser && (
               <>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <PersonOutlineIcon />
+                    <PersonOutlineIcon
+                      sx={{ color: theme.palette.primary.main }}
+                    />
                   </IconButton>
                 </Tooltip>
                 <Menu
@@ -181,9 +224,17 @@ const AppBar = () => {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
+                  <MenuItem>
+                    <Typography>{loggedUser.email}</Typography>
+                  </MenuItem>
+
                   {settings.map((setting) => (
                     <MenuItem key={setting.label} onClick={handleCloseUserMenu}>
-                      <Link href={setting.link}>
+                      <Link
+                        underline="none"
+                        component={RouterLink}
+                        to={setting.link}
+                      >
                         <Typography textAlign="center">
                           {setting.label}
                         </Typography>

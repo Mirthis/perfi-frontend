@@ -28,23 +28,23 @@ const Dashboard = () => {
       )}
       {accounts && accounts.length > 0 && (
         <Grid container rowSpacing={2} columnSpacing={2}>
-          <Grid item xs={12} sm={6} md={4}>
-            <AccountsSummaryCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <SpendTrendCard refMonth={month} />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <LastTransactionsCard refMonth={month} numberOfItems={10} />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <TopCategorySummaryCard refMonth={month} numberOfItems={5} />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <MonthlySpendCard refMonth={month} months={12} />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} md={6} lg={4}>
+            <TopCategorySummaryCard refMonth={month} numberOfItems={5} />
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <LastTransactionsCard refMonth={month} numberOfItems={10} />
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
             <TopExpensesCard refMonth={month} numberOfItems={10} />
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <AccountsSummaryCard />
           </Grid>
         </Grid>
       )}

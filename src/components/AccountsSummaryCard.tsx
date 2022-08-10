@@ -1,17 +1,24 @@
 import {
   Avatar,
-  AvatarGroup,
-  Box,
   Card,
   CardContent,
   Stack,
   Typography,
+  Button,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../reducers/hooks';
+import { setAccountFilter, setModeFilter } from '../reducers/txFilterReducer';
 import { useGetAccountsQuery } from '../services/api';
+import { TxFilterMode } from '../types/types';
+import { formatCurrency } from '../utils/formatters';
 import LoadingSpinner from './LoadingSpinner';
 
 const AccountsSummaryCard = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { data: accounts, isLoading } = useGetAccountsQuery();
+  const ACCOUNTS_TO_SHOW = 5;
 
   const debitAccountTypes = ['credit', 'loan'];
   const uniqueInstitutions = accounts
@@ -38,6 +45,12 @@ const AccountsSummaryCard = () => {
     },
   );
 
+  const handleAccountClick = (event: React.MouseEvent<HTMLElement>) => {
+    dispatch(setModeFilter(TxFilterMode.Accounts));
+    dispatch(setAccountFilter(Number(event.currentTarget.dataset.accountid)));
+    navigate('/spending');
+  };
+
   return (
     <>
       {isLoading && <LoadingSpinner />}
@@ -48,36 +61,71 @@ const AccountsSummaryCard = () => {
               Accounts summary
             </Typography>
 
-            <Stack mt={2} direction="row" justifyContent="space-between">
-              <Box>
-                <Typography variant="subtitle2" component="div">
-                  {accounts.length} Accounts tracked /{' '}
-                  {uniqueInstitutions.length} Linked Institutions
+            <Stack mt={2} direction="column">
+              <Typography variant="subtitle2" component="div">
+                {accounts.length} Accounts tracked / {uniqueInstitutions.length}{' '}
+                Linked Institutions
+              </Typography>
+              {accounts
+                .slice()
+                .sort(
+                  (prev, next) =>
+                    (next.currentBalance || Number.MIN_VALUE) -
+                    (prev.currentBalance || Number.MIN_VALUE),
+                )
+                .slice(0, ACCOUNTS_TO_SHOW) // TODO: extract number to a constant
+                .map((a) => (
+                  <Stack key={a.id} direction="row" alignItems="center" gap={1}>
+                    <Avatar
+                      alt={a.name}
+                      src={`data:image/png;base64,${a.item.institution.logo}`}
+                    />
+                    <Button
+                      sx={{
+                        textTransform: 'none',
+                        flexGrow: 1,
+                        justifyContent: 'flex-start',
+                      }}
+                      onClick={handleAccountClick}
+                      data-accountid={a.id}
+                    >
+                      <Typography
+                        whiteSpace="nowrap"
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                      >
+                        {a.name}
+                      </Typography>
+                    </Button>
+
+                    {a.currentBalance && (
+                      <Typography flexShrink={0}>
+                        {formatCurrency(a.currentBalance, 'GBP', 0)}
+                      </Typography>
+                    )}
+                  </Stack>
+                ))}
+              {accounts.length > ACCOUNTS_TO_SHOW && (
+                <Typography variant="body2" ml={2}>
+                  + {accounts.length - ACCOUNTS_TO_SHOW} more
                 </Typography>
-                <Stack direction="row" justifyContent="flex-start">
-                  <AvatarGroup max={4}>
-                    {uniqueInstitutions!.map((i) => (
-                      <Avatar
-                        key={i.id}
-                        alt={i.name}
-                        src={`data:image/png;base64,${i.logo}`}
-                      />
-                    ))}
-                  </AvatarGroup>
-                </Stack>
-              </Box>
-              <Box>
+              )}
+              {/* <Box flexGrow={1}>
                 <Stack direction="column" gap={2} textAlign="right">
                   <Box color="green">
-                    <Typography variant="h6">{balances.credit}</Typography>
+                    <Typography variant="h6">
+                      {formatCurrency(balances.credit, 'GBP', 0)}
+                    </Typography>
                     <Typography variant="subtitle2">Credit</Typography>
                   </Box>
                   <Box color="red">
-                    <Typography variant="h6">{balances.debit}</Typography>
+                    <Typography variant="h6">
+                      {formatCurrency(balances.debit, 'GBP', 0)}
+                    </Typography>
                     <Typography variant="subtitle2">Debit</Typography>
                   </Box>
                 </Stack>
-              </Box>
+              </Box> */}
             </Stack>
           </CardContent>
         </Card>

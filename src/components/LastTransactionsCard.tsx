@@ -1,6 +1,7 @@
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent } from '@mui/material';
 import { useGetTransactionsQuery } from '../services/api';
 import { getLastDayOfMonth, queryDateFormatter } from '../utils/formatters';
+import CardTitle from './CardTitle';
 import LoadingSpinner from './LoadingSpinner';
 import TransactionsListSimple from './TransactionsListSimple';
 
@@ -24,7 +25,7 @@ const LastTransactionsCard = ({
   return (
     <Card sx={{ height: '100%' }} variant="outlined">
       <CardContent>
-        <Typography variant="h6">Last Transactions</Typography>
+        <CardTitle title="Last Transactions" />
         {transactions ? (
           <TransactionsListSimple transactions={transactions.rows} />
         ) : (

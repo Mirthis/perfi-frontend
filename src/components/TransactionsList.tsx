@@ -1,16 +1,25 @@
-import { Box, Button, Menu, MenuItem, Typography } from '@mui/material';
+import {
+  Box,
+  FormControlLabel,
+  FormGroup,
+  Menu,
+  MenuItem,
+  Switch,
+  Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAppDispatch, useAppSelector } from '../reducers/hooks';
 import {
   setAccountFilter,
   setCategoryFilter,
+  setForceDataRefresh,
   setHasMore,
   setPageFilter,
 } from '../reducers/txFilterReducer';
 import {
   useExcludeTransactionMutation,
-  useLazyGetTransactionsQuery,
+  useLazyGetTransactionsListQuery,
 } from '../services/api';
 import {
   ChangeCategoryModalState,
@@ -24,14 +33,21 @@ import ChangeCategoryModal from './modals/ChangeCategoryModal';
 import TransactionLine from './TransactionLine';
 
 const TransactionsList = () => {
-  const { startDate, endDate, category, account, page, hasMore } =
-    useAppSelector((state) => state.txFilter);
+  const {
+    startDate,
+    endDate,
+    category,
+    account,
+    hasMore,
+    page,
+    forceDataRefresh,
+  } = useAppSelector((state) => state.txFilter);
   const [sbowExcludedTransactions, setShowExcludedTransactions] =
     useState<ExcludedTransactionsFilter>(
       ExcludedTransactionsFilter.ONLY_INCLUDED,
     );
 
-  const ITEM_PER_PAGE = 20;
+  const ITEM_PER_PAGE = 10;
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuTransactionid, setMenuTransactionId] = useState<number | null>();
@@ -44,47 +60,66 @@ const TransactionsList = () => {
   const { setError, setSuccess } = useAlert();
   const dispatch = useAppDispatch();
 
-  const [getTransactions, { isFetching }] = useLazyGetTransactionsQuery();
+  const [getTransactions, { isFetching, data: pageTransactions }] =
+    useLazyGetTransactionsListQuery();
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
+  const getQueryFilter = () => {
+    const queryFilter: GetTransactionsOptions = {
+      startDate,
+      endDate,
+      limit: forceDataRefresh ? ITEM_PER_PAGE * page : ITEM_PER_PAGE,
+      offset: forceDataRefresh ? 0 : ITEM_PER_PAGE * (page - 1),
+      excludedTransactions: sbowExcludedTransactions,
+    };
+    if (category) {
+      queryFilter.categoryIds = [category];
+    }
+
+    if (account) {
+      queryFilter.accountIds = [account];
+    }
+    return queryFilter;
+  };
+
   useEffect(() => {
     const executeQuery = async () => {
-      const queryFilter: GetTransactionsOptions = {
-        startDate,
-        endDate,
-        limit: ITEM_PER_PAGE,
-        offset: ITEM_PER_PAGE * (page - 1),
-        excludedTransactions: sbowExcludedTransactions,
-      };
-      if (category) {
-        queryFilter.categoryIds = [category];
-      }
-
-      if (account) {
-        queryFilter.accountIds = [account];
-      }
-
-      try {
-        const pageTransactions = await getTransactions(
-          queryFilter,
-          true,
-        ).unwrap();
-        if (pageTransactions) {
-          if (page === 1) {
-            setTransactions(pageTransactions.rows);
-          } else {
-            setTransactions(transactions.concat(pageTransactions.rows));
-          }
-          const more = pageTransactions.count > page * ITEM_PER_PAGE;
-          dispatch(setHasMore(more));
-        }
-      } catch (err) {
-        console.error(err);
-      }
+      const queryFilter = getQueryFilter();
+      await getTransactions(queryFilter, true).unwrap();
     };
     executeQuery();
   }, [startDate, endDate, sbowExcludedTransactions, account, page, category]);
+
+  useEffect(() => {
+    const executeQuery = async () => {
+      const queryFilter: GetTransactionsOptions = getQueryFilter();
+      await getTransactions(queryFilter, false).unwrap();
+    };
+    if (forceDataRefresh) {
+      executeQuery();
+    }
+  }, [forceDataRefresh]);
+
+  useEffect(() => {
+    if (!isFetching && pageTransactions) {
+      if (page === 1 || forceDataRefresh) {
+        setTransactions(pageTransactions.rows);
+      } else {
+        setTransactions(transactions.concat(pageTransactions.rows));
+      }
+      const more = pageTransactions.count > page * ITEM_PER_PAGE;
+      dispatch(setHasMore(more));
+      dispatch(setForceDataRefresh(false));
+    }
+  }, [pageTransactions]);
+
+  useEffect(
+    () => () => {
+      dispatch(setPageFilter(1));
+    },
+    [],
+  );
 
   const closeMenu = () => {
     setAnchorEl(null);
@@ -113,6 +148,7 @@ const TransactionsList = () => {
               : 'Included in'
           } spending view`,
         );
+        dispatch(setForceDataRefresh(true));
       } catch (err) {
         setError('Something weent wrong. Try again later');
       }
@@ -140,6 +176,7 @@ const TransactionsList = () => {
         ? ExcludedTransactionsFilter.ONLY_INCLUDED
         : ExcludedTransactionsFilter.ONLY_EXCLUDED;
     setShowExcludedTransactions(excludedFilter);
+    dispatch(setPageFilter(1));
   };
 
   const { ref } = useInView({
@@ -191,17 +228,24 @@ const TransactionsList = () => {
 
       <ChangeCategoryModal state={modalState} setState={setModalState} />
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h4">
-          {sbowExcludedTransactions === ExcludedTransactionsFilter.ONLY_EXCLUDED
-            ? 'Excluded Transactions '
-            : 'Transactions List'}
-        </Typography>
-        <Button variant="text" onClick={toggleExcludeTransactionsView}>
-          {sbowExcludedTransactions === ExcludedTransactionsFilter.ONLY_EXCLUDED
-            ? 'Transactions'
-            : 'Excluded transactions'}
-        </Button>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: 2,
+          flexWrap: 'wrap',
+        }}
+      >
+        <Typography variant="h4">Transactions</Typography>
+
+        <FormGroup>
+          <FormControlLabel
+            control={<Switch onClick={toggleExcludeTransactionsView} />}
+            label="Excluded"
+            // labelPlacement="bottom"
+          />
+        </FormGroup>
       </Box>
       {transactions.length > 0 ? (
         <Box>
