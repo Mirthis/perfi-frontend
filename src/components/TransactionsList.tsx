@@ -220,9 +220,9 @@ const TransactionsList = () => {
         </MenuItem>
         <MenuItem key="Exclude Transaction" onClick={handleExcludeTransaction}>
           {sbowExcludedTransactions === ExcludedTransactionsFilter.ONLY_INCLUDED
-            ? 'Exclude'
-            : 'Include'}{' '}
-          in spending
+            ? 'Exclude from'
+            : 'Include in'}{' '}
+          spending
         </MenuItem>
       </Menu>
 

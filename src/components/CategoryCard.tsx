@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  CardHeader,
   Typography,
   CardActionArea,
   Stack,
@@ -34,14 +33,23 @@ const CategoryCard = ({ category }: { category: CategorySummary }) => {
         sx={{ height: '100%' }}
         onClick={() => handleCardClick(category.id)}
       >
-        <CardHeader
-          avatar={
+        <CardContent
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignContent: 'space-between',
+            height: '100%',
+            rowGap: 4,
+          }}
+        >
+          <Stack direction="row" gap={2} flexGrow={1} alignItems="center">
             <CategoryIcon name={category.iconName} color={category.iconColor} />
-          }
-          titleTypographyProps={{ variant: 'h4' }}
-          title={category.name}
-        />
-        <CardContent>
+
+            <Typography variant="h6" color="text.secondary">
+              {category.name}
+            </Typography>
+          </Stack>
+
           <Stack direction="row" gap={2}>
             <Stack direction="row" gap={1} flexGrow="1" alignItems="center">
               <ReceiptLongOutlinedIcon />

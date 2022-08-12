@@ -11,7 +11,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { MouseEventHandler } from 'react';
 import { Transaction } from '../types/types';
-import { formatCurrency } from '../utils/formatters';
+import { capitalizeFirst, formatCurrency } from '../utils/formatters';
 import CategoryIcon from './CategoryIcon';
 // import { useExcludeTransactionMutation } from '../services/api';
 
@@ -42,12 +42,10 @@ const TransactionLine = ({
     alignItems="center"
   >
     <Grid item xs={5}>
-      <Link
-        underline="none"
-        to={`/transaction/${transaction.id}`}
-        component={RouterLink}
-      >
-        <Typography variant="subtitle1">{transaction.name}</Typography>
+      <Link to={`/transaction/${transaction.id}`} component={RouterLink}>
+        <Typography variant="subtitle1">
+          {capitalizeFirst(transaction.name)}
+        </Typography>
       </Link>
       {transaction.merchantName && (
         <Typography variant="subtitle2" minHeight="1.5em">

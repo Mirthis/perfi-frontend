@@ -9,7 +9,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { LoadingButton } from '@mui/lab';
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
-import { Container } from '@mui/material';
+import { Alert, AlertTitle, Container } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useNavigate, useLocation, Link as RouterLink } from 'react-router-dom';
@@ -19,6 +19,7 @@ import { useAppDispatch } from '../reducers/hooks';
 import { setUser } from '../reducers/authReducer';
 import { useAlert } from './AlertProvider';
 import { isAuthErrror } from '../utils/errors';
+import { DEMO_ONLY } from '../utils/config';
 
 // Determine type of the state retrieved from useLocation to allow access
 // to from property
@@ -49,8 +50,6 @@ const LoginForm = () => {
   const submit = async (data: LoginRequest) => {
     try {
       const loggedUser = await login(data).unwrap();
-      console.log('loggedUser');
-      console.log(loggedUser);
       dispatch(setUser(loggedUser));
       // if (loggedUser) throw new Error('stop');
       if (isNavigateFromState(state)) {
@@ -81,6 +80,12 @@ const LoginForm = () => {
 
   return (
     <Container component="div" maxWidth="xs">
+      {DEMO_ONLY && (
+        <Alert severity="info">
+          <AlertTitle>Demo restriction</AlertTitle>
+          Signing in is not supported in the demo.
+        </Alert>
+      )}
       <Box
         sx={{
           marginTop: 8,
@@ -89,7 +94,7 @@ const LoginForm = () => {
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.light' }}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
@@ -164,6 +169,7 @@ const LoginForm = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             loading={isLoading}
+            disabled={DEMO_ONLY}
           >
             Sign In
           </LoadingButton>

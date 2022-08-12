@@ -12,7 +12,7 @@ import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import { useAppDispatch } from '../reducers/hooks';
 import { setAccountFilter } from '../reducers/txFilterReducer';
 import { AccountSummary } from '../types/types';
-import { formatCurrency, capitalizeFirst } from '../utils/formatters';
+import { formatCurrency, formatAccountSubType } from '../utils/formatters';
 
 const AccountCard = ({ account }: { account: AccountSummary }) => {
   // const navigate = useNavigate();
@@ -36,41 +36,47 @@ const AccountCard = ({ account }: { account: AccountSummary }) => {
         sx={{ height: '100%' }}
         onClick={() => handleCardClick(account.id)}
       >
-        <CardContent sx={{ height: '100%' }}>
-          <Stack direction="column" rowGap={4}>
-            <Stack direction="row" gap={2}>
-              <Avatar
-                src={`data:image/png;base64,${account.institutionLogo}`}
-              />
-              <Box>
-                <Typography variant="body1" color="text.secondary">
-                  {account.institutionName}
-                </Typography>
-                <Typography variant="h6" color="text.secondary">
-                  {account.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {account.subType ? capitalizeFirst(account.subType) : 'N/A'}
-                </Typography>
-              </Box>
+        <CardContent
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignContent: 'space-between',
+            height: '100%',
+            rowGap: 4,
+          }}
+        >
+          <Stack direction="row" gap={2} flexGrow={1}>
+            <Avatar src={`data:image/png;base64,${account.institutionLogo}`} />
+            <Box>
+              <Typography variant="body1" color="text.secondary">
+                {account.institutionName}
+              </Typography>
+              <Typography variant="h6" color="text.secondary">
+                {account.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {account.subType
+                  ? formatAccountSubType(account.subType)
+                  : 'N/A'}
+              </Typography>
+            </Box>
+          </Stack>
+          <Stack direction="row" gap={2}>
+            <Stack direction="row" gap={1} flexGrow="1" alignItems="center">
+              <ReceiptLongOutlinedIcon />
+              <Typography sx={{ flexGrow: 1 }} variant="body2">
+                {account.txCount} Transactions
+              </Typography>
             </Stack>
-            <Stack direction="row" gap={2}>
-              <Stack direction="row" gap={1} flexGrow="1" alignItems="center">
-                <ReceiptLongOutlinedIcon />
-                <Typography sx={{ flexGrow: 1 }} variant="body2">
-                  {account.txCount} Transactions
-                </Typography>
-              </Stack>
-              <Stack direction="row" gap={1} flexGrow="1" alignItems="center">
-                <PaidOutlinedIcon />
-                <Typography variant="body2" color="text.secondary">
-                  {formatCurrency(
-                    Number(account.txAmount),
-                    account.isoCurrencyCode || 'GBP',
-                    0,
-                  )}
-                </Typography>
-              </Stack>
+            <Stack direction="row" gap={1} flexGrow="1" alignItems="center">
+              <PaidOutlinedIcon />
+              <Typography variant="body2" color="text.secondary">
+                {formatCurrency(
+                  Number(account.txAmount),
+                  account.isoCurrencyCode || 'GBP',
+                  0,
+                )}
+              </Typography>
             </Stack>
           </Stack>
         </CardContent>

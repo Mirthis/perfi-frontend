@@ -95,3 +95,6 @@ export const getStartEndDate = (
   );
   return { startDate, endDate };
 };
+
+export const formatAccountSubType = (subType: string) =>
+  subType === 'checking' ? 'Current Account' : capitalizeFirst(subType);

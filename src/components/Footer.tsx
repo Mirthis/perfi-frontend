@@ -15,11 +15,11 @@ const perfiLinks = [
     link: '/',
   },
   {
-    title: 'About',
+    title: 'About Perfi',
     link: '/about',
   },
   {
-    title: 'Why only demo?',
+    title: 'Demo explained',
     link: '/demo',
   },
   {
@@ -59,7 +59,7 @@ const Footer = () => {
       }}
     >
       <Container maxWidth="xl">
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={12} md={3} />
 
           <Grid
@@ -75,7 +75,7 @@ const Footer = () => {
               App developed by Andrea Cardinale
             </Typography>
             <Typography variant="body2">
-              &#169; 2022 - All right reserver
+              &#169; 2022 - All right reserved
             </Typography>
           </Grid>
 
@@ -95,7 +95,7 @@ const Footer = () => {
               Perfi
             </Typography>
             {perfiLinks.map((l) => (
-              <Link underline="none" component={RouterLink} to={l.link}>
+              <Link key={l.title} component={RouterLink} to={l.link}>
                 <Typography>{l.title}</Typography>
               </Link>
             ))}
@@ -116,8 +116,8 @@ const Footer = () => {
               Tech
             </Typography>
             {techLinks.map((l) => (
-              <Stack>
-                <Link underline="none" href={l.link}>
+              <Stack key={l.title}>
+                <Link href={l.link} target="_blank">
                   <Typography>{l.title}</Typography>
                 </Link>
                 <Typography variant="body2">{l.description}</Typography>

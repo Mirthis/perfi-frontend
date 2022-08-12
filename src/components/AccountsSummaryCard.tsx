@@ -5,6 +5,7 @@ import {
   Stack,
   Typography,
   Button,
+  useTheme,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../reducers/hooks';
@@ -24,6 +25,8 @@ const AccountsSummaryCard = () => {
   const uniqueInstitutions = accounts
     ?.map((acc) => acc.item.institution)
     .filter((v, i, a) => a.findIndex((v2) => v2.id === v.id) === i);
+
+  const theme = useTheme();
 
   const balances = accounts?.reduce(
     (bal, acc) => {
@@ -93,6 +96,7 @@ const AccountsSummaryCard = () => {
                         whiteSpace="nowrap"
                         overflow="hidden"
                         textOverflow="ellipsis"
+                        color={theme.palette.text.secondary}
                       >
                         {a.name}
                       </Typography>

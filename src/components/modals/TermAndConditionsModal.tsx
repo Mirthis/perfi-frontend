@@ -35,7 +35,7 @@ const TermAndConditionsModal = ({
       <Fade in={showModal}>
         <Box sx={style}>
           <CardTitle title="Terms and Conditions" />
-          <Typography>aaaaaa</Typography>
+          <Typography>TBD</Typography>
         </Box>
       </Fade>
     </Modal>

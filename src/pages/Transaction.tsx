@@ -10,7 +10,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { CategoryIcon } from '../components';
 import ChangeCategoryModal from '../components/modals/ChangeCategoryModal';
 import {
@@ -29,6 +30,7 @@ const Transaction = () => {
     show: false,
     transaction: null,
   });
+  const navigate = useNavigate();
 
   const toggleTransactionExclusion = async () => {
     await toggleExclusion({
@@ -47,6 +49,10 @@ const Transaction = () => {
     return 'The transaction is included in your spending view';
   };
 
+  const navigateBack = () => {
+    navigate(-1);
+  };
+
   return (
     <Box>
       {isLoading && (
@@ -57,6 +63,9 @@ const Transaction = () => {
       {transaction && (
         <>
           <ChangeCategoryModal state={modalState} setState={setModalState} />
+          <Button startIcon={<ArrowBackIosIcon />} onClick={navigateBack}>
+            Back
+          </Button>
           <Box
             sx={{
               display: 'flex',

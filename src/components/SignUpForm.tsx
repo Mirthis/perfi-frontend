@@ -14,12 +14,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { Button } from '@mui/material';
+import { Alert, AlertTitle, Button } from '@mui/material';
 import { SignUpData } from '../types/types';
 import { useSignupMutation } from '../services/api';
 import { useAlert } from './AlertProvider';
 import { isValidationErrror } from '../utils/errors';
 import TermAndConditionsModal from './modals/TermAndConditionsModal';
+import { DEMO_ONLY } from '../utils/config';
 
 const SignUpForm = () => {
   const [showModal, setShowModal] = useState(false);
@@ -80,6 +81,12 @@ const SignUpForm = () => {
 
   return (
     <Container component="div" maxWidth="xs">
+      {DEMO_ONLY && (
+        <Alert severity="info">
+          <AlertTitle>Demo restriction</AlertTitle>
+          Signing up for a new accoutn is not supported in the demo.
+        </Alert>
+      )}
       <TermAndConditionsModal
         showModal={showModal}
         setShowModal={setShowModal}
@@ -92,7 +99,7 @@ const SignUpForm = () => {
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.light' }}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
@@ -175,6 +182,7 @@ const SignUpForm = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             loading={isLoading}
+            disabled={DEMO_ONLY}
           >
             Sign Up
           </LoadingButton>

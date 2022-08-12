@@ -10,13 +10,14 @@ import {
 import SyncIcon from '@mui/icons-material/Sync';
 import { MouseEventHandler } from 'react';
 import {
-  capitalizeFirst,
   chartDateFormatter,
   dateTimeFormatter,
+  formatAccountSubType,
   formatCurrency,
 } from '../utils/formatters';
 import { Account, Item } from '../types/types';
 import EditAccount from './EditAccount';
+import { DEMO_ONLY } from '../utils/config';
 
 const AccountManagementCard = ({
   item,
@@ -64,7 +65,9 @@ const AccountManagementCard = ({
                 {account.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {account.subType ? capitalizeFirst(account.subType) : 'N/A'}
+                {account.subType
+                  ? formatAccountSubType(account.subType)
+                  : 'N/A'}
               </Typography>
             </Stack>
             <Typography variant="body1" color="text.secondary">
@@ -90,6 +93,7 @@ const AccountManagementCard = ({
             data-itemid={item.id}
             onClick={handleSyncButton}
             startIcon={<SyncIcon />}
+            disabled={DEMO_ONLY}
           >
             Sync now
           </Button>
@@ -107,7 +111,12 @@ const AccountManagementCard = ({
             alignItems: 'flex-end',
           }}
         >
-          <EditAccount itemId={item.id} />
+          {DEMO_ONLY && (
+            <Button variant="outlined" disabled>
+              Edit Access
+            </Button>
+          )}
+          {!DEMO_ONLY && <EditAccount itemId={item.id} />}
           <Typography mr={1} variant="subtitle2">
             Access expires
           </Typography>

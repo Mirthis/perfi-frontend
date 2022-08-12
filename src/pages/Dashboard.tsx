@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material';
-import { AddAccount, LoadingSpinner } from '../components';
+import { LoadingSpinner } from '../components';
 import AccountsSummaryCard from '../components/AccountsSummaryCard';
 import LastTransactionsCard from '../components/LastTransactionsCard';
 import MonthlySpendCard from '../components/MonthlySpendCard';
@@ -11,7 +11,7 @@ import { useGetAccountsQuery } from '../services/api';
 import { queryDateFormatter } from '../utils/formatters';
 
 const Dashboard = () => {
-  const month = queryDateFormatter.format(new Date());
+  const month = queryDateFormatter.format(new Date('2022-04-20'));
   const { data: accounts, isLoading } = useGetAccountsQuery();
 
   return (
@@ -23,7 +23,7 @@ const Dashboard = () => {
           <Typography mb={2} variant="h6">
             Ooops! Nothing to show here. To get started add your first account!
           </Typography>
-          <AddAccount />
+          {/* <AddAccount /> */}
         </Box>
       )}
       {accounts && accounts.length > 0 && (

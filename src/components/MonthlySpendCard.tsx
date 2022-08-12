@@ -23,19 +23,12 @@ const MonthlySpendCard = ({
   categoryId?: number;
   accountId?: number;
 }) => {
-  console.log('refMonth');
-  console.log(refMonth);
   const startDate = queryDateFormatter.format(
     getFirstDayOfMonth(new Date(refMonth), -(months - 1)),
   );
   const endDate = queryDateFormatter.format(
     getLastDayOfMonth(new Date(refMonth)),
   );
-  console.log('startDate');
-  console.log(startDate);
-
-  console.log('endDate');
-  console.log(endDate);
 
   const queryParams: GetSpendingByOptions = { startDate, endDate };
   if (categoryId) queryParams.categoryIds = [categoryId];

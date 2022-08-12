@@ -5,22 +5,23 @@ import {
   useSyncTransactionsMutation,
 } from '../services/api';
 import AccountManagementCard from './AccountManagementCard';
+import { useAlert } from './AlertProvider';
 import LoadingSpinner from './LoadingSpinner';
 
 const AccountsManagementList = () => {
   const { data: accounts, isLoading } = useGetAccountsQuery();
-
-  // const handleDeleteButton = (event: React.MouseEvent<HTMLElement>) => {
-  //   console.log('Delete');
-  //   console.log(event);
-  // };
+  const { setError } = useAlert();
 
   const [syncTransctions] = useSyncTransactionsMutation();
 
-  const handleSyncButton = (event: React.MouseEvent<HTMLElement>) => {
+  const handleSyncButton = async (event: React.MouseEvent<HTMLElement>) => {
     const itemId = event.currentTarget.dataset.itemid;
     if (!itemId) return;
-    syncTransctions(Number(itemId));
+    try {
+      await syncTransctions(Number(itemId)).unwrap();
+    } catch (error) {
+      setError('Something went wrong. Please retry later or contact us.');
+    }
   };
 
   const uniqueItems = accounts
@@ -30,6 +31,7 @@ const AccountsManagementList = () => {
   return (
     <>
       {isLoading && <LoadingSpinner />}
+
       {accounts && (
         <>
           <Typography variant="h6" mb={2}>

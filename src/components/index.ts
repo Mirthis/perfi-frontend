@@ -5,7 +5,6 @@ export { default as AddAccount } from './AddAccount';
 export { default as Alert } from './Alert';
 export { default as AlertProvider } from './AlertProvider';
 export { default as AppBar } from './AppBar';
-export { default as AppBoutes } from './AppRoutes';
 export { default as CategoryIcon } from './CategoryIcon';
 export { default as CategoryCard } from './CategoryCard';
 export { default as CategoriesList } from './CategoriesList';

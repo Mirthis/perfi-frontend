@@ -13,6 +13,7 @@ import { AppBar, Alert } from './components';
 import { initializeAuthState } from './reducers/authReducer';
 import AppRoutes from './components/AppRoutes';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 const App = () => {
   const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
@@ -30,6 +31,13 @@ const App = () => {
         main: '#26a69a',
       },
     },
+    components: {
+      MuiLink: {
+        defaultProps: {
+          underline: 'none',
+        },
+      },
+    },
   });
 
   /* Initilize auth state. This determine routes and accss 
@@ -42,6 +50,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme>
         <Router>
+          <ScrollToTop />
           <AppBar darkMode={darkMode} setDarkMode={setDarkMode} />
           <Offset />
           <Container

@@ -74,7 +74,7 @@ const AppBar = ({
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Only display on md or bigger screens */}
-          <Link underline="none" component={RouterLink} to="/">
+          <Link component={RouterLink} to="/">
             <Box
               sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
               alignItems="center"
@@ -115,12 +115,7 @@ const AppBar = ({
               sx={{ mt: '10px', display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <Link
-                  underline="none"
-                  key={page.label}
-                  to={page.link}
-                  component={RouterLink}
-                >
+                <Link key={page.label} to={page.link} component={RouterLink}>
                   <MenuItem key={page.label} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{page.label}</Typography>
                   </MenuItem>
@@ -143,10 +138,10 @@ const AppBar = ({
             display="flex"
             gap={2}
           >
-            <Link underline="none" component={RouterLink} to="/">
+            <Link component={RouterLink} to="/">
               <AccountBalanceWalletOutlinedIcon fontSize="large" />
             </Link>
-            <Link underline="none" component={RouterLink} to="/">
+            <Link component={RouterLink} to="/">
               <Typography variant="h6" noWrap component="div">
                 Perfi
               </Typography>
@@ -155,12 +150,7 @@ const AppBar = ({
           {/* Only display on md or bigger screens */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link
-                underline="none"
-                key={page.label}
-                to={page.link}
-                component={RouterLink}
-              >
+              <Link key={page.label} to={page.link} component={RouterLink}>
                 <Button
                   key={page.label}
                   onClick={handleCloseNavMenu}
@@ -184,12 +174,12 @@ const AppBar = ({
 
             {!isLoggedIn && (
               <Stack direction="row" gap={2}>
-                <Link underline="none" to="/login" component={RouterLink}>
+                <Link to="/login" component={RouterLink}>
                   <Button variant="outlined" sx={{ my: 2, display: 'block' }}>
                     Sign in
                   </Button>
                 </Link>
-                <Link underline="none" to="/signup" component={RouterLink}>
+                <Link to="/signup" component={RouterLink}>
                   <Button
                     variant="contained"
                     sx={{ my: 2, display: { xs: 'none', sm: 'block' } }}
@@ -230,11 +220,7 @@ const AppBar = ({
 
                   {settings.map((setting) => (
                     <MenuItem key={setting.label} onClick={handleCloseUserMenu}>
-                      <Link
-                        underline="none"
-                        component={RouterLink}
-                        to={setting.link}
-                      >
+                      <Link component={RouterLink} to={setting.link}>
                         <Typography textAlign="center">
                           {setting.label}
                         </Typography>

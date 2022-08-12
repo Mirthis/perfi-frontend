@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../reducers/hooks';
 import {
   clearAccountFilter,
@@ -15,13 +16,19 @@ import {
   setModeFilter,
   setMonthFilter,
 } from '../reducers/txFilterReducer';
-import { useGetAccountsQuery, useGetCategoriesQuery } from '../services/api';
+import {
+  useGetAccountsQuery,
+  useGetCategoriesQuery,
+  useGetTransactionDatesQuery,
+} from '../services/api';
 import { TxFilterMode } from '../types/types';
 import { queryDateFormatter, selectDateFormatter } from '../utils/formatters';
+import LoadingSpinner from './LoadingSpinner';
 
 // TODO: Get months list from back-end
 const getMonthsList = (earliestDate: Date, latestDate: Date) => {
   latestDate.setDate(1);
+  earliestDate.setDate(1);
   const selectDateOptions: Array<{ key: string; value: string }> = [];
   for (
     let curDate = earliestDate;
@@ -41,9 +48,23 @@ const TransactionsFilter = ({ showMode = false }: { showMode?: boolean }) => {
   const { month, mode, category, account } = useAppSelector(
     (state) => state.txFilter,
   );
-  const latestDate = new Date();
-  const earliestDate = new Date('01 January 2021');
-  const selectDateOptions = getMonthsList(earliestDate, latestDate);
+  const { data: categoriesList } = useGetCategoriesQuery();
+  const { data: accountsList } = useGetAccountsQuery();
+  const { data: transactionDates } = useGetTransactionDatesQuery();
+  const [selectDateOptions, setSelectDateOptions] = useState<
+    Array<{ key: string; value: string }> | undefined
+  >(undefined);
+
+  useEffect(() => {
+    if (transactionDates) {
+      const dateOptions = getMonthsList(
+        new Date(transactionDates.minDate),
+        new Date(transactionDates.maxDate),
+      );
+      setSelectDateOptions(dateOptions);
+      dispatch(setMonthFilter(dateOptions.slice(-1)[0].key));
+    }
+  }, [transactionDates]);
 
   const handleMonthChange = (
     _event: React.SyntheticEvent,
@@ -69,12 +90,8 @@ const TransactionsFilter = ({ showMode = false }: { showMode?: boolean }) => {
     dispatch(clearAccountFilter());
   };
 
-  // TODO: manage loading and errors
-  const { data: categoriesList } = useGetCategoriesQuery();
-  const { data: accountsList } = useGetAccountsQuery();
-
-  return (
-    <Stack rowGap={1}>
+  return categoriesList && accountsList && transactionDates ? (
+    <Stack rowGap={2}>
       <Tabs
         value={month}
         onChange={handleMonthChange}
@@ -82,7 +99,7 @@ const TransactionsFilter = ({ showMode = false }: { showMode?: boolean }) => {
         scrollButtons="auto"
         aria-label="scrollable auto tabs example"
       >
-        {selectDateOptions.map((d) => (
+        {selectDateOptions?.map((d) => (
           <Tab key={d.key} label={d.value} value={d.key} />
         ))}
       </Tabs>
@@ -132,6 +149,8 @@ const TransactionsFilter = ({ showMode = false }: { showMode?: boolean }) => {
         </Stack>
       </Stack>
     </Stack>
+  ) : (
+    <LoadingSpinner />
   );
 };
 

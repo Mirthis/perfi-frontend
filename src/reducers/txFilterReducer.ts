@@ -6,7 +6,7 @@ import {
 } from '../utils/formatters';
 import { TxFilter, TxFilterMode } from '../types/types';
 
-const initMonth = getFirstDayOfMonth(new Date());
+const initMonth = getFirstDayOfMonth(new Date('2022-04-20'));
 
 const initialState: TxFilter = {
   month: queryDateFormatter.format(initMonth),

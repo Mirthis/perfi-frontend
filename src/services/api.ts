@@ -73,6 +73,16 @@ export const perfiApi = createApi({
       }),
       providesTags: ['Transactions'],
     }),
+    getTransactionDates: builder.query<
+      { minDate: string; maxDate: string },
+      void
+    >({
+      query: () => ({
+        url: `transactions/dates`,
+        method: 'GET',
+      }),
+      providesTags: ['Transactions'],
+    }),
     getTransactionsList: builder.query<
       GetTransactionsRes,
       GetTransactionsOptions
@@ -308,6 +318,7 @@ export const {
   useGetCategoriesQuery,
   useGetUserCategoriesQuery,
   useGetTransactionQuery,
+  useGetTransactionDatesQuery,
   useLazyGetTransactionsQuery,
   useLazyGetTransactionsListQuery,
   useGetSpendingCumulativeQuery,

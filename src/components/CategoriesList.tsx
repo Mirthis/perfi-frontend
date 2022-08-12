@@ -28,7 +28,7 @@ const CategoriesList = () => {
           ?.slice()
           .sort((prev, next) => Number(next.txAmount) - Number(prev.txAmount))
           .map((sd) => (
-            <Grid key={sd.id} item xs={12} sm={6} xl={4}>
+            <Grid key={sd.id} item xs={12} md={6} xl={4}>
               <CategoryCard category={sd} />
             </Grid>
           ))}

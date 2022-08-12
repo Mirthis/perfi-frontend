@@ -1,4 +1,4 @@
-import { Box, Typography, Link } from '@mui/material';
+import { Box, Typography, Link, useTheme } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { Transaction } from '../types/types';
 import {
@@ -19,6 +19,8 @@ const TransactionLineSimple = ({
     0,
   );
 
+  const theme = useTheme();
+
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
       <Typography flexShrink={0} textAlign="left">
@@ -32,7 +34,8 @@ const TransactionLineSimple = ({
         textOverflow="ellipsis"
       >
         <Link
-          underline="none"
+          color={theme.palette.text.primary}
+          underline="hover"
           component={RouterLink}
           to={`/transaction/${transaction.id}`}
         >

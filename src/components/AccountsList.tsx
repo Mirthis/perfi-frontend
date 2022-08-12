@@ -26,7 +26,7 @@ const AccountsList = () => {
       )}
       <Grid container spacing={2}>
         {accounts?.map((acc) => (
-          <Grid key={acc.id} item xs={12} sm={6} xl={4}>
+          <Grid key={acc.id} item xs={12} md={6} xl={4}>
             <AccountCard account={acc} />
           </Grid>
         ))}

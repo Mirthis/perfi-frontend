@@ -13,7 +13,9 @@ import {
   ResetPassword,
   Spending,
   Accounts,
+  Demo,
 } from '../pages';
+import About from '../pages/About';
 import { useAppSelector } from '../reducers/hooks';
 import { LoginState, PrivateRouteData } from '../types/types';
 import PrivateRoute from './PrivateRoute';
@@ -34,6 +36,10 @@ const privateRoutes: Array<PrivateRouteData> = [
   {
     path: '/transaction/:id',
     element: <Transaction />,
+  },
+  {
+    path: '/terms',
+    element: <Terms />,
   },
   {
     path: '/manage/categories',
@@ -109,7 +115,9 @@ const AppRoutes = () => {
     <Routes>
       {/* {publicRouteList()} */}
       <Route key="home" path="/" element={homeElement} />
-      <Route key="terms" path="/" element={<Terms />} />
+      <Route key="terms" path="/terms" element={<Terms />} />
+      <Route key="about" path="/about" element={<About />} />
+      <Route key="demo" path="/demo" element={<Demo />} />
       {getPrivateRoutes(loginState)};
       <Route key="*" path="*" element={<Navigate to="/" replace />} />
     </Routes>
