@@ -1,6 +1,11 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useAppSelector } from '../reducers/hooks';
 import { TxFilterMode } from '../types/types';
+import {
+  MONTLY_SPEND_MONTHS,
+  TOP_CATEGORIES_ITEMS,
+  TOP_EXPENSES_ITEMS,
+} from '../utils/config';
 import { queryDateFormatter } from '../utils/formatters';
 import MonthlySpendCard from './MonthlySpendCard';
 import SpendTrendCard from './SpendTrendCard';
@@ -29,13 +34,16 @@ const TransactionsStats = () => {
 
       {mode === TxFilterMode.Categories && !category && (
         <Box>
-          <TopCategorySummaryCard refMonth={month} numberOfItems={5} />
+          <TopCategorySummaryCard
+            refMonth={month}
+            numberOfItems={TOP_CATEGORIES_ITEMS}
+          />
         </Box>
       )}
       <Box>
         <MonthlySpendCard
           refMonth={month}
-          months={12}
+          months={MONTLY_SPEND_MONTHS}
           categoryId={category}
           accountId={account}
         />
@@ -43,7 +51,7 @@ const TransactionsStats = () => {
       <Box>
         <TopExpensesCard
           refMonth={month}
-          numberOfItems={10}
+          numberOfItems={TOP_EXPENSES_ITEMS}
           categoryId={category}
           accountId={account}
         />

@@ -30,6 +30,7 @@ import SportsTennisOutlinedIcon from '@mui/icons-material/SportsTennisOutlined';
 import MusicNoteOutlinedIcon from '@mui/icons-material/MusicNoteOutlined';
 import MedicalServicesOutlinedIcon from '@mui/icons-material/MedicalServicesOutlined';
 
+// TODO: this is probably not good for bundle size. Research alternatives
 type CategoryIconsList = {
   [name: string]: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
     muiName: string;

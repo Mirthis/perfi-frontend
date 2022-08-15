@@ -8,10 +8,18 @@ import SpendTrendCard from '../components/SpendTrendCard';
 import TopCategorySummaryCard from '../components/TopCategorySpendCard';
 import TopExpensesCard from '../components/TopExpensesCard';
 import { useGetAccountsQuery } from '../services/api';
+import {
+  DEMO_ONLY,
+  LAST_TRANSACTIONS_ITEMS,
+  MONTLY_SPEND_MONTHS,
+  TOP_CATEGORIES_ITEMS,
+  TOP_EXPENSES_ITEMS,
+} from '../utils/config';
 import { queryDateFormatter } from '../utils/formatters';
 
 const Dashboard = () => {
-  const month = queryDateFormatter.format(new Date('2022-04-20'));
+  const dashboardDate = DEMO_ONLY ? new Date('2022-04-20') : new Date();
+  const month = queryDateFormatter.format(dashboardDate);
   const { data: accounts, isLoading } = useGetAccountsQuery();
 
   return (
@@ -32,16 +40,25 @@ const Dashboard = () => {
             <SpendTrendCard refMonth={month} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <MonthlySpendCard refMonth={month} months={12} />
+            <MonthlySpendCard refMonth={month} months={MONTLY_SPEND_MONTHS} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <TopCategorySummaryCard refMonth={month} numberOfItems={5} />
+            <TopCategorySummaryCard
+              refMonth={month}
+              numberOfItems={TOP_CATEGORIES_ITEMS}
+            />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <LastTransactionsCard refMonth={month} numberOfItems={10} />
+            <LastTransactionsCard
+              refMonth={month}
+              numberOfItems={LAST_TRANSACTIONS_ITEMS}
+            />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <TopExpensesCard refMonth={month} numberOfItems={10} />
+            <TopExpensesCard
+              refMonth={month}
+              numberOfItems={TOP_EXPENSES_ITEMS}
+            />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <AccountsSummaryCard />

@@ -1,3 +1,4 @@
+import { ManageAccounts } from '@mui/icons-material';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import {
   Home,
@@ -14,8 +15,8 @@ import {
   Spending,
   Accounts,
   Demo,
+  About,
 } from '../pages';
-import About from '../pages/About';
 import { useAppSelector } from '../reducers/hooks';
 import { LoginState, PrivateRouteData } from '../types/types';
 import PrivateRoute from './PrivateRoute';
@@ -44,6 +45,10 @@ const privateRoutes: Array<PrivateRouteData> = [
   {
     path: '/manage/categories',
     element: <ManageCategories />,
+  },
+  {
+    path: '/manage/accounts',
+    element: <ManageAccounts />,
   },
   {
     path: '/logout',

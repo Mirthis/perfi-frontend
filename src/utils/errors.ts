@@ -5,6 +5,8 @@ import {
   ValidationError,
 } from '../types/types';
 
+// Type guards for error types returned by API calls
+
 export const isAuthErrror = (error: unknown): error is AuthError =>
   (error as AuthError)?.data?.type === ErrorType.AUTH_ERROR;
 

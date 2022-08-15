@@ -1,19 +1,23 @@
+// Format used for API calls - YYYY-MM-DD
 export const queryDateFormatter = new Intl.DateTimeFormat('sv-SE', {
   year: 'numeric',
   month: '2-digit',
   day: '2-digit',
 });
 
+// Format displayed in seelction tab - i.e. June 2022
 export const selectDateFormatter = new Intl.DateTimeFormat('en-GB', {
   month: 'long',
   year: 'numeric',
 });
 
+// Firmat used in charts = mm-yy
 export const chartDateFormatter = new Intl.DateTimeFormat('en-GB', {
   month: 'short',
   year: '2-digit',
 });
 
+// format use in trend chart card = dd-mm
 export const ddmmDateFormatter = new Intl.DateTimeFormat('en-GB', {
   day: '2-digit',
   month: 'short',
@@ -27,12 +31,7 @@ export const dateTimeFormatter = new Intl.DateTimeFormat('en-GB', {
   minute: '2-digit',
 });
 
-// TODO: miove together with other styling
-export const amountStyle = (value: Number) => ({
-  fontWeight: 'bold',
-  color: value >= 0 ? 'green' : 'red',
-});
-
+// format number as a currency
 export const formatCurrency = (
   value: number,
   currency: string,
@@ -54,8 +53,6 @@ export const capitalizeFirst = (sentence: string): string =>
     .map((w: string) => w[0].toUpperCase() + w.substring(1).toLowerCase())
     .join(' ');
 
-export const formatPercentage = () => {};
-
 export const getFirstDayOfMonth = (
   date: Date,
   monthDelta: number = 0,
@@ -75,10 +72,9 @@ export const getLastDayOfMonth = (date: Date, monthDelta: number = 0): Date => {
   return endDate;
 };
 
-export const getDateAsYyyyMmDd = (date: Date) =>
-  String(
-    10000 * date.getFullYear() + 100 * (date.getMonth() + 1) + date.getDate(),
-  );
+// TODO: extend to convert other accounts descriptions
+export const formatAccountSubType = (subType: string) =>
+  subType === 'checking' ? 'Current Account' : capitalizeFirst(subType);
 
 export const getStartEndDate = (
   month: Date,
@@ -95,6 +91,3 @@ export const getStartEndDate = (
   );
   return { startDate, endDate };
 };
-
-export const formatAccountSubType = (subType: string) =>
-  subType === 'checking' ? 'Current Account' : capitalizeFirst(subType);

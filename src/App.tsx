@@ -19,6 +19,7 @@ const App = () => {
   const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
   const dispatch = useAppDispatch();
 
+  // state to manage darkMode via a dedicated switch in the App Bar
   const [darkMode, setDarkMode] = useState<boolean>(true);
 
   const theme = createTheme({

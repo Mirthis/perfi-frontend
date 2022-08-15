@@ -19,6 +19,7 @@ import { useAppSelector } from '../reducers/hooks';
 import DarkModeSwitch from './DarkModeSwitch';
 
 const settings = [
+  { label: 'Manage Accounts', link: '/manage/accounts' },
   { label: 'Manage Categories', link: '/manage/categories' },
   { label: 'Logout', link: '/logout' },
 ];
@@ -43,7 +44,6 @@ const AppBar = ({
     { label: 'Dashboard', link: '/dashboard', show: isLoggedIn },
     { label: 'Spending', link: '/spending', show: isLoggedIn },
     { label: 'Transactions', link: '/transactions', show: isLoggedIn },
-    { label: 'Accounts', link: '/accounts', show: isLoggedIn },
   ];
 
   const pages = allPages.filter((page) => page.show);
